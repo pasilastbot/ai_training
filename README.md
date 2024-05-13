@@ -11,5 +11,9 @@ python3 -m pip install json anthropic html2text rich
 
 # RUN scripts
 
+## Ingest page
 ANTHROPIC_API_KEY=<your_key> python3 parse_html.py https://website_to_ingest
+
+## Rag query
+ANTHROPIC_API_KEY=<your_key> python3 rag_query.py https://website_to_ingest "question to ask"
 
