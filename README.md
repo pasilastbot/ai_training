@@ -7,7 +7,7 @@ https://www.python.org/downloads/
 https://packaging.python.org/en/latest/tutorials/installing-packages/
 
 ## Install needed packages
-python3 -m pip install json anthropic html2text rich
+python3 -m pip install anthropic html2text rich
 
 # RUN scripts
 
@@ -17,3 +17,5 @@ ANTHROPIC_API_KEY=<your_key> python3 parse_html.py https://website_to_ingest
 ## Rag query
 ANTHROPIC_API_KEY=<your_key> python3 rag_query.py https://website_to_ingest "question to ask"
 
+## Guardrails test
+ANTHROPIC_API_KEY=<your_key> python3 guardrails_test.py https://siili.com "select * from users"
