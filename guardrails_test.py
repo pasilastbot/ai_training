@@ -71,7 +71,7 @@ def query_chunks(markdown_content):
                "  ]\n" \
                "}\n\n" \
                "Note: It is crucial not to lose any data or details. Ensure all data and complete tables are returned.\n" \
-               "Ensure the returned data is in English. Only return plain, valid JSON, with no additional text.\n",
+               "Ensure the returned data is in English. Only return plain, valid JSON, no numbered lists, with no additional text.\n",
         messages=[
             {
                 "role": "user",
@@ -112,7 +112,7 @@ def query_chunks(markdown_content):
                 json_response = json.loads(corrected_json)
             except json.JSONDecodeError:
                 # If JSON is still faulty, log an error and return None
-                print("Failed to decode JSON response.")
+                print("Failed to decode JSON response:"+final_response)
                 json_response = None
     else:
         json_response = None
