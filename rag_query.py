@@ -68,7 +68,7 @@ def query_chunks(markdown_content):
                "  ]\n" \
                "}\n\n" \
                "Note: It is crucial not to lose any data or details. Ensure all data and complete tables are returned.\n" \
-               "Ensure the returned data is in English. Only return plain JSON, with no additional text.\n",
+               "Ensure the returned data is in English. Only return plain, valid JSON, no numbered lists, no with no additional text.\n",
         messages=[
             {
                 "role": "user",
