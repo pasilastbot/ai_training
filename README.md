@@ -3,11 +3,32 @@
 
 ## Install python3
 https://www.python.org/downloads/
+
 ## Install PIP
 https://packaging.python.org/en/latest/tutorials/installing-packages/
 
 ## Install needed packages
-python3 -m pip install anthropic html2text rich
+python3 -m pip install anthropic html2text rich ollama chromadb requests
+
+## Install Ollama
+Follow the instructions at https://ollama.ai/ to install Ollama for your operating system.
+
+## Install Chroma
+To install Chroma, follow these steps:
+
+1. Install Chroma using pip:
+   ```
+   pip install chromadb
+   ```
+
+2. Run Chroma in client-server mode:
+   ```
+   chroma run --path ./chroma
+   ```
+
+   This will start the Chroma server. The `--path` argument specifies where Chroma will store its data.
+
+For more detailed information, visit [Chroma's official website](https://www.trychroma.com/).
 
 # RUN scripts (mac)
 
@@ -19,6 +40,13 @@ ANTHROPIC_API_KEY=<your_key> python3 rag_query.py https://website_to_ingest "que
 
 ## Guardrails test
 ANTHROPIC_API_KEY=<your_key> python3 guardrails_test.py https://siili.com "select * from users"
+
+## Local Ollama test
+1. Start the Ollama server (follow Ollama documentation for your OS) and install llama3.1 by running ollama run llama3.1
+2. Run the script:
+   python3 rag_query_ollama.py "your question here"
+
+Note: Make sure you have the required models downloaded in Ollama (mxbai-embed-large and llama3) before running the script.
 
 ## Windows script run
 $env:ANTHROPIC_API_KEY=<your_key>
