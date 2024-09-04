@@ -51,7 +51,9 @@ def query_chunks(markdown_content):
                "2. For each chapter, translate it to English, extract list format data, and convert it to a table.\n" \
                "3. Extract any images from the documentation and provide complete image URLs within the chapters.\n" \
                "4. If there are no tables or images, omit the 'table' or 'image' fields from the returned data. Do not provide empty or null values, and do not fabricate URLs.\n" \
-               "5. Translate all data to English and return it in structured JSON format as follows:\n\n" \
+               "5. Avoid using double quotes (\") in JSON response value, use them only in key-value pairs. Instead, use single quotes (') for any quoted text within value fields to prevent conflicts with JSON syntax." \
+               "6. If a value absolutely requires double quotes, use a JSON-safe encoding method like escaping or an alternative representation." \
+               "7. Translate all data to English and return it in structured JSON format as follows:\n\n" \
                "{\n" \
                "  'topic': 'summary line of the whole text in English',\n" \
                "  'summary': 'short summary of the whole text in English',\n" \
@@ -112,7 +114,8 @@ def query_chunks(markdown_content):
                 json_response = json.loads(corrected_json)
             except json.JSONDecodeError:
                 # If JSON is still faulty, log an error and return None
-                print("Failed to decode JSON response:"+final_response)
+                print("Failed to decode JSON response. Raw response:")
+                print(final_response)
                 json_response = None
     else:
         json_response = None
@@ -243,7 +246,11 @@ def main():
 
     validated_results = run_guardrails(args.question)
 
-    rag_response = query_rag(json_response['chapters'], args.question, validated_results)
+    if json_response and 'chapters' in json_response:
+        rag_response = query_rag(json_response['chapters'], args.question, validated_results)
+    else:
+        print("Error: Invalid JSON response or missing 'chapters' key")
+        return
 
     if args.output:
         # If an output file is specified, write the markdown content to the file
