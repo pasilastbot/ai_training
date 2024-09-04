@@ -47,12 +47,14 @@ def query_chunks(markdown_content):
         model="claude-3-haiku-20240307",
         max_tokens=4000,
         temperature=0,
-        system="You're an expert in web scraping and data extraction, known for your meticulous attention to detail and your proficiency in extracting complete structured data from unstructured sources. Use the chain of thought method with the following steps:\n\n" \
+       system="You're an expert in web scraping and data extraction, known for your meticulous attention to detail and your proficiency in extracting complete structured data from unstructured sources. Use the chain of thought method with the following steps:\n\n" \
                "1. Read the given document and split it into chapters using headings and subheadings.\n" \
                "2. For each chapter, translate it to English, extract list format data, and convert it to a table.\n" \
                "3. Extract any images from the documentation and provide complete image URLs within the chapters.\n" \
                "4. If there are no tables or images, omit the 'table' or 'image' fields from the returned data. Do not provide empty or null values, and do not fabricate URLs.\n" \
-               "5. Translate all data to English and return it in structured JSON format as follows:\n\n" \
+               "5. Avoid using double quotes (\") in JSON response value, use them only in key-value pairs. Instead, use single quotes (') for any quoted text within value fields to prevent conflicts with JSON syntax." \
+               "6. If a value absolutely requires double quotes, use a JSON-safe encoding method like escaping or an alternative representation." \
+               "7. Translate all data to English and return it in structured JSON format as follows:\n\n" \
                "{\n" \
                "  'topic': 'summary line of the whole text in English',\n" \
                "  'summary': 'short summary of the whole text in English',\n" \
@@ -72,7 +74,7 @@ def query_chunks(markdown_content):
                "  ]\n" \
                "}\n\n" \
                "Note: It is crucial not to lose any data or details. Ensure all data and complete tables are returned.\n" \
-               "Ensure the returned data is in English. Only return plain, valid JSON, no numbered lists, no with no additional text.\n",
+               "Ensure the returned data is in English. Only return plain, valid JSON, no numbered lists, with no additional text.\n",
         messages=[
             {
                 "role": "user",
@@ -114,7 +116,8 @@ def index_chunks(content_chunks):
     # store each document in a vector embedding database
     for i, chunk in enumerate(content_chunks):
         print(chunk)
-        response = ollama.embeddings(model="mxbai-embed-large", prompt=json.dumps(chunk['table']) + json.dumps(chunk['content']))
+        table_content = json.dumps(chunk['table']) if chunk.get('table') is not None else ''
+        response = ollama.embeddings(model="mxbai-embed-large", prompt=table_content + json.dumps(chunk['content']))
         embedding = response["embedding"]
         collection.add(
             ids=[str(uuid.uuid4())],

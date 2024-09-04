@@ -62,7 +62,7 @@ def query_rag(content_chunks, question):
                "<documents>" + content_chunks_json + "</documents>" \
                "Respond using the following chain of thought steps:\n" \
                "1. If the documents don't contain the answer, return a web search query with in json with key 'search' \n" \
-               "2. Otherwise, respond with humoristic and joking tone of voice \n" \
+               "2. Otherwise, respond with professional tone of voice \n" \
                "3. Respond with json format with no other text\n"
 
     print(system_prompt)
@@ -81,8 +81,6 @@ def query_rag(content_chunks, question):
             }
         ]
     )
-
-    print(message['message']['content'])
 
     final_response = message['message']['content']
     # final_response = next(

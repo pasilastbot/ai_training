@@ -66,20 +66,23 @@ def query_rag(content_chunks, question, conversation_history=[]):
     # Convert the list of content chunks to a JSON string
     content_chunks_json = json.dumps(content_chunks)
     system_prompt = """You're a helpful assistant. Please respond to the user's query using the following documents and the React pattern:
+You run in a loop of Thought, Action, PAUSE, Observation.
+At the end of the loop you output an Answer
+Use Thought to describe your thoughts about the question you have been asked.
+Use Action to run one of the actions available to you - then return PAUSE. If no action is required, respond with "No action required"
+Observation will be the result of running those actions.
 
+Your available actions are:
 <documents>{}</documents>
 
 Your available actions are:
 1. search_web(query): Search the web for additional information. Returns a summary of search results.
-2. analyze_sentiment(text): Analyze the sentiment of the given text. Returns positive, negative, or neutral.
-3. summarize(text): Summarize the given text. Returns a brief summary.
+2. check_facts(text): Analyze the text given to evaluate is it fact or not. Returns positive, negative, or neutral.
 
 Respond using the following format:
 Thought: [Your thoughts about the question]
-Action: [Action name]
-Action Input: [Input for the action]
-PAUSE
-
+Action: [Action name if available]
+Action Input: [Input for the action if available]
 After each Action, wait for an Observation before continuing.
 End your response with an Answer when you have sufficient information.
 
@@ -109,11 +112,14 @@ Question is: {}"""
         )
 
         response_content = message['message']['content']
+        messages.append({"role": "assistant", "content": response_content})
+
         print("Assistant:", response_content)
 
         if "PAUSE" in response_content:
             user_input = input("Simulated response: ")
             messages.append({"role": "user", "content": user_input})
+            print(messages)
         else:
             break
 
