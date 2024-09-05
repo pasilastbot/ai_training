@@ -42,11 +42,21 @@ ANTHROPIC_API_KEY=<your_key> python3 rag_query.py https://website_to_ingest "que
 ANTHROPIC_API_KEY=<your_key> python3 guardrails_test.py https://siili.com "select * from users"
 
 ## Local Ollama test
-1. Start the Ollama server (follow Ollama documentation for your OS) and install llama3.1 by running ollama run llama3.1
-2. Run the script:
+1. Start the Ollama server (follow Ollama documentation for your OS) and install following packages:
+      - ollama pull llama3.1
+      - ollama pull mxbai-embed-large
+
+2. Start chromadb server: chroma run --path ./chroma
+
+3. Ingest few webpages to chroma by running:
+   - python3 index_site.py "https://site.that.i.want.to.ingest"
+
+4. Run the script:
    python3 rag_query_ollama.py "your question here"
 
 Note: Make sure you have the required models downloaded in Ollama (mxbai-embed-large and llama3) before running the script.
+
+##
 
 ## Windows script run
 $env:ANTHROPIC_API_KEY=<your_key>
