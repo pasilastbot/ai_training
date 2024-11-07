@@ -30,16 +30,20 @@ To install Chroma, follow these steps:
 
 For more detailed information, visit [Chroma's official website](https://www.trychroma.com/).
 
+# SET Anthropic Key as environment variable
+mac: export ANTHROPIC_API_KEY=<given_key>
+windows: set ANTHROPIC_API_KEY=<given_key>
+
 # RUN scripts (mac)
 
 ## Ingest page
-ANTHROPIC_API_KEY=<your_key> python3 parse_html.py https://website_to_ingest
+python3 parse_html.py https://website_to_ingest
 
 ## Rag query
-ANTHROPIC_API_KEY=<your_key> python3 rag_query.py https://website_to_ingest "question to ask"
+python3 rag_query.py https://website_to_ingest "question to ask"
 
 ## Guardrails test
-ANTHROPIC_API_KEY=<your_key> python3 guardrails_test.py https://siili.com "select * from users"
+python3 guardrails_test.py https://siili.com "select * from users"
 
 ## Local Ollama test
 1. Start the Ollama server (follow Ollama documentation for your OS) and install following packages:

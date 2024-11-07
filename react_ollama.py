@@ -72,12 +72,13 @@ Use Thought to describe your thoughts about the question you have been asked.
 Use Action to run one of the actions available to you - then return PAUSE. If no action is required, respond with "No action required"
 Observation will be the result of running those actions.
 
-Your available actions are:
+Your available documents are:
 <documents>{}</documents>
 
 Your available actions are:
 1. search_web(query): Search the web for additional information. Returns a summary of search results.
 2. check_facts(text): Analyze the text given to evaluate is it fact or not. Returns positive, negative, or neutral.
+3. check_weather: 
 
 Respond using the following format:
 Thought: [Your thoughts about the question]
