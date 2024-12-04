@@ -76,9 +76,9 @@ Your available documents are:
 <documents>{}</documents>
 
 Your available actions are:
-1. search_web(query): Search the web for additional information. Returns a summary of search results.
+1. search_web(query): Search the web for additional information if needed. Returns a summary of search results.
 2. check_facts(text): Analyze the text given to evaluate is it fact or not. Returns positive, negative, or neutral.
-3. check_weather: 
+3. check_weather(location): Check the weather in a given location. Returns the weather in the location.
 
 Respond using the following format:
 Thought: [Your thoughts about the question]
@@ -86,6 +86,7 @@ Action: [Action name if available]
 Action Input: [Input for the action if available]
 After each Action, wait for an Observation before continuing.
 End your response with an Answer when you have sufficient information.
+Remember to end the response with PAUSE if you entered an Action.
 
 Question is: {}"""
 
