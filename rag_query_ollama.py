@@ -73,7 +73,7 @@ def query_rag(content_chunks, question):
     })
 
     message = ollama.chat(
-        model='llama3.1',
+        model='gemma3:4b',
         messages=[
             {
                 "role": "user",
