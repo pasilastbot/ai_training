@@ -8,7 +8,10 @@ https://www.python.org/downloads/
 https://packaging.python.org/en/latest/tutorials/installing-packages/
 
 ## Install needed packages
-python3 -m pip install anthropic html2text rich ollama chromadb requests
+python3 -m pip install google-generativeai html2text rich ollama chromadb requests
+or
+pip install -r requirements.txt
+
 
 ## Install Ollama
 Follow the instructions at https://ollama.ai/ to install Ollama for your operating system.
@@ -31,8 +34,8 @@ To install Chroma, follow these steps:
 For more detailed information, visit [Chroma's official website](https://www.trychroma.com/).
 
 # SET Anthropic Key as environment variable
-mac: export ANTHROPIC_API_KEY=<given_key>
-windows: set ANTHROPIC_API_KEY=<given_key>
+mac: export GOOGLE_API_KEY=<given_key>
+windows: set GOOGLE_API_KEY=<given_key>
 
 # RUN scripts (mac)
 
@@ -47,7 +50,9 @@ python3 guardrails_test.py https://siili.com "select * from users"
 
 ## Local Ollama test
 1. Start the Ollama server (follow Ollama documentation for your OS) and install following packages:
-      - ollama pull llama3.1
+      - ollama pull gemma3:4b (if you have small machine)
+      - ollama pull gemma3:12b (if you have >16GB memory)
+      - ollama pull gemma3:32b (if you have >64GB shared memory)
       - ollama pull mxbai-embed-large
 
 2. Start chromadb server: chroma run --path ./chroma
@@ -63,6 +68,6 @@ Note: Make sure you have the required models downloaded in Ollama (mxbai-embed-l
 ##
 
 ## Windows script run
-$env:ANTHROPIC_API_KEY=<your_key>
+$env:GOOGLE_API_KEY=<your_key>
 python parse_html.py
 https://siili.com
