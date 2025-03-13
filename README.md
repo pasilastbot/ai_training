@@ -8,7 +8,7 @@ https://www.python.org/downloads/
 https://packaging.python.org/en/latest/tutorials/installing-packages/
 
 ## Install needed packages
-python3 -m pip install google-generativeai html2text rich ollama chromadb requests
+python3 -m pip install google-genai html2text rich ollama chromadb requests
 or
 pip install -r requirements.txt
 

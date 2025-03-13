@@ -1,4 +1,4 @@
-google-generativeai>=0.8.4
+google-genai
 requests>=2.32.3
 html2text>=2024.2.26
 rich>=13.9.4
