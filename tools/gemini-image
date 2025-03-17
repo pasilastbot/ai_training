@@ -1,0 +1,15 @@
+#!/bin/bash
+# Gemini Image Generator - Generate images using Google's Gemini API
+
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PYTHON_SCRIPT="$SCRIPT_DIR/gemini_image.py"
+
+# Check if the Python script exists
+if [ ! -f "$PYTHON_SCRIPT" ]; then
+  echo "Error: Could not find gemini_image.py in $SCRIPT_DIR"
+  exit 1
+fi
+
+# Execute the Python script with all arguments
+python "$PYTHON_SCRIPT" "$@" 

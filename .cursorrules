@@ -1,0 +1,239 @@
+<project>
+This is python app with react UI
+</project>
+
+<tools>
+#internal tools
+run_terminal_cmd - Executes terminal commands
+  - Parameters: command, is_background, require_user_approval, explanation
+codebase_search - Semantic codebase search
+  - Parameters: query, target_directories, explanation
+read_file - Reads file contents
+  - Parameters: relative_workspace_path, start_line_one_indexed, end_line_one_indexed_inclusive, should_read_entire_file, explanation
+list_dir - Lists directory contents
+  - Parameters: relative_workspace_path, explanation
+grep_search - Regex search in text
+  - Parameters: query, case_sensitive, include_pattern, exclude_pattern, explanation
+edit_file - Proposes file edits
+  - Parameters: target_file, instructions, code_edit
+file_search - Fuzzy file path search
+  - Parameters: query, explanation
+delete_file - Deletes files
+  - Parameters: target_file, explanation
+reapply - Reapplies last edit
+  - Parameters: target_file
+fetch_rules - Fetches rules provided by the user
+  - Parameters: rule_names
+</tools>
+
+<command_line_tools>
+#Project specific tools, please execute using run_terminal_cmd tool
+{
+  "tools": {
+    "gemini": {
+      "description": "Interacts with Google's Gemini API for text generation, chat, and multimodal tasks with advanced configuration options",
+      "tool": "run_terminal_cmd",
+      "command": "./tools/gemini",
+      "options": {
+        "prompt": "Text prompt or question for the model",
+        "model": "(Optional) Model to use: 'gemini-2.0-flash-001' (default), 'gemini-2.0-flash-001', 'Gemini-Exp-1206', 'Gemini-2.0-Flash-Thinking-Exp-1219'",
+        "temperature": "(Optional) Sampling temperature between 0.0 and 1.0 (default: 0.7)",
+        "max-tokens": "(Optional) Maximum number of tokens to generate (default: 2048)",
+        "image": "(Optional) Path to image file for vision tasks",
+        "chat-history": "(Optional) Path to JSON file containing chat history",
+        "stream": "(Optional) Stream the response (default: false)",
+        "safety-settings": "(Optional) JSON string of safety threshold configurations",
+        "schema": "(Optional) JSON schema for structured output"
+      },
+      "requires": [
+        "GOOGLE_API_KEY environment variable",
+        "google-generativeai Python package",
+        "pillow Python package (for image tasks)"
+      ],
+      "example": "./tools/gemini --prompt \"What is the capital of France?\" --model gemini-2.0-flash-001 --temperature 0.7"
+    },
+    "gemini-image": {
+      "description": "Generates images using Google's Gemini API and Imagen models",
+      "tool": "run_terminal_cmd",
+      "command": "./tools/gemini-image",
+      "options": {
+        "prompt": "Text prompt describing the image to generate",
+        "model": "(Optional) Model to use: 'gemini-2.0-flash-exp-image-generation' (default) or 'imagen-3.0-generate-002'",
+        "output": "(Optional) Path to save the generated image(s) (default: ./generated_image.png)",
+        "count": "(Optional) Number of images to generate (1-4, only for Imagen model, default: 1)",
+        "aspect-ratio": "(Optional) Aspect ratio for generated image (1:1, 3:4, 4:3, 9:16, 16:9, only for Imagen model, default: 1:1)",
+        "allow-persons": "(Optional) Person generation policy (DONT_ALLOW, ALLOW_ADULT, only for Imagen model, default: ALLOW_ADULT)",
+        "input-image": "(Optional) Path to input image for editing (only for Gemini model)",
+        "verbose": "(Optional) Enable verbose output with more details about the API process"
+      },
+      "requires": [
+        "GOOGLE_API_KEY environment variable",
+        "google-generativeai Python package",
+        "pillow Python package"
+      ],
+      "example": "./tools/gemini-image --prompt \"A photorealistic image of a mountain landscape with a lake\" --model imagen-3.0-generate-002 --aspect-ratio 16:9"
+    }
+  }
+}
+</command_line_tools>
+
+<documentation>
+  The system is documented in the docs folder under following documents.
+    @description.md:
+        - Provide concise description of the app or system idea
+        - Document core use cases and features
+    @architecture.md:
+        - Define full technical stack (frontend/backend frameworks, databases, testing frameworks)
+        - Folder structure
+    @datamodel.md:
+        - Document all entities, attributes and relationships in a concise way
+    @frontend.md:
+        - List and describe all views/screens
+        - Define UI/UX patterns and styling approach
+    @backend.md:
+        - Document all API endpoints and authentication
+        - Define service architecture and components
+    @todo.md
+        - Tasks by logical areas and mark their status (✅ done, ⏳ in progress, ❌ not started). Next priority tasks in the end.
+        - Prefer full stack tasks.
+    @ai_changelog.md
+        - Changelog of changes done
+    @learnings.md
+        - Consise technical learnings and best practices discovered during development
+        - Solutions to occurred errors, including potential links
+</documentation>
+
+<actions>
+  <use_tools>
+    - Use tools to get information and execute tasks.
+    - Tools are listed in the tools/ directory.
+    - Tools are executed using the run_terminal_cmd tool.
+    - Tools are executed in the order of their definition in the .cursorrules file.
+  </use_tools>
+
+  <document>
+     Scan, read and update documents under documentation tag according to instructions.
+  </document>
+
+  <research>
+  Perform a comprehensive study and chain of thought reasoning of what to do. Steps:
+    1. Scan the whole @docs folder and read all necessary files for getting context
+    2. Run fetch_rules for fetching user provided rules and instructions
+    3. execute codebase_search for finding relevant files and methods first for getting furher context.
+    4. Use tool tavily-search the web for up-to-date documentation and getting started. Run at least one query always.
+    5. After you have all the context, perform chain of thoughts using this format:
+      5.1. "Reading required files..."
+      5.2. "Analysis: what I found in the files..."
+      5.3. "Plan: what needs to be done, what tools I need..."
+      5.4. "Implementation: how I'll do it..."
+      5.5. "Need more info: what more do I need to know..."
+    6. Present the questions for the user to refine the plan
+  </research>
+
+  <fix>
+  Perform a comprehensive study and chain of thought reasoning of what might cause the error and fix it.
+    1. read_file learnings.md from the docs folder if you have an ready solutions for this
+    2. Read all url's present in the error description
+    3. Run fetch_rules for fetching user provided rules and instructions
+    4. Use tool tavily-search for searching the web for the quick error resolutions.
+    5. Fix and validate the error in following loop
+      - Reflect on 5-7 different possible sources of the problem, distill them into a 1-2 likely ones and add logs to the code to validate them.
+      - Run a test to validate the logs
+      - Implement a fix based on the results and logs
+      - Validate the fix
+      - If if helped, write learnings.md what was the resolution and delete /temp/fix_backlog.md
+      - If if did not help, open up a temp file in /temp/fix_backlog.md and update what was tried and what did not work. Continue back to implement fix.
+  </fix>
+
+  <validate>
+  Write comprehensive tests, run them and fix any errors. 
+   1. read_file architecture.md for understanding of code structure and test practises
+   2. Run fetch_rules for fetching user provided rules and instructions
+   3. write unit tests for the feature
+   4. execute unit tests and fix each errors according to <fix> process
+   5. write e2e tests for the feature
+   6. execute e2e and fix each errors according to <fix> process
+   7. On each fixed and validated bug, document the working error resolutions to learnings.md, including any links that you found usable.
+   8. Repeat until all tests succeed
+  </validate>
+
+  <record>
+   Record the changes done and update backlog
+   1. write summary of what you did in the ai_changelog.md and update the todo list in the todo.md (do not remove any tasks, just update their status)
+  </record>
+
+  <design>
+   Design a feature.
+   1. read_file frontend.md for understanding the UI requirements and specifications like colors
+   2. please design the frontend of the application or feature and document that to frontend.md
+   3. generate any images or illustrations needed in the feature (prefer flux over recraft, unless you need text in the image)
+   4. optimise the generated images
+   5. write short instructions for the developer to communicate the design and images
+  </design>
+
+  <develop>
+   Develop a feature.
+    1. Run fetch_rules for fetching user provided rules and instructions for page and api implementation
+    2. Develop the full e2e code changes for the requested feature
+  </develop>
+
+  <invent>
+    1. please implement a tool in the tools/ directory and write a tool description in .cursorrules file.
+    2. Execute the tool and fix any errors until it succesfully returns the results you wanted
+  </invent>
+
+  <commit>
+    1. please commit all pending changes using git add . and git commit with descriptive message
+  </commit>
+</actions>
+
+For each request, please execute the following steps one by one.":
+
+1. First check if user requests tool use, if so, execute the tool and return the results and stop here.
+2. Read all files in the docs folder and list all areas of the architecture that this request might affect (frontend, backend, database, unit tests, e2e tests, documentation)
+3. Analyze the request and list required actions from actions list, do not start executing the actions yet. Present analysis with:
+"Request type: [type]"
+   "Required actions in order:"
+   1. [action 1]
+   2. [action 2]
+   ...  
+
+4. If the task consists of multiple actions, write the task plan to the @todo.md file by splitting the tasks into smaller parts. Each part should contain all actions to be done for the feature, including e.g. writing unit tests, executing unit tests, writing documentation, etc.
+  
+5. Execute the plan or task. For each action:
+   - State "Starting [action]..."
+   - Read the files and instructions specified in the task definition and execute the actions mentioned in the task plan. 
+   - Show "Completed [action]"
+   - Ask "Would you like to proceed to [next action] or do you need any adjustments?"
+   - Wait for explicit confirmation before proceeding to next action
+   - Exit the loop when all actions are completed
+
+6. After final action:
+   - Summarize all changes made
+   - If the whole task is completed and user is happy, document completed work in relevant files:
+     - ai_changelog.md: What was done
+     - todo.md: Update task status
+     - learnings.md: For any solutions/fixes
+     - Other relevant documentation
+
+Please provide your request and you will analyze it according to this process.
+
+
+
+<behavior_rules>
+- Do not ever create a new project, scan the folders to understand the project structure.
+- Do not rely on current knowledge about libraries, always search the web for up-to-date information
+- Always install the latest version of the libraries
+- Be cautious on deleting and replacing code that might be already working or used in another part of the application.
+- Always read the files and instructions specified in the task definition and execute the actions mentioned in the task plan.
+
+You have one mission: execute *exactly* what is requested.
+
+Produce code that implements precisely what was requested - no additional features, no creative extensions. Follow instructions to the letter.
+
+Confirm your solution addresses every specified requirement, without adding ANYTHING the user didn't ask for. The user's job depends on this — if you add anything they didn't ask for, it's likely they will be fired.
+
+Your value comes from precision and reliability. When in doubt, implement the simplest solution that fulfills all requirements. The fewer lines of code, the better — but obviously ensure you complete the task the user wants you to.
+
+At each step, ask yourself: "Am I adding any functionality or complexity that wasn't explicitly requested?". This will force you to stay on track.
+</behavior_rules>
