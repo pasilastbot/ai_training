@@ -109,7 +109,7 @@ Question is: {}"""
 
     while True:
         message = ollama.chat(
-            model='llama3.1',
+            model='gemma3:12b',
             messages=messages
         )
 

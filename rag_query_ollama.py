@@ -59,11 +59,7 @@ def query_rag(content_chunks, question):
     # Convert the list of content chunks to a JSON string
     content_chunks_json = json.dumps(content_chunks)
     system_prompt = "You're a helpful assistant. Please respond to the user's query in user's own language using the following documents: \n\n" \
-               "<documents>" + content_chunks_json + "</documents>" \
-               "Respond using the following chain of thought steps:\n" \
-               "1. If the documents don't contain the answer, return a web search query with in json with key 'search' \n" \
-               "2. Otherwise, respond with professional tone of voice \n" \
-               "3. Respond with json format with no other text\n"
+               "<documents>" + content_chunks_json + "</documents>"
 
     print(system_prompt)
 # Serialize the content to a JSON string
