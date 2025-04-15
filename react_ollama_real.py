@@ -12,6 +12,8 @@ import google.genai as genai
 from google.genai import types
 import os
 import sys
+from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 
 # NOTE: To use the Google search functionality, you need to:
 # 1. Set up Google Gemini API access (https://ai.google.dev/)
@@ -199,38 +201,31 @@ def search_web(query):
 
 def check_weather(location):
     try:
-        # Try to geocode the location to get coordinates
-        # In a real-world scenario, you should use a proper geocoding API
-        # For now, we'll use a simple dictionary for common locations
-        geocode_map = {
-            "new york": {"lat": 40.71, "lon": -74.01},
-            "london": {"lat": 51.51, "lon": -0.13},
-            "paris": {"lat": 48.85, "lon": 2.35},
-            "tokyo": {"lat": 35.68, "lon": 139.76},
-            "berlin": {"lat": 52.52, "lon": 13.41},
-            "sydney": {"lat": -33.87, "lon": 151.21},
-            "san francisco": {"lat": 37.77, "lon": -122.42},
-            "los angeles": {"lat": 34.05, "lon": -118.24},
-            "chicago": {"lat": 41.88, "lon": -87.63},
-            "seattle": {"lat": 47.61, "lon": -122.33},
-        }
-        
-        # Convert location to lowercase for case-insensitive matching
-        location_lower = location.lower()
-        
-        # Get coordinates for the location
-        if location_lower in geocode_map:
-            coords = geocode_map[location_lower]
+        # Use geopy for real geocoding
+        debug_log(f"Geocoding location: {location}", "info")
+        geolocator = Nominatim(user_agent="react_ollama_agent")
+        geo_location = None
+        try:
+            geo_location = geolocator.geocode(location, timeout=10)
+        except (GeocoderTimedOut, GeocoderServiceError) as geo_e:
+            debug_log(f"Geocoding error for {location}: {geo_e}", "warning")
+            return f"Error: Could not find coordinates for '{location}' due to a geocoding service issue: {geo_e}"
+
+        if geo_location:
+            coords = {"lat": geo_location.latitude, "lon": geo_location.longitude}
+            debug_log(f"Coordinates found for {location}: {coords}", "success")
         else:
-            # Default to Berlin if location not found
-            coords = {"lat": 52.52, "lon": 13.41}
-            
+            debug_log(f"Could not find coordinates for '{location}'.", "warning")
+            return f"Error: Could not find coordinates for '{location}'."
+
         # Make request to Open-Meteo API
         url = f"https://api.open-meteo.com/v1/forecast?latitude={coords['lat']}&longitude={coords['lon']}&current=temperature_2m,wind_speed_10m,precipitation,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum"
+        debug_log(f"Fetching weather from: {url}", "info")
         response = requests.get(url)
         
         if response.status_code == 200:
             data = response.json()
+            debug_log("Weather data fetched successfully", "success")
             
             # Extract current weather information
             current = data.get('current', {})
