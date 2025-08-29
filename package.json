@@ -18,6 +18,8 @@
     "create-wizard-tables": "supabase migration new create_wizard_tables",
     "github": "NODE_ENV=development tsx tools/github-cli.ts",
     "openai-image": "NODE_ENV=development node tools/openai-image-tool.js",
+    "nano-banana": "NODE_ENV=development tsx tools/nano-banana.ts",
+    "google-search": "NODE_ENV=development tsx tools/google-search.ts",
     "github:auth": "NODE_ENV=development tsx tools/github-cli.ts auth",
     "github:pr-create": "NODE_ENV=development tsx tools/github-cli.ts pr-create",
     "github:pr-list": "NODE_ENV=development tsx tools/github-cli.ts pr-list",

@@ -51,8 +51,6 @@ except Exception:  # pragma: no cover
 
 
 DEFAULT_MODEL = "gemini-2.5-flash"
-DEFAULT_TOOL_SELECTION = {"search", "code", "url"}
-VALID_TOOL_KEYS = {"search", "code", "url", "all", "none"}
 
 
 def load_env_files() -> None:
@@ -88,36 +86,7 @@ def load_api_key() -> str:
     return api_key
 
 
-def parse_tools_arg(arg: Optional[str]) -> Set[str]:
-    if not arg:
-        return set(DEFAULT_TOOL_SELECTION)
-    tokens = [t.strip().lower() for t in arg.split(',') if t.strip()]
-    if not tokens:
-        return set(DEFAULT_TOOL_SELECTION)
-    invalid = [t for t in tokens if t not in VALID_TOOL_KEYS]
-    if invalid:
-        print(f"Warning: unknown tool keys ignored: {', '.join(invalid)}")
-    selected: Set[str] = set()
-    if "all" in tokens:
-        selected.update(DEFAULT_TOOL_SELECTION)
-    elif "none" in tokens:
-        selected.clear()
-    else:
-        for t in tokens:
-            if t in {"search", "code", "url"}:
-                selected.add(t)
-    return selected
-
-
-def build_tools_from_selection(selection: Set[str]) -> List[types.Tool]:
-    tools: List[types.Tool] = []
-    if "search" in selection:
-        tools.append(types.Tool(google_search=types.GoogleSearch()))
-    if "code" in selection:
-        tools.append(types.Tool(code_execution=types.ToolCodeExecution()))
-    if "url" in selection:
-        tools.append(types.Tool(url_context=types.UrlContext()))
-    return tools
+# Removed Google tools - we only use CLI tools now
 
 
 # -------------------- CLI FUNCTION DECLARATIONS --------------------
@@ -267,6 +236,48 @@ def build_cli_function_declarations() -> List[Dict[str, Any]]:
                 "required": ["input", "output"],
             },
         },
+        {
+            "name": "nano_banana_generate",
+            "description": "Generate images using Gemini 2.5 Flash Image Preview model via npm script nano-banana",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "prompt": {"type": "string", "description": "Text prompt for image generation"},
+                    "output": {"type": "string", "description": "Output filename"},
+                    "folder": {"type": "string", "description": "Output folder path"},
+                },
+                "required": ["prompt"],
+            },
+        },
+        {
+            "name": "nano_banana_edit",
+            "description": "Edit images using Gemini 2.5 Flash Image Preview model via npm script nano-banana",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "prompt": {"type": "string", "description": "Text prompt for image editing"},
+                    "input_image": {"type": "string", "description": "Path to input image for editing"},
+                    "output": {"type": "string", "description": "Output filename"},
+                    "folder": {"type": "string", "description": "Output folder path"},
+                },
+                "required": ["prompt", "input_image"],
+            },
+        },
+        {
+            "name": "google_search",
+            "description": "Perform Google search using Gemini's grounded search capability via npm script google-search",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Search query"},
+                    "model": {"type": "string", "description": "Gemini model to use", "default": "gemini-2.5-flash"},
+                    "max_results": {"type": "integer", "description": "Maximum number of sources to show", "default": 10, "minimum": 1, "maximum": 20},
+                    "show_sources": {"type": "boolean", "description": "Show source URLs and titles", "default": True},
+                    "format": {"type": "string", "enum": ["text", "json"], "description": "Output format", "default": "text"},
+                },
+                "required": ["query"],
+            },
+        },
     ]
 
 
@@ -411,6 +422,37 @@ def execute_cli_function(name: str, args: Dict[str, Any]) -> Dict[str, Any]:
         code, out, err = _run_cmd(cmd)
         return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
 
+    if name == "nano_banana_generate":
+        cmd = ["npm", "run", "nano-banana", "--", "-p", args.get("prompt", "")]
+        if args.get("output"):
+            cmd += ["-o", args["output"]]
+        if args.get("folder"):
+            cmd += ["-f", args["folder"]]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
+    if name == "nano_banana_edit":
+        cmd = ["npm", "run", "nano-banana", "--", "-p", args.get("prompt", ""), "-i", args.get("input_image", "")]
+        if args.get("output"):
+            cmd += ["-o", args["output"]]
+        if args.get("folder"):
+            cmd += ["-f", args["folder"]]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
+    if name == "google_search":
+        cmd = ["npm", "run", "google-search", "--", "-q", args.get("query", "")]
+        if args.get("model"):
+            cmd += ["-m", args["model"]]
+        if args.get("max_results") is not None:
+            cmd += ["-n", str(args["max_results"])]
+        if args.get("show_sources"):
+            cmd += ["-s"]
+        if args.get("format"):
+            cmd += ["-f", args["format"]]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
     return {"ok": False, "error": f"Unknown function: {name}", "args": args}
 
 
@@ -432,17 +474,14 @@ def make_function_response_part(name: str, result: Dict[str, Any]) -> types.Part
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Gemini API CLI agent with default tools and optional MCP")
+    parser = argparse.ArgumentParser(description="Gemini API CLI agent with CLI tools and optional MCP")
     parser.add_argument("prompt", type=str, nargs="?", help="Prompt to send to Gemini (omit to start chat)")
     parser.add_argument("--model", type=str, default=DEFAULT_MODEL, help=f"Model to use (default: {DEFAULT_MODEL})")
     parser.add_argument("--chat", action="store_true", help="Start interactive chat mode")
-    parser.add_argument("--tools", type=str, help="Comma-separated tools: search,code,url,all,none (default: all)")
-    # Simplified MCP toggle (all or none, hardcoded servers)
-    parser.add_argument("--no-mcp", action="store_true", help="Disable all MCP servers (hardcoded)")
+    # Simplified MCP toggle (disabled by default to avoid conflicts with CLI tools)
+    parser.add_argument("--mcp", action="store_true", help="Enable MCP servers (may conflict with CLI function calling)")
     # Plan mode
     parser.add_argument("--plan", type=str, help="Generate a JSON plan for the given task")
-    # CLI tools function-calling (off by default to avoid model limitation conflicts)
-    parser.add_argument("--enable-cli-tools", action="store_true", help="Expose CLI tools via function-calling")
     return parser.parse_args()
 
 
@@ -510,8 +549,8 @@ def _describe_mcp(params: Optional[StdioServerParameters]) -> str:
         return "(unknown)"
 
 
-def run_single_turn_sync(client: genai.Client, model: str, user_prompt: str, selection: Set[str]):
-    tools = build_tools_from_selection(selection)
+def run_single_turn_sync(client: genai.Client, model: str, user_prompt: str):
+    tools = build_cli_tools()
     config = types.GenerateContentConfig(tools=tools)
     response = client.models.generate_content(
         model=model,
@@ -521,20 +560,22 @@ def run_single_turn_sync(client: genai.Client, model: str, user_prompt: str, sel
     print_response(response)
 
 
-def add_cli_function_tools(tools_list: List[types.Tool]) -> List[types.Tool]:
+def build_cli_tools() -> List[types.Tool]:
+    """Build CLI tools - always enabled"""
     try:
-        cli_tool = types.Tool(function_declarations=build_cli_function_declarations())
-        tools_list = tools_list + [cli_tool]
-    except Exception:
-        pass
-    return tools_list
+        cli_declarations = build_cli_function_declarations()
+        cli_tool = types.Tool(function_declarations=cli_declarations)
+        return [cli_tool]
+    except Exception as e:
+        print(f"Error building CLI tools: {e}")
+        return []
 
 
-async def run_single_turn_async(client: genai.Client, model: str, user_prompt: str, *, mcp_params: Optional[StdioServerParameters], selection: Set[str], enable_cli_tools: bool = False) -> None:
-    tools = build_tools_from_selection(selection)
-    if enable_cli_tools:
-        tools = add_cli_function_tools(tools)
+async def run_single_turn_async(client: genai.Client, model: str, user_prompt: str, *, mcp_params: Optional[StdioServerParameters]) -> None:
+    tools = build_cli_tools()
+    
     if mcp_params is None:
+        # No MCP - just CLI tools
         config = types.GenerateContentConfig(tools=tools)
         response = await client.aio.models.generate_content(
             model=model,
@@ -556,6 +597,7 @@ async def run_single_turn_async(client: genai.Client, model: str, user_prompt: s
         print_response(response)
         return
 
+    # With MCP - combine CLI tools and MCP
     async with stdio_client(mcp_params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
@@ -566,42 +608,26 @@ async def run_single_turn_async(client: genai.Client, model: str, user_prompt: s
                 contents=user_prompt,
                 config=config,
             )
-            if enable_cli_tools:
-                for _ in range(3):
-                    calls = find_function_call_parts(response)
-                    if not calls:
-                        break
-                    name, fargs = calls[0]
-                    result = execute_cli_function(name, fargs)
-                    response = await client.aio.models.generate_content(
-                        model=model,
-                        contents=[user_prompt, make_function_response_part(name, result)],
-                        config=config,
-                    )
-            if enable_cli_tools:
-                for _ in range(3):
-                    calls = find_function_call_parts(response)
-                    if not calls:
-                        break
-                    name, fargs = calls[0]
-                    result = execute_cli_function(name, fargs)
-                    response = await client.aio.models.generate_content(
-                        model=model,
-                        contents=[user_prompt, make_function_response_part(name, result)],
-                        config=config,
-                    )
+            # Handle CLI function calls
+            for _ in range(3):
+                calls = find_function_call_parts(response)
+                if not calls:
+                    break
+                name, fargs = calls[0]
+                result = execute_cli_function(name, fargs)
+                response = await client.aio.models.generate_content(
+                    model=model,
+                    contents=[user_prompt, make_function_response_part(name, result)],
+                    config=config,
+                )
             print_response(response)
 
 
-async def run_chat_loop_async(client: genai.Client, model: str, *, mcp_params: Optional[StdioServerParameters], selection: Set[str], enable_cli_tools: bool = False) -> None:
-    print("Interactive chat started. Type 'exit' or press Ctrl-D to quit. Use /tools to view or change tools.\n")
+async def run_chat_loop_async(client: genai.Client, model: str, *, mcp_params: Optional[StdioServerParameters]) -> None:
+    print("Interactive chat started. Type 'exit' or press Ctrl-D to quit.\n")
     history: List[types.Content] = []
 
-    def tools_status_line(sel: Set[str], mcp_on: bool) -> str:
-        active = ",".join(sorted(sel)) if sel else "(none)"
-        return f"Active tools: {active}; MCP: {'on' if mcp_on else 'off'}"
-
-    print(tools_status_line(selection, mcp_params is not None))
+    print(f"CLI tools: enabled; MCP: {'on' if mcp_params is not None else 'off'}")
     if mcp_params is not None:
         print(f"[MCP] Default server: {_describe_mcp(mcp_params)}")
 
@@ -619,62 +645,36 @@ async def run_chat_loop_async(client: genai.Client, model: str, *, mcp_params: O
         if user_input.lower() in {"exit", "quit", ":q", "/exit"}:
             break
 
-        # Handle /tools commands locally
-        if user_input.lower().startswith("/tools"):
-            cmd = user_input[len("/tools"):].strip()
-            if not cmd or cmd == "show":
-                print(tools_status_line(selection, mcp_params is not None))
-                continue
-            if cmd.startswith("set"):
-                _, _, arg = cmd.partition("set")
-                new_sel = parse_tools_arg(arg.strip())
-                selection.clear()
-                selection.update(new_sel)
-                print("Updated " + tools_status_line(selection, mcp_params is not None))
-                continue
-            if cmd.startswith("add"):
-                _, _, arg = cmd.partition("add")
-                add_sel = parse_tools_arg(arg.strip())
-                selection.update(add_sel)
-                print("Updated " + tools_status_line(selection, mcp_params is not None))
-                continue
-            if cmd.startswith("remove"):
-                _, _, arg = cmd.partition("remove")
-                rem_sel = parse_tools_arg(arg.strip())
-                for k in rem_sel:
-                    selection.discard(k)
-                print("Updated " + tools_status_line(selection, mcp_params is not None))
-                continue
-            print("Usage: /tools [show|set <list>|add <list>|remove <list>]. Example: /tools set search,code")
-            continue
+        # No tool management needed - CLI tools are always enabled
 
         contents: List[types.Content] = []
         contents.extend(history)
         contents.append(types.Content(role="user", parts=[types.Part(text=user_input)]))
-        tools = build_tools_from_selection(selection)
-        if enable_cli_tools:
-            tools = add_cli_function_tools(tools)
+        tools = build_cli_tools()
+        
         if mcp_params is None:
+            # No MCP - just CLI tools
             config = types.GenerateContentConfig(tools=tools)
             response = await client.aio.models.generate_content(
                 model=model,
                 contents=contents,
                 config=config,
             )
-            if enable_cli_tools:
-                for _ in range(3):
-                    calls = find_function_call_parts(response)
-                    if not calls:
-                        break
-                    name, fargs = calls[0]
-                    result = execute_cli_function(name, fargs)
-                    contents.append(types.Content(role="tool", parts=[make_function_response_part(name, result)]))
-                    response = await client.aio.models.generate_content(
-                        model=model,
-                        contents=contents,
-                        config=config,
-                    )
+            # Handle CLI function calls
+            for _ in range(3):
+                calls = find_function_call_parts(response)
+                if not calls:
+                    break
+                name, fargs = calls[0]
+                result = execute_cli_function(name, fargs)
+                contents.append(types.Content(role="tool", parts=[make_function_response_part(name, result)]))
+                response = await client.aio.models.generate_content(
+                    model=model,
+                    contents=contents,
+                    config=config,
+                )
         else:
+            # With MCP - combine CLI tools and MCP
             async with stdio_client(mcp_params) as (read, write):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
@@ -685,19 +685,19 @@ async def run_chat_loop_async(client: genai.Client, model: str, *, mcp_params: O
                         contents=contents,
                         config=config,
                     )
-                    if enable_cli_tools:
-                        for _ in range(3):
-                            calls = find_function_call_parts(response)
-                            if not calls:
-                                break
-                            name, fargs = calls[0]
-                            result = execute_cli_function(name, fargs)
-                            contents.append(types.Content(role="tool", parts=[make_function_response_part(name, result)]))
-                            response = await client.aio.models.generate_content(
-                                model=model,
-                                contents=contents,
-                                config=config,
-                            )
+                    # Handle CLI function calls
+                    for _ in range(3):
+                        calls = find_function_call_parts(response)
+                        if not calls:
+                            break
+                        name, fargs = calls[0]
+                        result = execute_cli_function(name, fargs)
+                        contents.append(types.Content(role="tool", parts=[make_function_response_part(name, result)]))
+                        response = await client.aio.models.generate_content(
+                            model=model,
+                            contents=contents,
+                            config=config,
+                        )
         print_response(response)
         try:
             model_content = response.candidates[0].content
@@ -806,38 +806,23 @@ def main() -> None:
         exit_code = run_plan_mode(client, args.model, args.plan)
         sys.exit(exit_code)
 
-    # If CLI tools are enabled and user didn't specify --tools, disable Google tools by default
-    if getattr(args, "enable_cli_tools", False) and not args.tools:
-        selection = set()
-    else:
-        selection = parse_tools_arg(args.tools)
-
     # Initialize client (Client takes api_key directly; configure() is not required)
     api_key = load_api_key()
     client = genai.Client(api_key=api_key)
 
     # Prepare hardcoded MCP params (Weather MCP) based on single toggle
-    mcp_params: Optional[StdioServerParameters] = get_hardcoded_mcp_params(enabled=not args.no_mcp)
+    mcp_params: Optional[StdioServerParameters] = get_hardcoded_mcp_params(enabled=args.mcp)
 
     # If no prompt and not explicitly --chat, default to chat
     if not args.prompt:
         args.chat = True
 
-    # Route to async flow if MCP is enabled, else use sync
-    if mcp_params is not None:
-        if args.chat:
-            asyncio.run(run_chat_loop_async(client, args.model, mcp_params=mcp_params, selection=selection, enable_cli_tools=args.enable_cli_tools))
-            return
-        asyncio.run(run_single_turn_async(client, args.model, args.prompt, mcp_params=mcp_params, selection=selection, enable_cli_tools=args.enable_cli_tools))
-        return
-
-    # Non-MCP paths
+    # Always use async flow for consistency (CLI tools + optional MCP)
     if args.chat:
-        # Use async client for consistency
-        asyncio.run(run_chat_loop_async(client, args.model, mcp_params=None, selection=selection, enable_cli_tools=args.enable_cli_tools))
+        asyncio.run(run_chat_loop_async(client, args.model, mcp_params=mcp_params))
         return
-
-    run_single_turn_sync(client, args.model, args.prompt, selection)
+    
+    asyncio.run(run_single_turn_async(client, args.model, args.prompt, mcp_params=mcp_params))
 
 
 if __name__ == "__main__":
