@@ -33,6 +33,56 @@ To install Chroma, follow these steps:
 
 For more detailed information, visit [Chroma's official website](https://www.trychroma.com/).
 
+# CLI Tools
+
+This project includes several CLI tools accessible via npm scripts:
+
+## Date/Time Tool
+Get current date and time in various formats:
+```bash
+npm run datetime                              # Default human-readable format
+npm run datetime -- --format iso             # ISO 8601 format
+npm run datetime -- --format date            # Date only
+npm run datetime -- --format time            # Time only
+npm run datetime -- --timezone Europe/Helsinki # Specific timezone
+npm run datetime -- --utc                    # UTC time
+npm run datetime -- --timestamp              # Unix timestamp
+npm run datetime -- --locale fi-FI           # Finnish locale
+```
+
+## Image Generation
+Generate and edit images using Gemini:
+```bash
+npm run nano-banana -- -p "A futuristic car" -o car.png
+npm run nano-banana -- -p "Add flames" -i car.png -o car-flames.png
+```
+
+## Search Tool
+Perform Google searches with grounding:
+```bash
+npm run google-search -- -q "latest AI developments"
+npm run google-search -- -q "weather today" --format json
+```
+
+## Data Indexing Tool
+Index web content or files using Gemini for chunking and embeddings:
+```bash
+npm run data-indexing -- --url https://example.com                    # Index webpage
+npm run data-indexing -- --file document.txt                          # Index local file
+npm run data-indexing -- --url https://example.com --output doc.json  # Save processed data
+npm run data-indexing -- --url https://example.com --collection news  # Use custom collection
+npm run data-indexing -- --url https://example.com --model gemini-2.0-flash  # Use different model
+```
+
+## Semantic Search Tool
+Search indexed content using semantic similarity:
+```bash
+npm run semantic-search -- "machine learning algorithms"              # Search in default collection
+npm run semantic-search -- "Python history" --collection python-docs  # Search specific collection
+npm run semantic-search -- "AI" --n-results 10 --format json          # Get more results in JSON format
+npm run semantic-search -- --list-collections                         # List available collections
+```
+
 # SET Anthropic Key as environment variable
 mac: export GOOGLE_API_KEY=<given_key>
 windows: set GOOGLE_API_KEY=<given_key>

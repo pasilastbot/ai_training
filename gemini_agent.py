@@ -278,6 +278,59 @@ def build_cli_function_declarations() -> List[Dict[str, Any]]:
                 "required": ["query"],
             },
         },
+        {
+            "name": "datetime",
+            "description": "Get current date and time in various formats via npm script datetime",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "format": {"type": "string", "enum": ["iso", "date", "time", "full", "short", "compact"], "description": "Output format"},
+                    "timezone": {"type": "string", "description": "Timezone (e.g., America/New_York, Europe/London, Asia/Tokyo)"},
+                    "utc": {"type": "boolean", "description": "Show UTC time", "default": False},
+                    "timestamp": {"type": "boolean", "description": "Show Unix timestamp (milliseconds)", "default": False},
+                    "locale": {"type": "string", "description": "Locale for formatting (e.g., en-US, fi-FI, sv-SE)", "default": "en-US"},
+                },
+                "required": [],
+            },
+        },
+        {
+            "name": "data_indexing",
+            "description": "Index web content or files using Gemini for chunking and embeddings, store in ChromaDB via npm script data-indexing",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {"type": "string", "description": "URL of webpage to index"},
+                    "file": {"type": "string", "description": "Path to local file to index"},
+                    "output": {"type": "string", "description": "Output file to save processed document JSON"},
+                    "collection": {"type": "string", "description": "ChromaDB collection name", "default": "gemini-docs"},
+                    "model": {"type": "string", "description": "Gemini model for content processing", "default": "gemini-2.5-flash"},
+                    "embedding_model": {"type": "string", "description": "Gemini model for embeddings", "default": "gemini-embedding-001"},
+                    "chroma_host": {"type": "string", "description": "ChromaDB host", "default": "localhost"},
+                    "chroma_port": {"type": "integer", "description": "ChromaDB port", "default": 8000},
+                },
+                "required": [],
+            },
+        },
+        {
+            "name": "semantic_search",
+            "description": "Search ChromaDB using Gemini embeddings for semantic similarity via npm script semantic-search",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Search query text"},
+                    "collection": {"type": "string", "description": "ChromaDB collection name", "default": "gemini-docs"},
+                    "n_results": {"type": "integer", "description": "Number of results to return", "default": 5, "minimum": 1, "maximum": 20},
+                    "embedding_model": {"type": "string", "description": "Gemini model for embeddings", "default": "gemini-embedding-001"},
+                    "format": {"type": "string", "enum": ["text", "json"], "description": "Output format", "default": "text"},
+                    "chroma_host": {"type": "string", "description": "ChromaDB host", "default": "localhost"},
+                    "chroma_port": {"type": "integer", "description": "ChromaDB port", "default": 8000},
+                    "where_filter": {"type": "string", "description": "JSON filter for metadata"},
+                    "min_distance": {"type": "number", "description": "Minimum distance threshold for results"},
+                    "max_distance": {"type": "number", "description": "Maximum distance threshold for results"},
+                },
+                "required": ["query"],
+            },
+        },
     ]
 
 
@@ -453,6 +506,65 @@ def execute_cli_function(name: str, args: Dict[str, Any]) -> Dict[str, Any]:
         code, out, err = _run_cmd(cmd)
         return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
 
+    if name == "datetime":
+        cmd = ["npm", "run", "datetime", "--"]
+        if args.get("format"):
+            cmd += ["--format", args["format"]]
+        if args.get("timezone"):
+            cmd += ["--timezone", args["timezone"]]
+        if args.get("utc"):
+            cmd += ["--utc"]
+        if args.get("timestamp"):
+            cmd += ["--timestamp"]
+        if args.get("locale"):
+            cmd += ["--locale", args["locale"]]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
+    if name == "data_indexing":
+        cmd = ["npm", "run", "data-indexing", "--"]
+        if args.get("url"):
+            cmd += ["--url", args["url"]]
+        if args.get("file"):
+            cmd += ["--file", args["file"]]
+        if args.get("output"):
+            cmd += ["--output", args["output"]]
+        if args.get("collection"):
+            cmd += ["--collection", args["collection"]]
+        if args.get("model"):
+            cmd += ["--model", args["model"]]
+        if args.get("embedding_model"):
+            cmd += ["--embedding-model", args["embedding_model"]]
+        if args.get("chroma_host"):
+            cmd += ["--chroma-host", args["chroma_host"]]
+        if args.get("chroma_port") is not None:
+            cmd += ["--chroma-port", str(args["chroma_port"])]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
+    if name == "semantic_search":
+        cmd = ["npm", "run", "semantic-search", "--", args.get("query", "")]
+        if args.get("collection"):
+            cmd += ["--collection", args["collection"]]
+        if args.get("n_results") is not None:
+            cmd += ["--n-results", str(args["n_results"])]
+        if args.get("embedding_model"):
+            cmd += ["--embedding-model", args["embedding_model"]]
+        if args.get("format"):
+            cmd += ["--format", args["format"]]
+        if args.get("chroma_host"):
+            cmd += ["--chroma-host", args["chroma_host"]]
+        if args.get("chroma_port") is not None:
+            cmd += ["--chroma-port", str(args["chroma_port"])]
+        if args.get("where_filter"):
+            cmd += ["--where", args["where_filter"]]
+        if args.get("min_distance") is not None:
+            cmd += ["--min-distance", str(args["min_distance"])]
+        if args.get("max_distance") is not None:
+            cmd += ["--max-distance", str(args["max_distance"])]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
     return {"ok": False, "error": f"Unknown function: {name}", "args": args}
 
 
@@ -612,6 +724,9 @@ You have access to {len(cli_functions)} specialized functions:
 - **Web content**: Use html_to_md to extract and convert web page content
 - **File operations**: Use download_file for retrieving files from URLs
 - **Image optimization**: Use image_optimizer to enhance, resize, or process images
+- **Date/time operations**: Use datetime for timestamps, scheduling, time zones, or any time-related queries
+- **Data indexing**: Use data_indexing to process and index web content or files into ChromaDB for later RAG queries
+- **Semantic search**: Use semantic_search to query indexed content in ChromaDB using semantic similarity
 
 ### 4. RESPONSE PATTERNS
 - When you call a function, explain what you're doing and why

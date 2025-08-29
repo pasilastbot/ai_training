@@ -20,3 +20,30 @@
   - Users now get clear file paths like `public/images/image-name.png` after image generation
   - Enables seamless workflow: generate image → get path → edit image using that path
   - Works in both single-turn and interactive chat modes
+- **NEW TOOL: DateTime CLI** - comprehensive date and time utilities
+  - Created datetime tool with support for multiple formats (ISO, date, time, full, short, compact)
+  - Timezone support for global time queries (e.g., "What time is it in Tokyo?")
+  - UTC and Unix timestamp options for technical use cases
+  - Locale support for international formatting (en-US, fi-FI, sv-SE, etc.)
+  - Integrated into gemini_agent.py as 13th available CLI function
+  - Added to package.json scripts and README.md documentation
+- **NEW TOOL: Data Indexing CLI** - comprehensive web content and file indexing
+  - Created data-indexing tool using Gemini for both content chunking and embeddings generation
+  - Uses Gemini 2.5 Flash for intelligent content processing and structure extraction
+  - Uses gemini-embedding-001 for high-quality 3072-dimensional embeddings
+  - Supports both web URLs and local files for content input
+  - Stores processed chunks in ChromaDB with rich metadata (topics, keywords, tables, images)
+  - Creates separate collections to avoid dimension conflicts with existing Ollama-based data
+  - Integrated as 14th CLI function in gemini_agent.py
+  - Enables powerful RAG workflows: index content → query semantically → get relevant chunks
+- **NEW TOOL: Semantic Search CLI** - intelligent content retrieval from ChromaDB
+  - Created semantic-search tool using Gemini embeddings for vector similarity search
+  - Uses same gemini-embedding-001 model as indexing for consistent embedding space
+  - Supports advanced filtering: collection selection, result count, distance thresholds, metadata filters
+  - Rich output formatting with topics, keywords, content previews, and source information
+  - Integrated as 15th CLI function in gemini_agent.py
+  - Completes the RAG pipeline: data-indexing → semantic-search → intelligent retrieval
+  - Tested complete workflow: index Python info → search "who created Python" → retrieve "Guido van Rossum"
+  - **ROBUST ERROR HANDLING**: Added timeout protections and fallback chunking for large/complex content
+  - Successfully tested with real-world website (Kipinä Software) including Finnish content
+  - Handles content size limits, API timeouts, and Gemini processing failures gracefully
