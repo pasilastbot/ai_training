@@ -551,10 +551,19 @@ def _describe_mcp(params: Optional[StdioServerParameters]) -> str:
 
 def run_single_turn_sync(client: genai.Client, model: str, user_prompt: str):
     tools = build_cli_tools()
+    system_prompt = build_system_prompt()
+    
+    # Build contents with system prompt
+    contents = [
+        types.Content(role="user", parts=[types.Part(text=system_prompt)]),
+        types.Content(role="model", parts=[types.Part(text="I understand. I'm ready to help you with any task using my available functions. What can I do for you?")]),
+        types.Content(role="user", parts=[types.Part(text=user_prompt)])
+    ]
+    
     config = types.GenerateContentConfig(tools=tools)
     response = client.models.generate_content(
         model=model,
-        contents=user_prompt,
+        contents=contents,
         config=config,
     )
     print_response(response)
@@ -571,15 +580,101 @@ def build_cli_tools() -> List[types.Tool]:
         return []
 
 
+def build_system_prompt() -> str:
+    """Build a comprehensive system prompt for improved task planning and function calling"""
+    cli_functions = build_cli_function_declarations()
+    function_list = "\n".join([f"- {func['name']}: {func['description']}" for func in cli_functions])
+    
+    return f"""You are a helpful AI assistant with access to powerful CLI tools. You excel at task planning, breaking down complex requests, and efficiently using available functions to accomplish goals.
+
+## AVAILABLE FUNCTIONS
+You have access to {len(cli_functions)} specialized functions:
+{function_list}
+
+## CORE PRINCIPLES
+
+### 1. TASK ANALYSIS & PLANNING
+- Always analyze the user's request to understand the full scope
+- Break complex tasks into logical steps
+- Identify which functions can help accomplish each step
+- Plan the sequence of function calls needed
+
+### 2. FUNCTION CALLING EXCELLENCE
+- **BE PROACTIVE**: When a task clearly requires a function, call it immediately
+- **BE SPECIFIC**: Use precise parameters that match the user's intent
+- **BE EFFICIENT**: Choose the most appropriate function for each task
+- **BE THOROUGH**: Don't stop after one function call if the task requires more
+
+### 3. COMMON USE CASES
+- **Search requests**: Use google_search for current information, research, facts
+- **Image generation**: Use nano_banana_generate for creating images from text descriptions
+- **Image editing**: Use nano_banana_edit to modify existing images
+- **Web content**: Use html_to_md to extract and convert web page content
+- **File operations**: Use download_file for retrieving files from URLs
+- **Image optimization**: Use image_optimizer to enhance, resize, or process images
+
+### 4. RESPONSE PATTERNS
+- When you call a function, explain what you're doing and why
+- After function results, interpret and summarize the information for the user
+- **IMPORTANT**: When image generation/editing functions complete, always extract and clearly present the file path to the user
+- Parse tool outputs for file paths (look for "File path:" or similar patterns) and present them prominently
+- If a function fails, try alternative approaches or explain limitations
+- Always aim to fully satisfy the user's request, not just partially
+
+### 5. MULTI-STEP WORKFLOWS
+For complex requests:
+1. Acknowledge the full request
+2. Outline your planned approach
+3. Execute functions in logical sequence
+4. Provide updates on progress
+5. Summarize final results
+
+## EXAMPLES OF EXCELLENT BEHAVIOR
+
+**User**: "Find information about the latest iPhone and create an image of it"
+**You**: I'll help you with both tasks:
+1. First, let me search for the latest iPhone information
+2. Then I'll generate an image based on what I find
+
+*[Calls google_search with "latest iPhone 2024 features specs"]*
+*[Reviews results and then calls nano_banana_generate with detailed iPhone description]*
+
+**User**: "Download the PDF from this URL and tell me what it's about"
+**You**: I'll download the PDF and analyze its content for you.
+
+*[Calls download_file with the URL]*
+*[If needed, uses additional functions to process the content]*
+
+**User**: "Create an image of a futuristic car"
+**You**: I'll create an image of a futuristic car for you.
+
+*[Calls nano_banana_generate with detailed prompt]*
+*[Extracts file path from output and presents it clearly]*
+
+Generated image saved to: `public/images/futuristic-car.png`
+
+You can now reference this file path if you want to edit the image or use it in other tasks.
+
+Remember: Your goal is to be maximally helpful by actively using your functions to accomplish user goals, not just to provide information or suggestions."""
+
+
 async def run_single_turn_async(client: genai.Client, model: str, user_prompt: str, *, mcp_params: Optional[StdioServerParameters]) -> None:
     tools = build_cli_tools()
+    system_prompt = build_system_prompt()
+    
+    # Build contents with system prompt
+    contents = [
+        types.Content(role="user", parts=[types.Part(text=system_prompt)]),
+        types.Content(role="model", parts=[types.Part(text="I understand. I'm ready to help you with any task using my available functions. What can I do for you?")]),
+        types.Content(role="user", parts=[types.Part(text=user_prompt)])
+    ]
     
     if mcp_params is None:
         # No MCP - just CLI tools
         config = types.GenerateContentConfig(tools=tools)
         response = await client.aio.models.generate_content(
             model=model,
-            contents=user_prompt,
+            contents=contents,
             config=config,
         )
         # Loop up to 3 function calls
@@ -589,9 +684,10 @@ async def run_single_turn_async(client: genai.Client, model: str, user_prompt: s
                 break
             name, fargs = calls[0]
             result = execute_cli_function(name, fargs)
+            contents.append(types.Content(role="tool", parts=[make_function_response_part(name, result)]))
             response = await client.aio.models.generate_content(
                 model=model,
-                contents=[user_prompt, make_function_response_part(name, result)],
+                contents=contents,
                 config=config,
             )
         print_response(response)
@@ -605,7 +701,7 @@ async def run_single_turn_async(client: genai.Client, model: str, user_prompt: s
             config = types.GenerateContentConfig(tools=tools + [session])
             response = await client.aio.models.generate_content(
                 model=model,
-                contents=user_prompt,
+                contents=contents,
                 config=config,
             )
             # Handle CLI function calls
@@ -625,7 +721,13 @@ async def run_single_turn_async(client: genai.Client, model: str, user_prompt: s
 
 async def run_chat_loop_async(client: genai.Client, model: str, *, mcp_params: Optional[StdioServerParameters]) -> None:
     print("Interactive chat started. Type 'exit' or press Ctrl-D to quit.\n")
-    history: List[types.Content] = []
+    
+    # Initialize with system prompt
+    system_prompt = build_system_prompt()
+    history: List[types.Content] = [
+        types.Content(role="user", parts=[types.Part(text=system_prompt)]),
+        types.Content(role="model", parts=[types.Part(text="I understand. I'm ready to help you with any task using my available functions. What can I do for you?")])
+    ]
 
     print(f"CLI tools: enabled; MCP: {'on' if mcp_params is not None else 'off'}")
     if mcp_params is not None:

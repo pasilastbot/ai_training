@@ -6,3 +6,17 @@
   - Improved duration validation and output handling in tools/generate-video.ts
   - Validated: download-file, remove-background-advanced, gemini.ts, gemini-image-tool, gemini-image wrapper
   - Skipped video generation per request
+- **NEW: Intelligent System Prompt** - dramatically improved task planning and function calling performance
+  - Comprehensive system prompt that teaches the model to be proactive with function calling
+  - Automatic task analysis and multi-step workflow planning
+  - Clear guidance on when and how to use each of the 12 available CLI functions
+  - Examples of excellent behavior patterns for complex multi-step tasks
+  - Model now automatically calls appropriate functions without explicit user instruction
+  - Tested with complex workflows: search + image generation, multi-function sequences work perfectly
+  - Integrated into both single-turn and interactive chat modes
+- **ENHANCED: Image Generation File Path Returns** - improved workflow for image editing
+  - Modified nano-banana tool to clearly output file paths in structured format
+  - Updated system prompt to extract and present file paths prominently to users
+  - Users now get clear file paths like `public/images/image-name.png` after image generation
+  - Enables seamless workflow: generate image → get path → edit image using that path
+  - Works in both single-turn and interactive chat modes

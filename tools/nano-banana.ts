@@ -122,6 +122,7 @@ async function generateNanoBananaImage(options: NanoBananaOptions): Promise<void
         // Save the image
         fs.writeFileSync(outputPath, buffer);
         console.log(`🎨 Image saved as ${outputPath}`);
+        console.log(`📁 File path: ${outputPath}`);
         imageGenerated = true;
       }
     }
