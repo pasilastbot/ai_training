@@ -6,3 +6,4 @@ ollama>=0.4.7
 chromadb>=0.6.3
 anthropic>=0.18.1
 geopy>=2.4.1
+mcp; python_version >= "3.10"

@@ -3,13 +3,13 @@
 
 # Get the directory where this script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PYTHON_SCRIPT="$SCRIPT_DIR/gemini_image.py"
+NODE_SCRIPT="$SCRIPT_DIR/gemini-image-tool.js"
 
-# Check if the Python script exists
-if [ ! -f "$PYTHON_SCRIPT" ]; then
-  echo "Error: Could not find gemini_image.py in $SCRIPT_DIR"
+# Check if the Node script exists
+if [ ! -f "$NODE_SCRIPT" ]; then
+  echo "Error: Could not find gemini-image-tool.js in $SCRIPT_DIR"
   exit 1
 fi
 
-# Execute the Python script with all arguments
-python "$PYTHON_SCRIPT" "$@" 
+# Execute the Node script with all arguments
+node "$NODE_SCRIPT" "$@" 

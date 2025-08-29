@@ -212,10 +212,10 @@ def query_rag(content_chunks, question):
     system_prompt = "You're a helpful assistant. Please respond to the user's query in user's own language using the following documents: \n\n" \
                "<documents>" + content_chunks_json + "</documents>" \
                "Answer the question in humoristic way." \
-               "If the documents don't contain the answer, return a web search query with prefix: [Google]\n"
+               "If the documents don't contain the answer, return a web search query with prefix: [Google]\n Return response as JSON"
 
     response = client.models.generate_content(
-        model='gemini-2.0-flash-001',
+        model='gemini-2.5-flash',
         contents=[system_prompt, question],
         config=types.GenerateContentConfig(
             temperature=0,

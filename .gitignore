@@ -1,2 +1,5 @@
 chroma/
 chroma.log
+.env.*
+node_modules
+.venv311

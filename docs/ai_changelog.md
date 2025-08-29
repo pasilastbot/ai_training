@@ -1,0 +1,8 @@
+- 2025-08-29: Tools maintenance
+  - Added tools/utils/download.ts for Replicate video tool
+  - Fixed tools/gemini.ts to accept GEMINI_API_KEY fallback
+  - Updated tools/gemini-image-tool.js to default to Imagen 3, redacted API key in logs
+  - Updated tools/gemini-image wrapper to run Node script
+  - Improved duration validation and output handling in tools/generate-video.ts
+  - Validated: download-file, remove-background-advanced, gemini.ts, gemini-image-tool, gemini-image wrapper
+  - Skipped video generation per request

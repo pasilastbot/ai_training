@@ -1,124 +1,87 @@
 #!/usr/bin/env python3
 """
-Gemini - Command line tool for interacting with Google's Gemini API
+Gemini - Python wrapper that proxies to the Node CLI (npm run gemini).
 
-This is a simple wrapper around gemini_cli.py that matches the interface 
-described in the .cursorrules file.
+This aligns the Python entrypoint with the available Node implementation.
 """
 
-import os
-import sys
 import argparse
+import subprocess
+import sys
 from pathlib import Path
 
-# Get the absolute path to the directory containing this script
-SCRIPT_DIR = Path(__file__).parent.absolute()
-GEMINI_CLI = SCRIPT_DIR / "gemini_cli.py"
 
-def setup_parser():
-    """Set up command line argument parser according to .cursorrules specification."""
+def setup_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Interact with Google's Gemini API for text generation, chat, and multimodal tasks"
     )
-    
-    parser.add_argument(
-        "--prompt", 
-        type=str, 
-        help="Text prompt or question for the model",
-        required=True
-    )
-    
-    parser.add_argument(
-        "--model", 
-        type=str, 
-        default="gemini-2.0-flash-001",
-        help="Model to use: 'gemini-2.0-flash-001' (default), 'gemini-2.0-flash-001', 'Gemini-Exp-1206', 'Gemini-2.0-Flash-Thinking-Exp-1219'"
-    )
-    
-    parser.add_argument(
-        "--temperature", 
-        type=float, 
-        default=0.7,
-        help="Sampling temperature between 0.0 and 1.0 (default: 0.7)"
-    )
-    
-    parser.add_argument(
-        "--max-tokens", 
-        type=int, 
-        default=2048,
-        help="Maximum number of tokens to generate (default: 2048)"
-    )
-    
-    parser.add_argument(
-        "--image", 
-        type=str, 
-        help="Path to image file for vision tasks"
-    )
-    
-    parser.add_argument(
-        "--chat-history", 
-        type=str, 
-        help="Path to JSON file containing chat history"
-    )
-    
-    parser.add_argument(
-        "--stream", 
-        action="store_true", 
-        help="Stream the response (default: false)"
-    )
-    
-    parser.add_argument(
-        "--safety-settings", 
-        type=str, 
-        help="JSON string of safety threshold configurations"
-    )
-    
-    parser.add_argument(
-        "--schema", 
-        type=str, 
-        help="JSON schema for structured output"
-    )
-    
+
+    parser.add_argument("--prompt", type=str, required=True, help="Text prompt or question for the model")
+    parser.add_argument("--model", type=str, default="gemini-2.0-flash-001", help="Model to use")
+    parser.add_argument("--temperature", type=float, default=0.7, help="Sampling temperature (0.0-1.0)")
+    parser.add_argument("--max-tokens", type=int, default=2048, help="Maximum tokens to generate")
+    parser.add_argument("--image", type=str, help="Path to image file for vision tasks")
+    parser.add_argument("--chat-history", type=str, help="Path to JSON file containing chat history")
+    parser.add_argument("--stream", action="store_true", help="Stream the response")
+    parser.add_argument("--safety-settings", type=str, help="JSON string for safety thresholds")
+    parser.add_argument("--schema", type=str, help="JSON schema for structured output")
+    parser.add_argument("--mime-type", type=str, help="MIME type for file inputs", default="auto")
+    parser.add_argument("--url", type=str, help="URL to a document to analyze")
+    parser.add_argument("--json", type=str, help="Structured JSON type (recipes|tasks|products|custom)")
+    parser.add_argument("--ground", action="store_true", help="Enable Google Search grounding")
+    parser.add_argument("--show-search-data", action="store_true", help="Show grounding sources")
     return parser
 
-def main():
-    # Parse arguments
+
+def main() -> int:
     parser = setup_parser()
     args = parser.parse_args()
-    
-    # Build command to call gemini_cli.py
-    cmd = [str(GEMINI_CLI)]
-    
-    # Add all arguments
-    if args.prompt:
-        cmd.extend(["--prompt", args.prompt])
-    
-    if args.model:
-        cmd.extend(["--model", args.model])
-    
-    if args.temperature is not None:
-        cmd.extend(["--temperature", str(args.temperature)])
-    
-    if args.max_tokens is not None:
-        cmd.extend(["--max-tokens", str(args.max_tokens)])
-    
+
+    # Build npm command
+    cmd = [
+        "npm",
+        "run",
+        "gemini",
+        "--",
+        "--prompt",
+        args.prompt,
+        "--model",
+        args.model,
+        "--temperature",
+        str(args.temperature),
+        "--max-tokens",
+        str(args.max_tokens),
+    ]
+
+    # Optional flags
     if args.image:
         cmd.extend(["--image", args.image])
-    
     if args.chat_history:
         cmd.extend(["--chat-history", args.chat_history])
-    
     if args.stream:
         cmd.append("--stream")
-    
     if args.safety_settings:
         cmd.extend(["--safety-settings", args.safety_settings])
-    
     if args.schema:
         cmd.extend(["--schema", args.schema])
-    
-    # Execute gemini_cli.py with arguments
-    os.execv(sys.executable, [sys.executable] + cmd)
+    if args.mime_type:
+        cmd.extend(["--mime-type", args.mime_type])
+    if args.url:
+        cmd.extend(["--url", args.url])
+    if args.json:
+        cmd.extend(["--json", args.json])
+    if args.ground:
+        cmd.append("--ground")
+    if args.show_search_data:
+        cmd.append("--show-search-data")
+
+    # Execute and stream output
+    try:
+        proc = subprocess.run(cmd, check=False)
+        return proc.returncode
+    except KeyboardInterrupt:
+        return 130
+
 
 if __name__ == "__main__":
-    main() 
+    sys.exit(main())
