@@ -34,6 +34,7 @@ import shutil
 import json
 import re
 import subprocess
+from datetime import datetime
 from typing import List, Optional, Dict, Set, Tuple, Any
 
 # Prefer the new SDK import style used elsewhere in this repo
@@ -697,7 +698,15 @@ def build_system_prompt() -> str:
     cli_functions = build_cli_function_declarations()
     function_list = "\n".join([f"- {func['name']}: {func['description']}" for func in cli_functions])
     
+    # Get current date and time
+    current_datetime = datetime.now()
+    current_date = current_datetime.strftime("%A, %B %d, %Y")
+    current_time = current_datetime.strftime("%I:%M %p")
+    
     return f"""You are a helpful AI assistant with access to powerful CLI tools. You excel at task planning, breaking down complex requests, and efficiently using available functions to accomplish goals.
+
+## CURRENT DATE & TIME
+Today is {current_date} at {current_time} (local time).
 
 ## AVAILABLE FUNCTIONS
 You have access to {len(cli_functions)} specialized functions:
