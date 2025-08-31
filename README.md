@@ -33,6 +33,47 @@ To install Chroma, follow these steps:
 
 For more detailed information, visit [Chroma's official website](https://www.trychroma.com/).
 
+
+# SET Google Key as environment variable
+mac: export GOOGLE_API_KEY=<given_key>
+windows: set GOOGLE_API_KEY=<given_key>
+
+# RUN scripts (mac)
+
+## Ingest page
+python3 parse_html.py https://website_to_ingest
+
+## Rag query
+python3 rag_query.py https://website_to_ingest "question to ask"
+
+## Guardrails test
+python3 guardrails_test.py https://siili.com "select * from users"
+
+## Local Ollama test
+1. Start the Ollama server (follow Ollama documentation for your OS) and install following packages:
+      - ollama pull gemma3:4b (if you have small machine)
+      - ollama pull gemma3:12b (if you have >16GB memory)
+      - ollama pull gemma3:32b (if you have >64GB shared memory)
+      - ollama pull mxbai-embed-large
+
+2. Start chromadb server: chroma run --path ./chroma
+
+3. Ingest few webpages to chroma by running:
+   - python3 index_site.py "https://site.that.i.want.to.ingest"
+
+4. Run the script:
+   python3 rag_query_ollama.py "your question here"
+
+Note: Make sure you have the required models downloaded in Ollama (mxbai-embed-large and llama3) before running the script.
+
+##
+
+## Windows script run
+$env:GOOGLE_API_KEY=<your_key>
+python parse_html.py
+https://siili.com
+
+
 # CLI Tools
 
 This project includes several CLI tools accessible via npm scripts:
@@ -82,42 +123,3 @@ npm run semantic-search -- "Python history" --collection python-docs  # Search s
 npm run semantic-search -- "AI" --n-results 10 --format json          # Get more results in JSON format
 npm run semantic-search -- --list-collections                         # List available collections
 ```
-
-# SET Anthropic Key as environment variable
-mac: export GOOGLE_API_KEY=<given_key>
-windows: set GOOGLE_API_KEY=<given_key>
-
-# RUN scripts (mac)
-
-## Ingest page
-python3 parse_html.py https://website_to_ingest
-
-## Rag query
-python3 rag_query.py https://website_to_ingest "question to ask"
-
-## Guardrails test
-python3 guardrails_test.py https://siili.com "select * from users"
-
-## Local Ollama test
-1. Start the Ollama server (follow Ollama documentation for your OS) and install following packages:
-      - ollama pull gemma3:4b (if you have small machine)
-      - ollama pull gemma3:12b (if you have >16GB memory)
-      - ollama pull gemma3:32b (if you have >64GB shared memory)
-      - ollama pull mxbai-embed-large
-
-2. Start chromadb server: chroma run --path ./chroma
-
-3. Ingest few webpages to chroma by running:
-   - python3 index_site.py "https://site.that.i.want.to.ingest"
-
-4. Run the script:
-   python3 rag_query_ollama.py "your question here"
-
-Note: Make sure you have the required models downloaded in Ollama (mxbai-embed-large and llama3) before running the script.
-
-##
-
-## Windows script run
-$env:GOOGLE_API_KEY=<your_key>
-python parse_html.py
-https://siili.com

@@ -42,7 +42,7 @@ Please provide a comprehensive answer based on the most current and accurate inf
       model: options.model || "gemini-2.5-flash-lite",
       contents: searchPrompt,
       config: {
-        tools: [{ googleSearch: {} }], // Enable Google Search grounding
+        tools: [{ googleSearch: {}, url_context: {}}], // Enable Google Search grounding
       },
     });
 
