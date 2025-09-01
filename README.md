@@ -8,9 +8,23 @@ https://www.python.org/downloads/
 https://packaging.python.org/en/latest/tutorials/installing-packages/
 
 ## Install needed packages
+
+### Python Dependencies
 python3 -m pip install google-genai html2text rich ollama chromadb requests
 or
 pip install -r requirements.txt
+
+### Node.js Dependencies
+This project also includes TypeScript/JavaScript tools that require Node.js dependencies:
+```bash
+npm install
+```
+
+This will install all the required packages including:
+- Google Generative AI libraries
+- Image processing tools (Sharp)
+- CLI utilities and development tools
+- TypeScript compilation tools
 
 
 ## Install Ollama
