@@ -154,7 +154,7 @@ def query_chunks(markdown_content):
      Make sure you return data in English. Return proper and valid JSON starting and ending with { and }, no other text, backticks or code blocks."""
 
     response = client.models.generate_content(
-        model='gemini-2.0-flash-001',
+        model='gemini-2.5-flash-lite',
         contents=[system_prompt, markdown_content],
         config=types.GenerateContentConfig(
             temperature=0,
@@ -213,7 +213,7 @@ def query_rag(content_chunks, question):
                "<documents>" + content_chunks_json + "</documents>"
 
     response = client.models.generate_content(
-        model='gemini-2.0-flash-001',
+        model='gemini-2.5-flash',
         contents=[system_prompt, question],
         config=types.GenerateContentConfig(
             temperature=0,
