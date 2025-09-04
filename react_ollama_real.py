@@ -17,8 +17,8 @@ from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 
 # NOTE: To use the Google search functionality, you need to:
 # 1. Set up Google Gemini API access (https://ai.google.dev/)
-# 2. Set the GOOGLE_API_KEY environment variable with your API key:
-#    export GOOGLE_API_KEY=your_api_key_here
+# 2. Set the GEMINI_API_KEY environment variable with your API key:
+#    export GEMINI_API_KEY=your_api_key_here
 #
 # If the API key is not set, the search will fall back to simulated results.
 
@@ -26,15 +26,15 @@ from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 console = Console()
 
 # Check if Google API key is available
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GOOGLE_SEARCH_AVAILABLE = False
 gemini_client = None
 
 # Try to initialize Google API client
 try:
-    if GOOGLE_API_KEY:
+    if GEMINI_API_KEY:
         # Create a client instance with the API key instead of using configure
-        gemini_client = genai.Client(api_key=GOOGLE_API_KEY)
+        gemini_client = genai.Client(api_key=GEMINI_API_KEY)
         GOOGLE_SEARCH_AVAILABLE = True
         console.print("[green]Google Gemini API initialized successfully[/green]")
     else:
@@ -185,8 +185,8 @@ def search_web(query):
                 debug_log(f"Gemini API error: {gemini_error}", "error")
                 debug_log("Falling back to simulated search results", "warning")
         else:
-            if not GOOGLE_API_KEY:
-                debug_log("Google API key not found. Set GOOGLE_API_KEY environment variable.", "warning")
+            if not GEMINI_API_KEY:
+                debug_log("Google API key not found. Set GEMINI_API_KEY environment variable.", "warning")
             elif not gemini_client:
                 debug_log("Google client initialization failed.", "warning")
             else:
@@ -427,9 +427,9 @@ def main():
         console.print("[bold]1.[/bold] Sign up for Google AI Studio at [link]https://ai.google.dev/[/link]")
         console.print("[bold]2.[/bold] Create an API key in the Google AI Studio console")
         console.print("[bold]3.[/bold] Set the API key as an environment variable:")
-        console.print("   - [bold yellow]export GOOGLE_API_KEY=your_api_key_here[/bold yellow] (Linux/macOS)")
-        console.print("   - [bold yellow]set GOOGLE_API_KEY=your_api_key_here[/bold yellow] (Windows cmd)")
-        console.print("   - [bold yellow]$env:GOOGLE_API_KEY=\"your_api_key_here\"[/bold yellow] (Windows PowerShell)")
+        console.print("   - [bold yellow]export GEMINI_API_KEY=your_api_key_here[/bold yellow] (Linux/macOS)")
+        console.print("   - [bold yellow]set GEMINI_API_KEY=your_api_key_here[/bold yellow] (Windows cmd)")
+        console.print("   - [bold yellow]$env:GEMINI_API_KEY=\"your_api_key_here\"[/bold yellow] (Windows PowerShell)")
         console.print("\nMake sure to keep your API key secure and never commit it to version control.")
         sys.exit(0)
 
@@ -445,8 +445,8 @@ def main():
         console.print("[yellow]⚠ Google search is disabled (fallback mode active)[/yellow]")
         console.print("[italic]Run with --setup flag to see setup instructions[/italic]")
         if args.google:
-            console.print("[red]Error: --google flag requires GOOGLE_API_KEY to be set[/red]")
-            console.print("Set it with: export GOOGLE_API_KEY=your_api_key_here")
+            console.print("[red]Error: --google flag requires GEMINI_API_KEY to be set[/red]")
+            console.print("Set it with: export GEMINI_API_KEY=your_api_key_here")
             sys.exit(1)
     
     console.print("[blue]Using model: gemma3:27b for reasoning[/blue]")

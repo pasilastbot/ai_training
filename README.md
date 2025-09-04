@@ -49,8 +49,9 @@ For more detailed information, visit [Chroma's official website](https://www.try
 
 
 # SET Google Key as environment variable
-mac: export GOOGLE_API_KEY=<given_key>
-windows: set GOOGLE_API_KEY=<given_key>
+mac: export GEMINI_API_KEY=<given_key>
+windows: set GEMINI_API_KEY=<given_key>
+powershell: $env:GEMINI_API_KEY=<your_key>
 
 # RUN scripts (mac)
 
@@ -83,7 +84,7 @@ Note: Make sure you have the required models downloaded in Ollama (mxbai-embed-l
 ##
 
 ## Windows script run
-$env:GOOGLE_API_KEY=<your_key>
+$env:GEMINI_API_KEY=<your_key>
 python parse_html.py
 https://siili.com
 
