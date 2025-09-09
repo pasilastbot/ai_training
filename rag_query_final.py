@@ -211,8 +211,8 @@ def query_rag(content_chunks, question):
     content_chunks_json = json.dumps(content_chunks)
     system_prompt = "You're a helpful assistant. Please respond to the user's query in user's own language using the following documents: \n\n" \
                "<documents>" + content_chunks_json + "</documents>" \
-               "Answer the question in humoristic way." \
-               "If the documents don't contain the answer, return a web search query with prefix: [Google]\n Return response as JSON"
+               "Answer the question in humoristic way in Monty Python way." \
+               "If the documents don't contain the answer, return a web search query in JSON field web_search\n Return response as JSON"
 
     response = client.models.generate_content(
         model='gemini-2.5-flash',
