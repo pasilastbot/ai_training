@@ -240,6 +240,58 @@ mcp_puppeteer_puppeteer_evaluate
         "OPENAI_API_KEY in .env.local"
       ]
     },
+    "sora-2-video": {
+      "description": "Generate high-quality videos with synced audio using OpenAI's Sora 2 model via Replicate API",
+      "tool": "run_terminal_cmd",
+      "command": "npm run sora-2-video",
+      "status": "✅ Tested and working (requires OPENAI_API_KEY)",
+      "options": {
+        "prompt": "Required: Text description of the desired video",
+        "seconds": "(Optional) Duration of the video in seconds (max: 20, default: 8)",
+        "aspect-ratio": "(Optional) Aspect ratio: landscape, portrait, or square (default: landscape)",
+        "output": "(Optional) Output filename for the video",
+        "folder": "(Optional) Output folder path (default: public/videos)"
+      },
+      "requires": [
+        "REPLICATE_API_TOKEN in .env.local",
+        "OPENAI_API_KEY in .env.local (required by Sora 2 model)"
+      ],
+      "examples": [
+        "npm run sora-2-video -- -p \"A cat playing piano in a jazz club\"",
+        "npm run sora-2-video -- -p \"Sunset over mountains\" -s 15 -a portrait -o sunset.mp4",
+        "npm run sora-2-video -- -p \"Bob Ross painting the Replicate logo\" -s 10 -a landscape -f public/videos"
+      ],
+      "note": "Sora 2 is OpenAI's flagship video generation model that creates richly detailed, dynamic clips with synced audio from natural language prompts."
+    },
+    "veo-3-video": {
+      "description": "Generate high-quality videos with native audio using Google's Veo 3 Fast model via Replicate API",
+      "tool": "run_terminal_cmd",
+      "command": "npm run veo-3-video",
+      "status": "✅ Tested and working",
+      "options": {
+        "prompt": "Required: Text description of the desired video",
+        "image": "(Optional) URL or path to input image for image-to-video generation",
+        "seed": "(Optional) Random seed for reproducibility",
+        "resolution": "(Optional) Resolution: 720p or 1080p (default: 720p)",
+        "negative-prompt": "(Optional) Description of what to discourage in the generated video",
+        "aspect-ratio": "(Optional) Aspect ratio: 16:9, 9:16, 4:3, or 1:1 (default: 16:9)",
+        "duration": "(Optional) Duration in seconds (max: 30, default: 8)",
+        "fps": "(Optional) Frames per second: 24 or 30 (default: 24)",
+        "generate-audio": "(Optional) Generate synchronized audio with the video",
+        "output": "(Optional) Output filename for the video",
+        "folder": "(Optional) Output folder path (default: public/videos)"
+      },
+      "requires": [
+        "REPLICATE_API_TOKEN in .env.local"
+      ],
+      "examples": [
+        "npm run veo-3-video -- -p \"A serene forest at dawn with mist\"",
+        "npm run veo-3-video -- -p \"Ocean waves at sunset\" -r 1080p -d 10 --generate-audio",
+        "npm run veo-3-video -- -p \"Rotate the shoe, keep everything else still\" -i \"https://example.com/shoe.png\"",
+        "npm run veo-3-video -- -p \"City skyline timelapse\" -a 16:9 --fps 30 --seed 42"
+      ],
+      "note": "Veo 3 Fast is Google's faster and cheaper version of their flagship Veo 3 video model with state-of-the-art quality and native audio generation."
+    },
     "github-cli": {
       "description": "Interact with GitHub repositories, pull requests, issues, and workflows directly from the command line",
       "tool": "run_terminal_cmd",

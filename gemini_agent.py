@@ -332,6 +332,27 @@ def build_cli_function_declarations() -> List[Dict[str, Any]]:
                 "required": ["query"],
             },
         },
+        {
+            "name": "veo3_generate_video",
+            "description": "Generate video using Google Veo 3 Fast model with audio support via npm script veo-3-video",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "prompt": {"type": "string", "description": "Text description of the desired video"},
+                    "image": {"type": "string", "description": "URL or path to input image for image-to-video generation"},
+                    "seed": {"type": "integer", "description": "Random seed for reproducibility"},
+                    "resolution": {"type": "string", "enum": ["720p", "1080p"], "description": "Resolution of the generated video", "default": "720p"},
+                    "negative_prompt": {"type": "string", "description": "Description of what to discourage in the generated video"},
+                    "aspect_ratio": {"type": "string", "enum": ["16:9", "9:16", "4:3", "1:1"], "description": "Aspect ratio of the video", "default": "16:9"},
+                    "duration": {"type": "integer", "description": "Duration of the video in seconds (max: 30)", "default": 8, "minimum": 1, "maximum": 30},
+                    "fps": {"type": "integer", "description": "Frames per second (24 or 30)", "default": 24},
+                    "generate_audio": {"type": "boolean", "description": "Generate synchronized audio with the video", "default": False},
+                    "output": {"type": "string", "description": "Output filename for the video"},
+                    "folder": {"type": "string", "description": "Output folder path", "default": "public/videos"},
+                },
+                "required": ["prompt"],
+            },
+        },
     ]
 
 
@@ -563,6 +584,31 @@ def execute_cli_function(name: str, args: Dict[str, Any]) -> Dict[str, Any]:
             cmd += ["--min-distance", str(args["min_distance"])]
         if args.get("max_distance") is not None:
             cmd += ["--max-distance", str(args["max_distance"])]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
+    if name == "veo3_generate_video":
+        cmd = ["npm", "run", "veo-3-video", "--", "-p", args.get("prompt", "")]
+        if args.get("image"):
+            cmd += ["-i", args["image"]]
+        if args.get("seed") is not None:
+            cmd += ["--seed", str(args["seed"])]
+        if args.get("resolution"):
+            cmd += ["-r", args["resolution"]]
+        if args.get("negative_prompt"):
+            cmd += ["-n", args["negative_prompt"]]
+        if args.get("aspect_ratio"):
+            cmd += ["-a", args["aspect_ratio"]]
+        if args.get("duration") is not None:
+            cmd += ["-d", str(args["duration"])]
+        if args.get("fps") is not None:
+            cmd += ["--fps", str(args["fps"])]
+        if args.get("generate_audio"):
+            cmd += ["--generate-audio"]
+        if args.get("output"):
+            cmd += ["-o", args["output"]]
+        if args.get("folder"):
+            cmd += ["-f", args["folder"]]
         code, out, err = _run_cmd(cmd)
         return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
 
