@@ -12,6 +12,8 @@
     "download-file": "NODE_ENV=development tsx tools/download-file.ts",
     "invert-colors": "NODE_ENV=development tsx tools/invert-colors.ts",
     "generate-video": "NODE_ENV=development tsx tools/generate-video.ts",
+    "sora-2-video": "NODE_ENV=development tsx tools/sora-2-video.ts",
+    "veo-3-video": "NODE_ENV=development tsx tools/veo-3-video.ts",
     "imagen": "NODE_ENV=development tsx tools/imagen.ts",
     "minimax-image": "NODE_ENV=development tsx tools/minimax-image.ts",
     "remove-background-advanced": "NODE_ENV=development tsx tools/remove-background-advanced.ts",

@@ -34,5 +34,6 @@ Follow these steps sequentially for **every** user request and follow behavioral
 5.  **Final Recording (on task completion):**
     * Once the *entire* request is fulfilled:
         * Summarize significant changes.
+        * update <documentation> if needed
         * Execute `<record>` workflow (update `ai_changelog.md`, `todo.md`).
         * Ensure `learnings.md` was updated during `<fix>` or `<invent>` workflows if applicable.

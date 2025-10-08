@@ -1,4 +1,19 @@
 # Scripts used in Pasi Vuorio's AI training for developers
+
+## 🤖 NEW: Gemini Chatbot Application
+
+A real-time web-based chatbot powered by Google Gemini with full access to all CLI tools!
+
+**Quick Start:**
+```bash
+./start_chatbot.sh
+# Then open http://localhost:8000
+```
+
+See **[CHATBOT_README.md](CHATBOT_README.md)** for complete documentation.
+
+---
+
 # Instructions
 
 ## Install python3
