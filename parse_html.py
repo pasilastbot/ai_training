@@ -3,10 +3,21 @@ from google.genai import types
 
 import json
 import argparse
+import os
 import requests
 import html2text
 from rich.console import Console
 from rich.markdown import Markdown
+from dotenv import load_dotenv
+
+# Load environment variables from .env.local
+load_dotenv('.env.local')
+
+# Get API key
+API_KEY = os.getenv('GOOGLE_AI_STUDIO_KEY') or os.getenv('GEMINI_API_KEY')
+if not API_KEY:
+    print("Error: GOOGLE_AI_STUDIO_KEY or GEMINI_API_KEY environment variable is not set")
+    exit(1)
 
 def url_to_markdown(url):
     try:
@@ -49,7 +60,7 @@ def main():
     markdown = Markdown(markdown_content)
     console.print(markdown)
 
-    client = genai.Client()
+    client = genai.Client(api_key=API_KEY)
 
     content_extraction_schema = {
         "type": "object",

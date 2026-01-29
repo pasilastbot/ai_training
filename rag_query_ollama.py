@@ -3,6 +3,7 @@ from anthropic.types import TextBlock
 
 import json
 import argparse
+import os
 import requests
 import html2text
 import ollama
@@ -10,6 +11,10 @@ import chromadb
 
 from rich.console import Console
 from rich.markdown import Markdown
+from dotenv import load_dotenv
+
+# Load environment variables from .env.local
+load_dotenv('.env.local')
 
 def url_to_markdown(url):
     try:

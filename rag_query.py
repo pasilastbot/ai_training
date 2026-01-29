@@ -3,10 +3,18 @@ from google.genai import types
 
 import json
 import argparse
+import os
 import requests
 import html2text
 from rich.console import Console
 from rich.markdown import Markdown
+from dotenv import load_dotenv
+
+# Load environment variables from .env.local
+load_dotenv('.env.local')
+
+# Get API key
+API_KEY = os.getenv('GOOGLE_AI_STUDIO_KEY') or os.getenv('GEMINI_API_KEY')
 
 def url_to_markdown(url):
     try:
@@ -34,7 +42,7 @@ def url_to_markdown(url):
         return f"Error: {e}"
 
 def query_chunks(markdown_content):
-    client = genai.Client()
+    client = genai.Client(api_key=API_KEY)
 
     content_extraction_schema = {
         "type": "object",
@@ -205,7 +213,7 @@ def query_chunks(markdown_content):
         }
 
 def query_rag(content_chunks, question):
-    client = genai.Client()
+    client = genai.Client(api_key=API_KEY)
     
     # Convert the list of content chunks to a JSON string
     content_chunks_json = json.dumps(content_chunks)

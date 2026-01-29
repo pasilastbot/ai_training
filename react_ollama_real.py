@@ -14,6 +14,10 @@ import os
 import sys
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderServiceError
+from dotenv import load_dotenv
+
+# Load environment variables from .env.local
+load_dotenv('.env.local')
 
 # NOTE: To use the Google search functionality, you need to:
 # 1. Set up Google Gemini API access (https://ai.google.dev/)
@@ -26,7 +30,7 @@ from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 console = Console()
 
 # Check if Google API key is available
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv('GOOGLE_AI_STUDIO_KEY') or os.getenv('GEMINI_API_KEY')
 GOOGLE_SEARCH_AVAILABLE = False
 gemini_client = None
 

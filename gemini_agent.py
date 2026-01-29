@@ -36,6 +36,10 @@ import re
 import subprocess
 from datetime import datetime
 from typing import List, Optional, Dict, Set, Tuple, Any
+from dotenv import load_dotenv
+
+# Load environment variables from .env.local
+load_dotenv('.env.local')
 
 # Prefer the new SDK import style used elsewhere in this repo
 from google import genai
@@ -80,9 +84,9 @@ def load_env_files() -> None:
 
 
 def load_api_key() -> str:
-    api_key = os.environ.get("GOOGLE_AI_STUDIO_KEY") or os.environ.get("GOOGLE_API_KEY")
+    api_key = os.environ.get("GOOGLE_AI_STUDIO_KEY") or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not api_key:
-        print("Error: API key not found. Set GOOGLE_AI_STUDIO_KEY or GOOGLE_API_KEY.")
+        print("Error: API key not found. Set GOOGLE_AI_STUDIO_KEY, GEMINI_API_KEY, or GOOGLE_API_KEY.")
         sys.exit(1)
     return api_key
 
