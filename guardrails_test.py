@@ -272,7 +272,7 @@ def run_guardrails(user_query):
     Return a structured response with your analysis.""".format(user_query)
 
     response = client.models.generate_content(
-        model='gemini-2.0-flash-001',
+        model='gemini-2.5-flash',
         contents=prompt,
         config=types.GenerateContentConfig(
             temperature=0,

@@ -7,34 +7,46 @@ import os
 import sys
 from typing import List, Dict, Any, Optional
 from google import genai
+import ollama
 from dotenv import load_dotenv
 
 # Load environment variables from .env.local
 load_dotenv(".env.local")
 
-def generate_query_embedding(query: str, embedding_model: str) -> List[float]:
-    """Generate embedding for the search query using Gemini."""
-    api_key = os.environ.get("GOOGLE_AI_STUDIO_KEY") or os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        raise Exception("Google API key not found. Please set GOOGLE_AI_STUDIO_KEY or GEMINI_API_KEY environment variable")
-    
-    print(f"🧮 Generating query embedding with model: {embedding_model}")
-    
-    client = genai.Client(api_key=api_key)
-    
-    try:
-        result = client.models.embed_content(
-            model=embedding_model,
-            contents=[query]
-        )
+def generate_query_embedding(query: str, embedding_model: str, use_ollama: bool = False) -> List[float]:
+    """Generate embedding for the search query using Gemini or Ollama."""
+    if use_ollama:
+        print(f"🧮 Generating query embedding with Ollama model: {embedding_model}")
+        try:
+            response = ollama.embeddings(model=embedding_model, prompt=query)
+            embedding = response["embedding"]
+            print(f"✅ Generated query embedding with {len(embedding)} dimensions")
+            return embedding
+        except Exception as e:
+            print(f"❌ Error generating query embedding with Ollama: {e}")
+            raise e
+    else:
+        api_key = os.environ.get("GOOGLE_AI_STUDIO_KEY") or os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            raise Exception("Google API key not found. Please set GOOGLE_AI_STUDIO_KEY or GEMINI_API_KEY environment variable")
         
-        embedding = result.embeddings[0].values
-        print(f"✅ Generated query embedding with {len(embedding)} dimensions")
-        return embedding
+        print(f"🧮 Generating query embedding with Gemini model: {embedding_model}")
         
-    except Exception as e:
-        print(f"❌ Error generating query embedding: {e}")
-        raise e
+        client = genai.Client(api_key=api_key)
+        
+        try:
+            result = client.models.embed_content(
+                model=embedding_model,
+                contents=[query]
+            )
+            
+            embedding = result.embeddings[0].values
+            print(f"✅ Generated query embedding with {len(embedding)} dimensions")
+            return embedding
+            
+        except Exception as e:
+            print(f"❌ Error generating query embedding: {e}")
+            raise e
 
 def search_chromadb(
     query_embedding: List[float],
@@ -77,13 +89,21 @@ def format_search_results(results: Dict[str, Any], format_type: str = "text") ->
     # Text format
     output = []
     documents = results['documents'][0]
-    metadatas = results['metadatas'][0] if results['metadatas'] else []
-    distances = results['distances'][0] if results['distances'] else []
+    metadatas = results.get('metadatas', [])
+    if metadatas and len(metadatas) > 0:
+        metadatas = metadatas[0]
+    else:
+        metadatas = []
+    distances = results.get('distances', [])
+    if distances and len(distances) > 0:
+        distances = distances[0]
+    else:
+        distances = []
     
     for i, doc in enumerate(documents):
         try:
             chunk_data = json.loads(doc)
-            metadata = metadatas[i] if i < len(metadatas) else {}
+            metadata = metadatas[i] if i < len(metadatas) and metadatas[i] else {}
             distance = distances[i] if i < len(distances) else "N/A"
             
             output.append(f"🎯 **Result {i+1}** (Distance: {distance:.4f})" if isinstance(distance, float) else f"🎯 **Result {i+1}**")
@@ -98,7 +118,7 @@ def format_search_results(results: Dict[str, Any], format_type: str = "text") ->
                 content = content[:300] + "..."
             output.append(f"📄 **Content**: {content}")
             
-            if metadata.get('source_url'):
+            if metadata and metadata.get('source_url'):
                 output.append(f"🔗 **Source**: {metadata['source_url']}")
             
             if chunk_data.get('table'):
@@ -129,11 +149,12 @@ def list_collections(chroma_host: str = "localhost", chroma_port: int = 8000) ->
         return []
 
 def main():
-    parser = argparse.ArgumentParser(description="Semantic search using Gemini embeddings and ChromaDB")
+    parser = argparse.ArgumentParser(description="Semantic search using Gemini or Ollama embeddings and ChromaDB")
     parser.add_argument("query", type=str, nargs='?', help="Search query")
     parser.add_argument("-c", "--collection", type=str, default="gemini-docs", help="ChromaDB collection name")
     parser.add_argument("-n", "--n-results", type=int, default=5, help="Number of results to return")
-    parser.add_argument("-e", "--embedding-model", type=str, default="gemini-embedding-001", help="Gemini model for embeddings")
+    parser.add_argument("-e", "--embedding-model", type=str, default="gemini-embedding-001", help="Embedding model (Gemini or Ollama)")
+    parser.add_argument("--use-ollama", action="store_true", help="Use Ollama for embeddings instead of Gemini")
     parser.add_argument("-f", "--format", type=str, choices=["text", "json"], default="text", help="Output format")
     parser.add_argument("--chroma-host", type=str, default="localhost", help="ChromaDB host")
     parser.add_argument("--chroma-port", type=int, default=8000, help="ChromaDB port")
@@ -162,8 +183,13 @@ def main():
             parser.print_help()
             sys.exit(1)
         
+        # Auto-detect Ollama if collection is "docs" (indexed with Ollama)
+        use_ollama = args.use_ollama or args.collection == "docs"
+        if use_ollama and args.embedding_model == "gemini-embedding-001":
+            args.embedding_model = "mxbai-embed-large"
+        
         # Generate query embedding
-        query_embedding = generate_query_embedding(args.query, args.embedding_model)
+        query_embedding = generate_query_embedding(args.query, args.embedding_model, use_ollama=use_ollama)
         
         # Parse where filter if provided
         where_filter = None
