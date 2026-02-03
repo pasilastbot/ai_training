@@ -21,6 +21,8 @@
     "nano-banana": "NODE_ENV=development tsx tools/nano-banana.ts",
     "google-search": "NODE_ENV=development tsx tools/google-search.ts",
     "datetime": "NODE_ENV=development tsx tools/datetime.ts",
+    "qwen3-tts": "NODE_ENV=development tsx tools/qwen3-tts.ts",
+    "play-audio": "NODE_ENV=development tsx tools/play-audio.ts",
     "data-indexing": "python3 tools/data-indexing.py",
     "semantic-search": "python3 tools/semantic-search.py",
     "github:auth": "NODE_ENV=development tsx tools/github-cli.ts auth",

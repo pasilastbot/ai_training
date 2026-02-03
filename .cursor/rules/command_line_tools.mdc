@@ -240,7 +240,66 @@ mcp_puppeteer_puppeteer_evaluate
         "OPENAI_API_KEY in .env.local"
       ]
     },
-    "github-cli": {
+    "qwen3-tts": {
+ "description": "Text-to-speech using Qwen3-TTS model via Replicate. Supports three modes: Voice (default voice with style instructions), Clone (clone voice from reference audio), and Design (create voice from text description)",
+ "tool": "run_terminal_cmd",
+ "command": "npm run qwen3-tts",
+ "status": "✅ Tested and working",
+ "modes": {
+ "voice": {
+ "description": "Generate speech with built-in voice and optional style instructions",
+ "required": ["text"],
+ "optional": ["voice-prompt"]
+ },
+ "clone": {
+ "description": "Clone a voice from reference audio (minimum 3 seconds)",
+ "required": ["text", "ref-audio", "ref-text"],
+ "optional": []
+ },
+ "design": {
+ "description": "Create a new voice from natural language description",
+ "required": ["text", "voice-description"],
+ "optional": []
+ }
+ },
+ "options": {
+ "text": "Required: Text to convert to speech",
+ "mode": "(Optional) TTS mode: voice (default), clone, or design",
+ "output": "(Optional) Output filename (default: qwen3-tts-<timestamp>.wav)",
+ "folder": "(Optional) Output folder path (default: public/audio)",
+ "voice-prompt": "(Optional) [Voice mode] Style instruction (e.g., 'speak cheerfully')",
+ "ref-audio": "(Optional) [Clone mode] Path or URL to reference audio file",
+ "ref-text": "(Optional) [Clone mode] Transcript of the reference audio",
+ "voice-description": "(Optional) [Design mode] Natural language voice description (e.g., 'warm female narrator')"
+ },
+ "requires": [
+ "REPLICATE_API_TOKEN in .env.local"
+ ],
+ "examples": [
+ "npm run qwen3-tts -- -t \"Hello, world!\"",
+ "npm run qwen3-tts -- -t \"Welcome to our podcast\" -m voice -v \"speak with warmth and enthusiasm\"",
+ "npm run qwen3-tts -- -t \"This is my cloned voice\" -m clone -a reference.wav -r \"This is the reference transcript\"",
+ "npm run qwen3-tts -- -t \"A beautiful story begins\" -m design -d \"warm male storyteller with gentle pacing\" -o story-intro.wav"
+ ]
+ },
+ "play-audio": {
+ "description": "Play audio files from the command line using the system's native audio player",
+ "tool": "run_terminal_cmd",
+ "command": "npm run play-audio",
+ "status": "✅ Tested and working",
+ "options": {
+ "file": "Required: Path to audio file to play (can be positional or with -f flag)",
+ "volume": "(Optional) Volume level 0-100 (macOS only)",
+ "background": "(Optional) Play in background without waiting for completion"
+ },
+ "requires": [],
+ "examples": [
+ "npm run play-audio -- public/audio/speech.wav",
+ "npm run play-audio -- -f public/audio/speech.wav -v 50",
+ "npm run play-audio -- public/audio/speech.wav -b"
+ ]
+ },
+ "github-cli": {
       "description": "Interact with GitHub repositories, pull requests, issues, and workflows directly from the command line",
       "tool": "run_terminal_cmd",
       "command": "npm run github",

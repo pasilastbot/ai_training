@@ -1,3 +1,16 @@
+- 2026-02-03: Added Qwen3-TTS and Play Audio tools
+  - Created new text-to-speech tool using Qwen3-TTS model via Replicate API
+  - Supports three modes: voice (custom voice with style instructions), clone (voice cloning from reference audio), design (create voice from natural language description)
+  - Added npm script `qwen3-tts` in package.json
+  - Documented in command_line_tools.mdc with full options and examples
+  - Tested successfully: voice mode and design mode both generate high-quality audio
+  - Output saved to public/audio/ folder by default
+  - Requires REPLICATE_API_TOKEN in .env.local
+  - Created play-audio tool for playing audio files via system native player
+  - Cross-platform support: macOS (afplay), Linux (paplay/aplay), Windows (PowerShell)
+  - Added volume control (0-100) and background playback options
+  - Integrated both tools into gemini_agent.py as callable functions
+  - Tested end-to-end: "Say X and play it" workflow works via Gemini agent
 - 2025-08-29: Tools maintenance
   - Added tools/utils/download.ts for Replicate video tool
   - Fixed tools/gemini.ts to accept GEMINI_API_KEY fallback

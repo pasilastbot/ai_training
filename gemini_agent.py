@@ -336,6 +336,37 @@ def build_cli_function_declarations() -> List[Dict[str, Any]]:
                 "required": ["query"],
             },
         },
+        {
+            "name": "qwen3_tts",
+            "description": "Text-to-speech using Qwen3-TTS model via Replicate. Supports three modes: voice (custom voice with style instructions), clone (voice cloning from reference audio), design (create voice from natural language description)",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "text": {"type": "string", "description": "Text to convert to speech"},
+                    "mode": {"type": "string", "enum": ["voice", "clone", "design"], "description": "TTS mode: voice (default), clone, or design", "default": "voice"},
+                    "output": {"type": "string", "description": "Output filename (default: qwen3-tts-<timestamp>.wav)"},
+                    "folder": {"type": "string", "description": "Output folder path", "default": "public/audio"},
+                    "voice_prompt": {"type": "string", "description": "[Voice mode] Style instruction (e.g., 'speak cheerfully')"},
+                    "ref_audio": {"type": "string", "description": "[Clone mode] Path or URL to reference audio file (minimum 3 seconds)"},
+                    "ref_text": {"type": "string", "description": "[Clone mode] Transcript of the reference audio"},
+                    "voice_description": {"type": "string", "description": "[Design mode] Natural language voice description (e.g., 'warm male storyteller')"},
+                },
+                "required": ["text"],
+            },
+        },
+        {
+            "name": "play_audio",
+            "description": "Play an audio file using the system's native audio player. Useful for playing generated speech or any audio file.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "file": {"type": "string", "description": "Path to audio file to play"},
+                    "volume": {"type": "integer", "minimum": 0, "maximum": 100, "description": "Volume level (0-100, macOS only)"},
+                    "background": {"type": "boolean", "description": "Play in background without waiting", "default": False},
+                },
+                "required": ["file"],
+            },
+        },
     ]
 
 
@@ -570,14 +601,45 @@ def execute_cli_function(name: str, args: Dict[str, Any]) -> Dict[str, Any]:
         code, out, err = _run_cmd(cmd)
         return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
 
+    if name == "qwen3_tts":
+        cmd = ["npm", "run", "qwen3-tts", "--", "-t", args.get("text", "")]
+        if args.get("mode"):
+            cmd += ["-m", args["mode"]]
+        if args.get("output"):
+            cmd += ["-o", args["output"]]
+        if args.get("folder"):
+            cmd += ["-f", args["folder"]]
+        if args.get("voice_prompt"):
+            cmd += ["-v", args["voice_prompt"]]
+        if args.get("ref_audio"):
+            cmd += ["-a", args["ref_audio"]]
+        if args.get("ref_text"):
+            cmd += ["-r", args["ref_text"]]
+        if args.get("voice_description"):
+            cmd += ["-d", args["voice_description"]]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
+    if name == "play_audio":
+        cmd = ["npm", "run", "play-audio", "--", args.get("file", "")]
+        if args.get("volume") is not None:
+            cmd += ["-v", str(args["volume"])]
+        if args.get("background"):
+            cmd += ["-b"]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
     return {"ok": False, "error": f"Unknown function: {name}", "args": args}
 
 
 def find_function_call_parts(response) -> List[Tuple[str, Dict[str, Any]]]:
     calls: List[Tuple[str, Dict[str, Any]]] = []
     try:
-        parts = response.candidates[0].content.parts if response.candidates else []
+        parts = response.candidates[0].content.parts if response.candidates else None
     except Exception:
+        parts = None
+    # Ensure parts is iterable (not None)
+    if parts is None:
         parts = []
     for p in parts:
         fc = getattr(p, "function_call", None)
@@ -605,8 +667,12 @@ def parse_args() -> argparse.Namespace:
 def print_response(response) -> None:
     # Safely access parts
     try:
-        parts = response.candidates[0].content.parts if response.candidates else []
+        parts = response.candidates[0].content.parts if response.candidates else None
     except Exception:
+        parts = None
+    
+    # Ensure parts is iterable (not None)
+    if parts is None:
         parts = []
 
     # Print text exactly once, aggregated from parts
@@ -740,6 +806,9 @@ You have access to {len(cli_functions)} specialized functions:
 - **Date/time operations**: Use datetime for timestamps, scheduling, time zones, or any time-related queries
 - **Data indexing**: Use data_indexing to process and index web content or files into ChromaDB for later RAG queries
 - **Semantic search**: Use semantic_search to query indexed content in ChromaDB using semantic similarity
+- **Text-to-speech**: Use qwen3_tts to convert text to natural speech with three modes: voice (with style instructions), clone (from reference audio), or design (from voice description)
+- **Audio playback**: Use play_audio to play audio files through the system speaker - great for playing generated speech
+- **"Say" command**: When user says "say X" or "say 'X'", automatically call qwen3_tts AND play_audio sequentially without asking for confirmation - this is a shortcut for generating and playing speech immediately
 
 ### 4. RESPONSE PATTERNS
 - When you call a function, explain what you're doing and why
@@ -782,6 +851,14 @@ For complex requests:
 Generated image saved to: `public/images/futuristic-car.png`
 
 You can now reference this file path if you want to edit the image or use it in other tasks.
+
+**User**: "Say 'Hello, welcome to the demo'"
+**You**: *[Immediately calls qwen3_tts with text "Hello, welcome to the demo"]*
+*[Then calls play_audio with the generated file path]*
+
+Done! I've spoken "Hello, welcome to the demo" for you.
+
+(Note: "say" is a shortcut - generate speech AND play it without asking)
 
 Remember: Your goal is to be maximally helpful by actively using your functions to accomplish user goals, not just to provide information or suggestions."""
 
