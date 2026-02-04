@@ -17,7 +17,22 @@ alwaysApply: true
 
   ## Subfolders under the docs folder to update software subsystem decomposition and sw design patterns
     - patterns: folder that contains software pattern for implementing certain kind of parts in the system. Use these always to get up to date information about how to implement features.
-    - subsystems: folder that contains subsystem descriptions and links to the files belonging to a subsystem. Use these to document and understand about the details of single subsystems and to evaluate the relations between the componenents. 
+    - subsystems: folder that contains subsystem descriptions and links to the files belonging to a subsystem. Use these to document and understand about the details of single subsystems and to evaluate the relations between the componenents.
+
+  ## Specifications folder structure (Spec-Driven Development)
+    - `specs/`: Root folder for all specifications (create if doesn't exist)
+      - `features/`: Feature specifications before implementation
+        - Format: `[feature-name].md` (e.g., `user-authentication.md`, `video-generator.md`)
+        - Each spec is the **contract** that defines what will be built
+      - `apis/`: API endpoint specifications and contracts
+        - Format: `[service-name]-api.md` (e.g., `psychiatrist-api.md`)
+      - `components/`: Component specifications for reusable UI/logic
+        - Format: `[component-name]-spec.md` (e.g., `sprite-animator-spec.md`)
+    
+  **Spec-Driven Development Rule:**
+    - ALWAYS read documentation files BEFORE creating a spec
+    - ALWAYS create a spec BEFORE implementing new features
+    - Specs are living documents - update them when implementation reveals necessary changes 
 
   ## important files at root folder   
     - `package.json`: List of used npm packages and versions.

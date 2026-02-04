@@ -1,4 +1,6 @@
 google-genai
+flask>=3.0.0
+flask-cors>=4.0.0
 requests>=2.32.3
 html2text>=2024.2.26
 rich>=13.9.4

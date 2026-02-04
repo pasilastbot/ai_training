@@ -92,12 +92,251 @@ Define high-level tasks. Follow the `## Request Processing Steps` below to execu
      5. Briefly summarize the design and generated assets for the user.
   </design>
 
+  <spec>
+   - **Goal:** Create a specification document before implementing code (spec-driven development).
+   - **Steps:**
+     1. **Read Context (MANDATORY):**
+        - Read ALL relevant `*.md` files from `<documentation>` (`read_file`):
+          - `docs/description.md` - Understand app purpose and features
+          - `docs/architecture.md` - Understand tech stack and patterns
+          - `docs/datamodel.md` - Understand entities and relationships
+          - `docs/frontend.md` or `docs/backend.md` - Based on feature type
+        - Use `codebase_search` to find related existing code
+        - Use `web_search` if external API/library documentation is needed
+     2. **Create Specification:**
+        - Use `edit_file` to create a new specification file in `specs/features/[feature-name].md`
+        - The spec MUST include:
+          - **Overview:** Brief description and purpose
+          - **Requirements:** Functional and non-functional requirements
+          - **API Contract:** Input/output types, endpoints (if applicable)
+          - **Data Model:** Entity changes, new fields, relationships
+          - **Component Structure:** Files to create/modify (with reasons)
+          - **Dependencies:** External libraries, API keys needed
+          - **Testing Strategy (MANDATORY - MUST BE COMPREHENSIVE):**
+            - **Unit Tests:** Specific test cases for individual functions/components
+              - For each function: Given/When/Then scenarios
+              - Edge cases and error conditions
+              - Mock dependencies where needed
+            - **Integration Tests:** Tests for module interactions
+              - API endpoint tests with request/response validation
+              - Service layer tests with real dependencies
+              - Database integration tests (if applicable)
+            - **E2E Tests:** User flow scenarios from start to finish
+              - Complete user journeys (happy path)
+              - Error handling flows
+              - UI interaction sequences (for frontend)
+              - Multi-step processes
+            - **Test Coverage Goals:** Minimum expected coverage percentage
+            - **Test Data:** Mock data, fixtures, or test databases needed
+          - **Acceptance Criteria:** Checkable conditions for completion (MUST include "All unit tests pass" and "All E2E tests pass")
+     3. **Validate Test Plan (MANDATORY):**
+        - Ensure EVERY functional requirement has corresponding unit test(s)
+        - Ensure EVERY user story has corresponding E2E test scenario(s)
+        - Ensure error conditions and edge cases are covered
+        - If test plan is incomplete, spec is NOT ready for approval
+     4. **Review & Validate:**
+        - Present the spec to the user for approval
+        - Iterate based on feedback
+     5. **Link to Implementation:**
+        - Once approved, proceed with `<develop>` workflow using the spec as the contract
+        - Test implementation MUST follow the test plan in the spec
+  </spec>
+
   <develop>
    - **Goal:** Implement the code for a feature (frontend/backend).
+   - **Prerequisites:** If implementing a new feature, complete `<spec>` workflow first. Read the specification from `specs/features/[feature-name].md`.
    - **Steps:**
      1. Fetch relevant rules (`implement-*.mdc`) using `fetch_rules`.
-     2. Use `edit_file` to implement the required code changes across necessary files (components, API routes, types, etc.). Ensure imports and dependencies are handled.
+     2. **If spec exists:** Read `specs/features/[feature-name].md` to understand the contract (`read_file`).
+     3. Use `edit_file` to implement the required code changes across necessary files (components, API routes, types, etc.). Ensure imports and dependencies are handled.
+     4. **Verify against spec:** Ensure implementation matches the specification contract.
   </develop>
+
+  <tdd>
+   - **Goal:** Implement a feature using Test-Driven Development (TDD) methodology following the Red-Green-Refactor cycle.
+   - **When to Use:** When implementing new features where tests can drive the design, or when user explicitly requests TDD approach.
+   - **Prerequisites:** Complete `<spec>` workflow first. The spec MUST have a comprehensive Testing Strategy section.
+   - **TDD Principles:**
+     - **Red:** Write a failing test first (test what doesn't exist yet)
+     - **Green:** Write minimal code to make the test pass (simplest implementation)
+     - **Refactor:** Improve code quality while keeping all tests passing
+     - **Iterate:** Repeat for each requirement until feature is complete
+   - **Steps:**
+     
+     1. **Preparation:**
+        - Read the specification file `specs/features/[feature-name].md` using `read_file`
+        - Extract all functional requirements (FR-1, FR-2, etc.)
+        - Review the Testing Strategy section in detail - this is your roadmap
+        - Read `docs/architecture.md` to understand testing setup (`read_file`)
+        - Fetch relevant implementation rules using `fetch_rules`
+        - Prioritize requirements: Start with core logic, then edge cases, then integrations
+     
+     2. **Setup Test Infrastructure:**
+        - Verify test framework is configured (pytest, vitest, jest, etc.)
+        - Create test file structure if needed (e.g., `__tests__/[feature-name].test.ts` or `tests/test_[feature-name].py`)
+        - Set up test fixtures, mocks, or test data as specified in spec
+        - Use `run_terminal_cmd` to verify tests can run (e.g., `npm test`, `pytest`)
+     
+     3. **TDD Cycle for Each Requirement:**
+        For EACH functional requirement in the spec, follow this cycle:
+        
+        **Phase 1: RED (Write Failing Test)**
+        a. **Identify Next Requirement:**
+           - Pick the next unimplemented functional requirement from spec
+           - Review the corresponding test case from Testing Strategy section
+           - Understand the expected inputs, outputs, and behavior
+        
+        b. **Write the Test First:**
+           - Use `edit_file` to write a test that describes the desired behavior
+           - Test MUST fail initially (testing non-existent code)
+           - Follow spec's Given/When/Then format if provided
+           - Include:
+             - Test name that describes the requirement
+             - Arrange: Set up test data and mocks
+             - Act: Call the function/method/API that doesn't exist yet
+             - Assert: Define expected outcome
+           - Write ONLY the test, NO implementation code
+        
+        c. **Verify Test Fails (RED):**
+           - Use `run_terminal_cmd` to run the specific test
+           - Confirm it fails for the RIGHT reason (e.g., function not found, not implemented)
+           - If test passes unexpectedly, fix the test - it's not testing the right thing
+           - Document the failure message
+        
+        **Phase 2: GREEN (Make Test Pass)**
+        d. **Write Minimal Implementation:**
+           - Use `edit_file` to create the SIMPLEST code that makes the test pass
+           - Don't worry about perfection - focus on making test green
+           - Implement ONLY what's needed for THIS test, nothing more
+           - Avoid over-engineering or premature optimization
+           - Create necessary files, functions, classes as needed
+        
+        e. **Verify Test Passes (GREEN):**
+           - Use `run_terminal_cmd` to run the test again
+           - Confirm it now PASSES
+           - If it fails, use `<fix>` workflow to debug
+           - Run ALL existing tests to ensure no regression
+           - If other tests fail, fix them before continuing
+        
+        **Phase 3: REFACTOR (Improve Code)**
+        f. **Refactor (Optional but Recommended):**
+           - Review the implementation code for improvements:
+             - Remove duplication (DRY principle)
+             - Improve naming (variables, functions, classes)
+             - Extract reusable functions/utilities
+             - Improve code readability and structure
+             - Optimize performance if needed
+           - Use `edit_file` to apply refactorings
+           - Run ALL tests after EACH refactoring using `run_terminal_cmd`
+           - If any test fails during refactoring, revert and try different approach
+           - CRITICAL: Tests must remain green throughout refactoring
+        
+        g. **Commit Progress (Optional):**
+           - Use `<commit>` workflow to save progress: "test: add test for [requirement]" or "feat: implement [requirement] (TDD)"
+           - Helps create granular git history showing TDD progression
+     
+     4. **Handle Edge Cases and Error Conditions:**
+        - After core functionality works, repeat TDD cycle for edge cases:
+          - Invalid inputs (null, empty, wrong type)
+          - Boundary conditions (min/max values, empty arrays, etc.)
+          - Error scenarios (network failures, database errors, etc.)
+        - For each edge case:
+          - RED: Write test for edge case that fails
+          - GREEN: Add code to handle edge case
+          - REFACTOR: Clean up if needed
+        - Run full test suite after each edge case using `run_terminal_cmd`
+     
+     5. **Integration Tests (if applicable):**
+        - Once unit tests pass, write integration tests following same TDD cycle
+        - Test interactions between modules, API endpoints, database, etc.
+        - For each integration test:
+          - RED: Write integration test that fails
+          - GREEN: Wire up components to make it pass
+          - REFACTOR: Improve integration code
+        - Use `run_terminal_cmd` to run integration tests
+     
+     6. **E2E Tests (if applicable):**
+        - Once integration works, write E2E tests for user flows
+        - Follow same TDD cycle for each user journey
+        - For each E2E scenario:
+          - RED: Write E2E test that fails
+          - GREEN: Complete the user flow implementation
+          - REFACTOR: Improve UX/UI code
+        - Use `run_terminal_cmd` to run E2E tests (e.g., `npm run cypress:run`)
+     
+     7. **Continuous Validation:**
+        - Run full test suite frequently using `run_terminal_cmd`
+        - Check test coverage: `run_terminal_cmd` (e.g., `pytest --cov`, `npm test -- --coverage`)
+        - Compare coverage to spec's target (e.g., 80%, 90%)
+        - If coverage is below target, identify untested paths and write tests (RED-GREEN-REFACTOR)
+     
+     8. **Verify Against Spec:**
+        - Review spec's functional requirements checklist
+        - Ensure EVERY requirement has corresponding tests
+        - Ensure ALL tests pass
+        - Verify acceptance criteria are met
+        - Check non-functional requirements (performance, maintainability)
+     
+     9. **Final Refactoring Pass:**
+        - Review ALL implementation code for final improvements:
+          - Code smells (long functions, duplicated code, etc.)
+          - Documentation and comments for complex logic
+          - Type safety (TypeScript types, Python type hints)
+          - Error handling and logging
+        - Apply refactorings using `edit_file`
+        - Run full test suite after each change
+        - CRITICAL: All tests must remain green
+     
+     10. **Documentation:**
+         - Update relevant documentation files:
+           - `docs/ai_changelog.md` - Feature implementation summary
+           - `docs/learnings.md` - Any TDD insights or patterns discovered
+           - `docs/todo.md` - Mark tasks complete
+         - Use `<record>` workflow for this
+     
+     11. **Final Validation:**
+         - Run complete test suite one final time: `run_terminal_cmd`
+         - Verify all tests pass (unit + integration + E2E)
+         - Check test coverage meets or exceeds spec target
+         - Ensure no test is skipped or marked as "todo"
+         - Review test output for any warnings
+   
+   - **TDD Best Practices:**
+     - **Baby Steps:** Write smallest possible test, then smallest code to pass it
+     - **Test First, Always:** Never write implementation before writing the test
+     - **One Test at a Time:** Focus on making one test pass before writing next
+     - **Refactor Fearlessly:** With tests as safety net, refactor aggressively
+     - **Keep Tests Fast:** Unit tests should run in milliseconds
+     - **Meaningful Test Names:** Test names should describe what they verify
+     - **Arrange-Act-Assert:** Structure tests clearly (Given-When-Then)
+     - **No Skipping:** Don't skip the RED phase - verify test actually fails first
+     - **Test Behavior, Not Implementation:** Test what code does, not how it does it
+   
+   - **When TDD is Most Valuable:**
+     - New features with clear requirements
+     - Business logic and algorithms
+     - API endpoints and service layers
+     - Utility functions and data transformations
+     - Bug fixes (write test that reproduces bug, then fix it)
+   
+   - **When to Consider Alternative Approaches:**
+     - Prototyping or exploring unfamiliar APIs (research first, TDD later)
+     - UI/visual design (hard to test-drive visual appearance)
+     - Complex UI interactions requiring browser testing (consider <develop> + <validate>)
+   
+   - **Integration with Other Workflows:**
+     - Use `<fix>` if tests fail unexpectedly during GREEN phase
+     - Use `<commit>` frequently to save TDD progress
+     - Use `<record>` at the end to document completion
+     - Follow with `<review>` to validate against spec comprehensively
+   
+   - **TDD Progress Tracking:**
+     - Maintain a mental (or written) checklist of requirements
+     - Track: ❌ No test → 🔴 Test written (RED) → 🟢 Test passing (GREEN) → ✅ Refactored
+     - Celebrate each requirement completed with passing tests
+     - Update `docs/todo.md` as requirements are completed
+
+  </tdd>
 
   <invent>
     - **Goal:** Create a new command-line tool.
@@ -159,4 +398,193 @@ Define high-level tasks. Follow the `## Request Processing Steps` below to execu
            - Avoid idioms that may not translate well.
 
   </localize>
+
+  <review>
+    - **Goal:** Conduct a comprehensive review of an implementation against its specification, including security, architecture, performance, and testing audits.
+    - **When to Use:** After feature implementation is complete, before marking as production-ready, or when user requests "review against spec" or "honest review".
+    - **Steps:**
+      
+      1. **Preparation:**
+         - Identify the specification file (e.g., `specs/features/[feature-name].md`)
+         - Read the complete specification using `read_file`
+         - Identify all files created/modified for this feature using `codebase_search` or `grep_search`
+         - Read all implementation files using `read_file`
+         - Check for test files using `file_search` or `grep_search` (e.g., `*.test.ts`, `*.test.py`, `*.spec.js`)
+      
+      2. **Spec Compliance Audit:**
+         a. **Requirements Verification:**
+            - Create a checklist of all functional requirements (FR-1, FR-2, etc.) from spec
+            - For each requirement, verify if implemented:
+              - ✅ Fully implemented and working
+              - ⚠️ Partially implemented or working with limitations
+              - ❌ Not implemented
+            - Document evidence (file names, line numbers, test results)
+         
+         b. **Non-Functional Requirements:**
+            - Performance: Check if performance targets met (use `run_terminal_cmd` for benchmarks if needed)
+            - Scalability: Review data structures and algorithms
+            - Maintainability: Check code organization and documentation
+            - Accessibility: Verify fallback mechanisms, ARIA labels, keyboard navigation
+         
+         c. **Files Verification:**
+            - Compare "Files to Create" section in spec vs actual files created using `list_dir`
+            - Compare "Files to Modify" section vs actual files modified using `git_diff` or `codebase_search`
+            - Document any missing or extra files
+         
+         d. **API Contract Verification:**
+            - For each endpoint specified, verify implementation exists
+            - Check request/response formats match spec
+            - Verify error codes and edge cases handled
+         
+         e. **Test Coverage Audit:**
+            - **Unit Tests:** Compare spec's test cases vs implemented tests
+              - List missing unit tests explicitly
+              - Calculate actual coverage using `run_terminal_cmd` (e.g., `pytest --cov`, `npm test -- --coverage`)
+              - Compare to spec's coverage targets
+            - **Integration Tests:** Verify all integration scenarios from spec are tested
+            - **E2E Tests:** Verify all user flows from spec are tested
+            - **CRITICAL:** Identify gaps - tests specified but not written
+         
+         f. **Acceptance Criteria:**
+            - For each AC in spec, mark as met ✅ or unmet ❌
+            - Provide evidence for each (test results, manual verification, etc.)
+            - Calculate percentage: X/Y acceptance criteria met
+      
+      3. **Security Audit:**
+         a. **Input Validation:**
+            - Check all user inputs are validated using `grep_search` for validation patterns
+            - Look for SQL injection vulnerabilities (raw queries, string concatenation)
+            - Look for XSS vulnerabilities (innerHTML, dangerouslySetInnerHTML, eval)
+            - Check file upload validation (if applicable)
+         
+         b. **Authentication & Authorization:**
+            - Verify authentication mechanisms using `codebase_search`
+            - Check for hardcoded credentials using `grep_search` for common patterns
+            - Review session management (timeouts, secure flags)
+            - Check API endpoint authorization
+         
+         c. **Data Protection:**
+            - Check for secrets in code using `grep_search` (API keys, passwords, tokens)
+            - Verify sensitive data encryption (passwords, tokens)
+            - Review logging - ensure no sensitive data logged
+            - Check environment variable usage for secrets
+         
+         d. **Dependencies:**
+            - List all dependencies from package.json/requirements.txt using `read_file`
+            - Run security audit using `run_terminal_cmd` (e.g., `npm audit`, `pip-audit`, `safety check`)
+            - Check for outdated packages with known vulnerabilities
+         
+         e. **CORS & CSP:**
+            - Check CORS configuration (if backend API)
+            - Verify Content Security Policy headers
+            - Review allowed origins and methods
+      
+      4. **Architecture Audit:**
+         a. **Code Organization:**
+            - Verify separation of concerns (UI, business logic, data access)
+            - Check for circular dependencies using `codebase_search`
+            - Review module boundaries and interfaces
+            - Identify code smells (God classes, duplicated code)
+         
+         b. **Design Patterns:**
+            - Identify patterns used (MVC, Repository, Factory, etc.)
+            - Verify consistency with project architecture documented in `docs/architecture.md`
+            - Check if patterns are applied correctly
+         
+         c. **Data Flow:**
+            - Trace data flow from UI → API → Database (or reverse)
+            - Verify error propagation and handling
+            - Check for proper async/await usage (no callback hell)
+            - Review state management (if frontend)
+         
+         d. **Scalability:**
+            - Check for N+1 query problems using `grep_search`
+            - Review pagination implementation
+            - Look for potential memory leaks (unclosed connections, event listeners)
+            - Check for inefficient algorithms (O(n²) or worse)
+         
+         e. **Maintainability:**
+            - Check function/method length (should be <50 lines generally)
+            - Verify code comments for complex logic
+            - Check naming conventions (clear, descriptive)
+            - Review error messages (user-friendly, actionable)
+      
+      5. **Performance Audit:**
+         a. **Backend Performance:**
+            - Run performance tests if they exist using `run_terminal_cmd`
+            - Check database query efficiency
+            - Review API response times from test results or logs
+            - Look for caching opportunities
+         
+         b. **Frontend Performance:**
+            - Check bundle sizes (if applicable)
+            - Look for unnecessary re-renders (React) or watchers (Vue)
+            - Verify lazy loading for images/components
+            - Check for memory leaks in event listeners
+         
+         c. **Asset Optimization:**
+            - Verify image optimization (size, format, compression)
+            - Check for minification of JS/CSS in production builds
+            - Review font loading strategy
+      
+      6. **Documentation Audit:**
+         - Verify README updated with new feature using `read_file` on README
+         - Check API documentation updated (if backend feature)
+         - Verify inline code comments for complex logic
+         - Check if `docs/ai_changelog.md` has entry for this feature
+         - Verify `docs/todo.md` tasks marked complete
+         - Review `docs/learnings.md` for any new patterns or solutions
+      
+      7. **Generate Review Report:**
+         - Create comprehensive review report using `edit_file` in `/temp/review-[feature-name]-[date].md`
+         - Include all findings organized by category:
+           - **Executive Summary:** Overall compliance percentage, production readiness
+           - **Spec Compliance:** Line-by-line comparison, what's missing
+           - **Security Findings:** Vulnerabilities found (CRITICAL, HIGH, MEDIUM, LOW)
+           - **Architecture Findings:** Design issues, refactoring suggestions
+           - **Performance Findings:** Bottlenecks, optimization opportunities
+           - **Test Coverage:** Actual vs target, missing tests
+           - **Documentation Status:** What's complete, what's missing
+           - **Recommendations:** Prioritized list of fixes needed
+           - **Conclusion:** Honest assessment - X% complete, production ready? Yes/No/Partial
+         - Use tables, checklists, and clear formatting
+         - Be brutally honest - identify gaps, don't sugarcoat
+      
+      8. **Present Findings:**
+         - Display summary to user with key metrics:
+           - Overall compliance: X%
+           - Critical gaps: [list]
+           - Security issues: X critical, Y high, Z medium
+           - Missing tests: [list]
+           - Production ready: Yes/No/Partial
+         - Ask user if they want to address gaps now or accept current state
+      
+      9. **Optional Remediation:**
+         - If user wants to fix gaps, create action plan:
+           - Prioritize critical security issues first
+           - Then missing required tests
+           - Then spec compliance gaps
+           - Then nice-to-haves (performance, refactoring)
+         - Use appropriate workflows to fix (<fix>, <validate>, <develop>)
+         - Re-run review after fixes to verify improvements
+    
+    - **Review Principles:**
+      - **Be Honest:** Don't claim 100% if it's actually 78%. Identify real gaps.
+      - **Be Specific:** Cite line numbers, file names, test names. Provide evidence.
+      - **Be Constructive:** For each issue, suggest a fix or next step.
+      - **Be Thorough:** Check everything the spec requires, not just what was easy to implement.
+      - **Be Fair:** Acknowledge what was done well, not just gaps.
+      - **Be Practical:** Distinguish between "must fix before production" vs "nice to have later".
+    
+    - **Common Gaps to Watch For:**
+      - Frontend tests specified but not written (vitest, jest)
+      - Sprite/asset generation skipped (using fallbacks instead)
+      - Separate CSS files specified but styles embedded instead
+      - Only happy path tested, error cases ignored
+      - Some personas/variants tested but not all
+      - Responsive design specified but not tested
+      - Security best practices assumed but not verified
+      - Performance targets specified but not measured
+
+  </review>
 </workflows>

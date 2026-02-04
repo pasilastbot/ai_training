@@ -367,6 +367,26 @@ def build_cli_function_declarations() -> List[Dict[str, Any]]:
                 "required": ["file"],
             },
         },
+        {
+            "name": "sprite_animator",
+            "description": "Generate sprite animation frames for games using AI. Creates multiple frames for animations like walk, run, jump, idle, attack, fly, swim, death. Can optionally combine into sprite sheets.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "character": {"type": "string", "description": "Character description (e.g., 'pixel art knight', 'cute dragon')"},
+                    "animation": {"type": "string", "enum": ["walk", "run", "jump", "idle", "attack", "fly", "swim", "death"], "description": "Type of animation to generate"},
+                    "frames": {"type": "integer", "minimum": 2, "maximum": 16, "default": 8, "description": "Number of animation frames"},
+                    "style": {"type": "string", "default": "pixel art, 2D game sprite, centered, white background", "description": "Art style description"},
+                    "output": {"type": "string", "description": "Output filename for sprite sheet (if sprite_sheet is true)"},
+                    "folder": {"type": "string", "default": "public/sprites", "description": "Output folder path"},
+                    "model": {"type": "string", "enum": ["flux-schnell", "sdxl"], "default": "flux-schnell", "description": "AI model: flux-schnell (fast) or sdxl (quality)"},
+                    "sprite_sheet": {"type": "boolean", "default": False, "description": "Combine frames into a single sprite sheet image"},
+                    "size": {"type": "string", "default": "64x64", "description": "Size of each frame in sprite sheet (WxH)"},
+                    "transparent": {"type": "boolean", "default": False, "description": "Attempt to remove white/light backgrounds"},
+                },
+                "required": ["character", "animation"],
+            },
+        },
     ]
 
 
@@ -629,6 +649,27 @@ def execute_cli_function(name: str, args: Dict[str, Any]) -> Dict[str, Any]:
         code, out, err = _run_cmd(cmd)
         return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
 
+    if name == "sprite_animator":
+        cmd = ["npm", "run", "sprite-animator", "--", "-c", args.get("character", ""), "-a", args.get("animation", "")]
+        if args.get("frames") is not None:
+            cmd += ["-n", str(args["frames"])]
+        if args.get("style"):
+            cmd += ["-s", args["style"]]
+        if args.get("output"):
+            cmd += ["-o", args["output"]]
+        if args.get("folder"):
+            cmd += ["-f", args["folder"]]
+        if args.get("model"):
+            cmd += ["-m", args["model"]]
+        if args.get("sprite_sheet"):
+            cmd += ["--sprite-sheet"]
+        if args.get("size"):
+            cmd += ["--size", args["size"]]
+        if args.get("transparent"):
+            cmd += ["--transparent"]
+        code, out, err = _run_cmd(cmd)
+        return {"ok": code == 0, "stdout": out, "stderr": err, "cmd": cmd}
+
     return {"ok": False, "error": f"Unknown function: {name}", "args": args}
 
 
@@ -809,6 +850,7 @@ You have access to {len(cli_functions)} specialized functions:
 - **Text-to-speech**: Use qwen3_tts to convert text to natural speech with three modes: voice (with style instructions), clone (from reference audio), or design (from voice description)
 - **Audio playback**: Use play_audio to play audio files through the system speaker - great for playing generated speech
 - **"Say" command**: When user says "say X" or "say 'X'", automatically call qwen3_tts AND play_audio sequentially without asking for confirmation - this is a shortcut for generating and playing speech immediately
+- **Game sprite animations**: Use sprite_animator to generate animation frames for game characters (walk, run, jump, idle, attack, fly, swim, death animations) - can create individual frames or combine into sprite sheets
 
 ### 4. RESPONSE PATTERNS
 - When you call a function, explain what you're doing and why

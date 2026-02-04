@@ -22,8 +22,9 @@ Follow these steps sequentially for **every** user request and follow behavioral
         Plan Overview: [Briefly mention key steps/tools, e.g., "Read docs, formulate prompt for edit_file, run tests"]
         ```
 3.  **Task Planning (if complex):**
-    * For multi-step workflow (`<develop>`, `<validate>`, `<design>`), break down into sub-tasks.
-    * Use `edit_file` to add sub-tasks to `todo.md` (marked ❌). Include development, testing, documentation steps.
+    * For multi-step workflow (`<spec>`, `<develop>`, `<validate>`, `<design>`), break down into sub-tasks.
+    * **For new features:** Consider if a specification should be created first using `<spec>` workflow.
+    * Use `edit_file` to add sub-tasks to `todo.md` (marked ❌). Include specification, development, testing, documentation steps.
     * Inform the user the plan is in `todo.md`.
 4.  **Workflow Execution:**
     * State: `Starting workflow: <workflow name>...`

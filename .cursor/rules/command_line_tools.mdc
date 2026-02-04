@@ -282,23 +282,61 @@ mcp_puppeteer_puppeteer_evaluate
  "npm run qwen3-tts -- -t \"A beautiful story begins\" -m design -d \"warm male storyteller with gentle pacing\" -o story-intro.wav"
  ]
  },
- "play-audio": {
- "description": "Play audio files from the command line using the system's native audio player",
- "tool": "run_terminal_cmd",
- "command": "npm run play-audio",
- "status": "✅ Tested and working",
- "options": {
- "file": "Required: Path to audio file to play (can be positional or with -f flag)",
- "volume": "(Optional) Volume level 0-100 (macOS only)",
- "background": "(Optional) Play in background without waiting for completion"
- },
- "requires": [],
- "examples": [
- "npm run play-audio -- public/audio/speech.wav",
- "npm run play-audio -- -f public/audio/speech.wav -v 50",
- "npm run play-audio -- public/audio/speech.wav -b"
- ]
- },
+     "play-audio": {
+     "description": "Play audio files from the command line using the system's native audio player",
+     "tool": "run_terminal_cmd",
+     "command": "npm run play-audio",
+     "status": "✅ Tested and working",
+     "options": {
+     "file": "Required: Path to audio file to play (can be positional or with -f flag)",
+     "volume": "(Optional) Volume level 0-100 (macOS only)",
+     "background": "(Optional) Play in background without waiting for completion"
+     },
+     "requires": [],
+     "examples": [
+     "npm run play-audio -- public/audio/speech.wav",
+     "npm run play-audio -- -f public/audio/speech.wav -v 50",
+     "npm run play-audio -- public/audio/speech.wav -b"
+     ]
+     },
+     "sprite-animator": {
+     "description": "Generate sprite animation frames for game characters using AI. Creates sequences for walk, run, jump, idle, attack, fly, swim, and death animations. Can output individual frames or combine into sprite sheets.",
+     "tool": "run_terminal_cmd",
+     "command": "npm run sprite-animator",
+     "status": "✅ Ready to use",
+     "options": {
+     "character": "Required: Character description (e.g., 'pixel art knight', 'cute dragon', '8-bit wizard')",
+     "animation": "Required: Animation type - walk, run, jump, idle, attack, fly, swim, or death",
+     "frames": "(Optional) Number of frames to generate (2-16, default: 8)",
+     "style": "(Optional) Art style description (default: 'pixel art, 2D game sprite, centered, white background')",
+     "output": "(Optional) Output filename for sprite sheet (requires --sprite-sheet flag)",
+     "folder": "(Optional) Output folder path (default: public/sprites)",
+     "model": "(Optional) AI model: flux-schnell (fast) or sdxl (quality) (default: flux-schnell)",
+     "sprite-sheet": "(Optional) Combine all frames into a single sprite sheet image",
+     "size": "(Optional) Size of each frame in sprite sheet, format: WIDTHxHEIGHT (default: 64x64)",
+     "transparent": "(Optional) Attempt to remove white/light backgrounds for transparency"
+     },
+     "requires": [
+     "REPLICATE_API_TOKEN in .env.local"
+     ],
+     "examples": [
+     "# Generate 8-frame walk cycle for pixel art knight",
+     "npm run sprite-animator -- -c \"pixel art knight\" -a walk -n 8",
+     "",
+     "# Create a sprite sheet with 12 run animation frames",
+     "npm run sprite-animator -- -c \"cute dragon\" -a fly -n 12 --sprite-sheet -o dragon_fly.png --size 128x128",
+     "",
+     "# Generate attack animation with transparent background",
+     "npm run sprite-animator -- -c \"8-bit wizard\" -a attack -n 6 --transparent -s \"retro pixel art, 16x16 sprite\"",
+     "",
+     "# High quality jump animation using SDXL model",
+     "npm run sprite-animator -- -c \"cyberpunk hero\" -a jump -n 10 -m sdxl -s \"detailed pixel art, cyberpunk style\"",
+     "",
+     "# Complete sprite sheet with multiple sizes",
+     "npm run sprite-animator -- -c \"fantasy hero\" -a idle -n 4 --sprite-sheet --size 256x256 -o hero_idle_sheet.png"
+     ],
+     "note": "Each animation type has predefined motion sequences. The tool generates frames with consistent character design across the animation cycle. Sprite sheets arrange frames in a grid layout suitable for game engines."
+     },
  "github-cli": {
       "description": "Interact with GitHub repositories, pull requests, issues, and workflows directly from the command line",
       "tool": "run_terminal_cmd",

@@ -1,0 +1,13 @@
+{
+    "version": 1,
+    "hooks": {
+      "afterFileEdit": [{ "command": ".cursor/hooks/format.sh" }],
+      "beforeShellExecution": [
+      {
+        "type": "prompt",
+        "prompt": "Does this command look safe to execute?",
+        "timeout": 10
+      }
+    ]
+    }
+  }

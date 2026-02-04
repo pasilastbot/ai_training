@@ -138,3 +138,19 @@ npm run semantic-search -- "Python history" --collection python-docs  # Search s
 npm run semantic-search -- "AI" --n-results 10 --format json          # Get more results in JSON format
 npm run semantic-search -- --list-collections                         # List available collections
 ```
+
+## Sprite Animation Generator
+Generate game character animation frames with AI:
+```bash
+# Generate 8-frame walk animation
+npm run sprite-animator -- -c "pixel art knight" -a walk
+
+# Create sprite sheet with 12 frames
+npm run sprite-animator -- -c "cute dragon" -a fly -n 12 --sprite-sheet -o dragon_fly.png
+
+# Generate with transparent background
+npm run sprite-animator -- -c "8-bit wizard" -a attack -n 6 --transparent
+
+# Available animations: walk, run, jump, idle, attack, fly, swim, death
+# See tools/sprite-animator.README.md for detailed documentation
+```
