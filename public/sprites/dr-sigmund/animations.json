@@ -1,0 +1,31 @@
+{
+  "character": "Dr. Sigmund 2000",
+  "frameSize": { "width": 128, "height": 128 },
+  "animations": {
+    "neutral": {
+      "frames": ["neutral_000.png", "neutral_001.png", "neutral_002.png", "neutral_003.png"],
+      "frameDuration": 200,
+      "loop": true
+    },
+    "thinking": {
+      "frames": ["thinking_000.png", "thinking_001.png", "thinking_002.png", "thinking_003.png"],
+      "frameDuration": 300,
+      "loop": true
+    },
+    "amused": {
+      "frames": ["amused_000.png", "amused_001.png", "amused_002.png", "amused_003.png"],
+      "frameDuration": 150,
+      "loop": true
+    },
+    "concerned": {
+      "frames": ["concerned_000.png", "concerned_001.png", "concerned_002.png", "concerned_003.png"],
+      "frameDuration": 250,
+      "loop": true
+    },
+    "shocked": {
+      "frames": ["shocked_000.png", "shocked_001.png", "shocked_002.png", "shocked_003.png"],
+      "frameDuration": 100,
+      "loop": true
+    }
+  }
+}

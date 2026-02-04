@@ -26,11 +26,10 @@ interface NanoBananaOptions {
 }
 
 async function generateNanoBananaImage(options: NanoBananaOptions): Promise<void> {
+  const isEditMode = options.mode === 'edit' || options.inputImage;
   try {
     // Initialize Google GenAI with API key
     const ai = new GoogleGenAI({ apiKey: API_KEY });
-
-    const isEditMode = options.mode === 'edit' || options.inputImage;
     
     if (isEditMode) {
       console.log("🍌 Editing image with nano-banana theme using Gemini...");
@@ -83,10 +82,13 @@ async function generateNanoBananaImage(options: NanoBananaOptions): Promise<void
       contents = options.prompt;
     }
 
-    // Generate/edit image using gemini-2.5-flash-image-preview
+    // Generate/edit image using gemini-2.5-flash-image
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-image-preview",
+      model: "gemini-2.5-flash-image",
       contents: contents,
+      config: {
+        responseModalities: ["TEXT", "IMAGE"],
+      },
     });
 
     if (!response.candidates || response.candidates.length === 0) {

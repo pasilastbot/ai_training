@@ -49,6 +49,7 @@
 - ❌ Create a unified web dashboard for all tools
 - ❌ Add image gallery view for generated images
 - ❌ Implement tool result caching
+- ✅ Add “Hot Mic Consult” (spicy doctor-to-doctor transcript) to `/api/chat`
 
 ---
 
@@ -96,6 +97,44 @@
 - ✅ Generate test coverage report (77% coverage)
 - ✅ Create comprehensive test report (TEST_REPORT.md)
 - ✅ Update README with persona feature
+
+---
+
+## Multi-Persona Panel Discussion Feature
+
+> Spec: `specs/features/multi-persona-panel-discussion.md`
+
+### Phase 1–5: Core Panel Engine (TDD)
+- ✅ Panel config loading (`config/panel_configs.json`)
+- ✅ Panel session management (in-memory)
+- ✅ Discussion context building with recent exchange limiting
+- ✅ Persona response generation (Gemini) + reference detection
+- ✅ Moderator intro + summary generation
+
+### Phase 6: API Endpoints
+- ✅ Implement panel endpoints in `psychiatrist_api.py`
+  - ✅ `GET /api/panel/configs`
+  - ✅ `POST /api/panel/start`
+  - ✅ `POST /api/panel/continue`
+  - ✅ `POST /api/panel/summarize`
+  - ✅ `POST /api/panel/end`
+- ✅ Add integration tests for all panel endpoints
+
+### Phase 7: Edge Cases
+- ✅ Validate custom panel size (2–4 personas)
+- ✅ Session expiration + cleanup (`SESSION_TTL_SECONDS`)
+- ✅ Delete/end session lifecycle helpers
+- ✅ Unit tests covering custom panels + expiry cleanup
+
+### Phase 8: Frontend Integration
+- ✅ Add Panel Mode UI (Single vs Panel toggle) in `public/psychiatrist/index.html`
+- ✅ Add panel-mode frontend logic in `public/psychiatrist/app.js`
+- ✅ Add frontend integration tests (`vitest`) for 4 panel-mode scenarios
+
+### Phase 9: Performance & Polish
+- ✅ Opportunistic cleanup of expired sessions on panel API requests
+- ✅ Cache panel config loads by path to reduce disk reads
+- ✅ Update backend/frontend documentation for panel mode
 
 ---
 

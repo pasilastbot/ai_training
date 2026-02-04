@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Therapist - Choose Your Counselor</title>
+    <link rel="stylesheet" href="persona-select.css">
+</head>
+<body>
+    <!-- ============================================ -->
+    <!-- PERSONA SELECTION SCREEN -->
+    <!-- ============================================ -->
+    <div class="persona-select-screen" id="personaSelectScreen">
+        <div class="persona-select-header">
+            <h1>Choose Your Therapist</h1>
+            <p>Select a persona that matches your mood or preference</p>
+        </div>
+
+        <!-- Mode Toggle -->
+        <div class="mode-toggle">
+            <button class="mode-btn active" id="modeSingleBtn" onclick="setMode('single')">Single Therapist</button>
+            <button class="mode-btn" id="modePanelBtn" onclick="setMode('panel')">Panel Discussion</button>
+        </div>
+
+        <!-- Panel Configurations (shown in Panel Mode) -->
+        <div class="panel-config-section hidden" id="panelConfigSection">
+            <h2>Choose a Panel</h2>
+            <div class="panel-configs-grid" id="panelConfigsGrid">
+                <div class="loading-personas">Loading available panels...</div>
+            </div>
+            <div class="panel-options">
+                <label class="panel-option">
+                    <input type="checkbox" id="includeModerator" checked>
+                    Include moderator (Dr. Panel)
+                </label>
+                <p class="panel-hint">Or build a custom panel by selecting <b>2–4</b> therapists below.</p>
+            </div>
+        </div>
+        
+        <div class="personas-grid" id="personasGrid">
+            <div class="loading-personas">Loading available therapists...</div>
+        </div>
+        
+        <button class="start-session-btn" id="startSessionBtn" onclick="startSession()" disabled>
+            Start Session
+        </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- CHAT SCREEN -->
+    <!-- ============================================ -->
+    <div class="chat-screen" id="chatScreen">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1 id="therapistName">AI Therapist</h1>
+                <p id="therapistTagline">~ Virtual Counselor ~ <span class="blink">ONLINE</span></p>
+            </div>
+
+            <!-- Main Panel -->
+            <div class="main-panel">
+                <!-- Character Display -->
+                <div class="character-container" id="characterContainer">
+                    <canvas id="spriteCanvas" class="sprite-canvas" width="128" height="128"></canvas>
+                    <div class="sprite-label" id="spriteLabel">*listening*</div>
+                </div>
+
+                <!-- ASCII Art (Fallback) -->
+                <div class="ascii-container" id="asciiContainer">
+                    <pre class="ascii-art" id="asciiArt">*listening*</pre>
+                </div>
+
+                <!-- Chat Log -->
+                <div class="chat-container" id="chatContainer">
+                    <div class="welcome" id="welcomeMessage">
+                        <p><b>Welcome!</b></p>
+                        <p>Loading...</p>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div class="loading" id="loading">
+                    <span class="blink">*** PROCESSING... PLEASE WAIT ***</span>
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-container">
+                    <input type="text" class="input-field" id="messageInput" 
+                           placeholder="Share your thoughts..." 
+                           onkeypress="handleKeyPress(event)">
+                    <button class="btn btn-send" onclick="sendMessage()">SEND</button>
+                    <button class="btn btn-reset" onclick="resetChat()">RESET</button>
+                    <button class="btn btn-change" onclick="showChangeConfirmation()">CHANGE</button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>Powered by Gemini AI | <span id="currentPersonaId"></span></p>
+                <div class="visitor-counter">Session: <span id="visitorCount">000001</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- CONFIRMATION MODAL -->
+    <!-- ============================================ -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content">
+            <h2>Change Therapist?</h2>
+            <p>Your current conversation will be lost. Are you sure you want to switch therapists?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-reset" onclick="confirmChangeTherapist()">Yes, Change</button>
+                <button class="btn" onclick="hideModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sprite Engine -->
+    <script src="sprite-engine.js"></script>
+
+    <!-- App logic (single + panel modes) -->
+    <script type="module" src="app.js"></script>
+    
+    <script>/*
+        // ============================================
+        // STATE
+        // ============================================
+        let personas = [];
+        let selectedPersonaId = null;
+        let currentPersona = null;
+        let chatHistory = [];
+        let spriteEngine = null;
+        let useSpriteMode = true;
+
+        const MOOD_LABELS = {
+            'neutral': '*listening*',
+            'thinking': '*pondering*',
+            'amused': '*chuckling*',
+            'concerned': '*worried*',
+            'shocked': '*surprised*'
+        };
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        window.onload = async function() {
+            await loadPersonas();
+            
+            // Random session count
+            document.getElementById('visitorCount').textContent = 
+                String(Math.floor(Math.random() * 9000) + 1000).padStart(6, '0');
+        };
+
+        // ============================================
+        // PERSONA LOADING
+        // ============================================
+        async function loadPersonas() {
+            try {
+                const response = await fetch('/api/personas');
+                const data = await response.json();
+                personas = data.personas;
+                selectedPersonaId = data.defaultPersonaId;
+                renderPersonaCards();
+            } catch (error) {
+                console.error('Failed to load personas:', error);
+                document.getElementById('personasGrid').innerHTML = 
+                    '<p style="color: red; text-align: center;">Failed to load therapists. Please refresh the page.</p>';
+            }
+        }
+
+        function renderPersonaCards() {
+            const grid = document.getElementById('personasGrid');
+            grid.innerHTML = '';
+            
+            personas.forEach(persona => {
+                const card = document.createElement('div');
+                card.className = 'persona-card' + (persona.id === selectedPersonaId ? ' selected' : '');
+                card.onclick = () => selectPersona(persona.id);
+                
+                // Get a simple ASCII preview
+                const asciiPreview = getAsciiPreview(persona);
+                
+                card.innerHTML = `
+                    <div class="persona-avatar" style="color: ${persona.theme?.terminalGreen || '#00FF00'}; border-color: ${persona.theme?.terminalGreen || '#00FF00'};">${asciiPreview}</div>
+                    <h3>${persona.name}</h3>
+                    <p class="tagline">"${persona.tagline}"</p>
+                    <span class="era-badge" style="background: ${persona.theme?.accent || '#e94560'};">${persona.era}</span>
+                    <p class="description">${persona.description}</p>
+                `;
+                
+                grid.appendChild(card);
+            });
+            
+            updateStartButton();
+        }
+
+        function getAsciiPreview(persona) {
+            // Return a simplified ASCII face for preview
+            const previewMap = {
+                'dr-sigmund-2000': ' .---.\n/ o o \\\n|  ~  |\n\\ === /\n \'---\'',
+                'dr-luna-cosmos': '  *  *\n  ◐  \n \\ _ /\n  | |\n *\' \'*',
+                'dr-rex-hardcastle': ' _____\n/     \\\n| -  - |\n|  _  |\n\\_===_/',
+                'dr-pixel': ' ╔═══╗\n ║●  ●║\n ║  ▽ ║\n ╚═▀═╝\n  ◄►◄►',
+                'dr-ada-sterling': ' ┌───┐\n │◦ ◦│\n │ ‿ │\n └─┬─┘\n  ═══',
+                'captain-whiskers': ' /\\_/\\\n( o.o )\n > ^ <\n/|   |\\\n(_|_|_)'
+            };
+            return previewMap[persona.id] || ' (?)\n (?)\n (?)';
+        }
+
+        function selectPersona(personaId) {
+            selectedPersonaId = personaId;
+            
+            // Update card selection visuals
+            document.querySelectorAll('.persona-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            updateStartButton();
+        }
+
+        function updateStartButton() {
+            const btn = document.getElementById('startSessionBtn');
+            if (selectedPersonaId) {
+                btn.disabled = false;
+                const persona = personas.find(p => p.id === selectedPersonaId);
+                btn.textContent = `Start Session with ${persona?.name || 'Therapist'}`;
+            } else {
+                btn.disabled = true;
+                btn.textContent = 'Select a Therapist';
+            }
+        }
+
+        // ============================================
+        // SESSION START
+        // ============================================
+        async function startSession() {
+            if (!selectedPersonaId) return;
+            
+            // Get full persona details
+            try {
+                const response = await fetch(`/api/personas/${selectedPersonaId}`);
+                currentPersona = await response.json();
+            } catch (error) {
+                console.error('Failed to load persona details:', error);
+                currentPersona = personas.find(p => p.id === selectedPersonaId);
+            }
+            
+            // Apply theme
+            applyTheme(currentPersona.theme);
+            
+            // Update UI
+            document.getElementById('therapistName').textContent = currentPersona.name;
+            document.getElementById('therapistTagline').textContent = 
+                `~ ${currentPersona.tagline} ~ `;
+            document.getElementById('therapistTagline').innerHTML += '<span class="blink">ONLINE</span>';
+            document.getElementById('currentPersonaId').textContent = currentPersona.id;
+            
+            // Set welcome message
+            const welcomeHtml = `
+                <p><b>Welcome!</b></p>
+                <p>${currentPersona.welcomeMessage || 'How can I help you today?'}</p>
+            `;
+            document.getElementById('welcomeMessage').innerHTML = welcomeHtml;
+            
+            // Set initial ASCII art
+            if (currentPersona.asciiArt && currentPersona.asciiArt.neutral) {
+                document.getElementById('asciiArt').textContent = currentPersona.asciiArt.neutral;
+            }
+            
+            // Update page title
+            document.title = `${currentPersona.name} - AI Therapist`;
+            
+            // Switch screens
+            document.getElementById('personaSelectScreen').classList.add('hidden');
+            document.getElementById('chatScreen').classList.add('active');
+            
+            // Initialize sprite engine with persona's sprite path
+            await initSpriteEngine(currentPersona.spritePath);
+            
+            // Focus input
+            document.getElementById('messageInput').focus();
+        }
+
+        // ============================================
+        // THEMING
+        // ============================================
+        function applyTheme(theme) {
+            if (!theme) return;
+            
+            const root = document.documentElement;
+            
+            if (theme.primary) root.style.setProperty('--primary', theme.primary);
+            if (theme.secondary) root.style.setProperty('--secondary', theme.secondary);
+            if (theme.accent) root.style.setProperty('--accent', theme.accent);
+            if (theme.headerBg) root.style.setProperty('--header-bg', theme.headerBg);
+            if (theme.headerText) root.style.setProperty('--header-text', theme.headerText);
+            if (theme.userMessageBg) root.style.setProperty('--user-message-bg', theme.userMessageBg);
+            if (theme.userMessageBorder) root.style.setProperty('--user-message-border', theme.userMessageBorder);
+            if (theme.botMessageBg) root.style.setProperty('--bot-message-bg', theme.botMessageBg);
+            if (theme.botMessageBorder) root.style.setProperty('--bot-message-border', theme.botMessageBorder);
+            if (theme.fontFamily) root.style.setProperty('--font-family', theme.fontFamily);
+            if (theme.terminalGreen) root.style.setProperty('--terminal-green', theme.terminalGreen);
+            if (theme.messageTextColor) root.style.setProperty('--message-text-color', theme.messageTextColor);
+        }
+
+        // ============================================
+        // SPRITE ENGINE
+        // ============================================
+        async function initSpriteEngine(spritePath) {
+            // Reset sprite mode
+            useSpriteMode = true;
+            document.getElementById('characterContainer').style.display = 'flex';
+            document.getElementById('asciiContainer').classList.remove('active');
+            
+            const configPath = `../${spritePath}animations.json`;
+            
+            try {
+                spriteEngine = new SpriteEngine('spriteCanvas', configPath);
+                
+                spriteEngine.onLoad(() => {
+                    console.log('[Game] Sprite engine loaded for', currentPersona?.name);
+                    spriteEngine.setMood('neutral');
+                    spriteEngine.play();
+                    updateSpriteLabel('neutral');
+                });
+                
+                spriteEngine.onError((error) => {
+                    console.warn('[Game] Sprite engine failed, using ASCII:', error);
+                    switchToAsciiMode();
+                });
+                
+                const success = await spriteEngine.init();
+                if (!success) {
+                    switchToAsciiMode();
+                }
+            } catch (error) {
+                console.warn('[Game] Failed to initialize sprite engine:', error);
+                switchToAsciiMode();
+            }
+        }
+
+        function switchToAsciiMode() {
+            useSpriteMode = false;
+            document.getElementById('characterContainer').style.display = 'none';
+            document.getElementById('asciiContainer').classList.add('active');
+        }
+
+        function updateSpriteLabel(mood) {
+            const label = document.getElementById('spriteLabel');
+            if (label) {
+                label.textContent = MOOD_LABELS[mood] || '*listening*';
+            }
+        }
+
+        function updateMood(mood, asciiArt) {
+            if (useSpriteMode && spriteEngine && spriteEngine.isReady()) {
+                spriteEngine.setMood(mood);
+                updateSpriteLabel(mood);
+            } else {
+                updateAsciiArt(asciiArt);
+            }
+        }
+
+        function updateAsciiArt(asciiArt) {
+            document.getElementById('asciiArt').textContent = asciiArt;
+        }
+
+        // ============================================
+        // CHAT FUNCTIONS
+        // ============================================
+        function addMessage(text, isUser) {
+            const container = document.getElementById('chatContainer');
+            const welcome = container.querySelector('.welcome');
+            if (welcome) welcome.remove();
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'message-label';
+            labelDiv.textContent = isUser ? '>> YOU:' : `>> ${currentPersona?.name?.toUpperCase() || 'THERAPIST'}:`;
+            
+            const textDiv = document.createElement('div');
+            textDiv.className = 'message-text';
+            textDiv.textContent = text;
+            
+            messageDiv.appendChild(labelDiv);
+            messageDiv.appendChild(textDiv);
+            container.appendChild(messageDiv);
+            
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function setLoading(isLoading) {
+            const loading = document.getElementById('loading');
+            const input = document.getElementById('messageInput');
+            
+            if (isLoading) {
+                loading.classList.add('active');
+                input.disabled = true;
+                if (useSpriteMode && spriteEngine && spriteEngine.isReady()) {
+                    spriteEngine.setMood('thinking');
+                    updateSpriteLabel('thinking');
+                }
+            } else {
+                loading.classList.remove('active');
+                input.disabled = false;
+                input.focus();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(message, true);
+            chatHistory.push({ role: 'user', content: message });
+            input.value = '';
+            setLoading(true);
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        history: chatHistory.slice(-10),
+                        persona_id: selectedPersonaId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.mood) {
+                    updateMood(data.mood, data.ascii_art);
+                }
+                
+                addMessage(data.response, false);
+                chatHistory.push({ role: 'assistant', content: data.response });
+                
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('*CONNECTION ERROR* Please try again.', false);
+                
+                if (useSpriteMode && spriteEngine && spriteEngine.isReady()) {
+                    spriteEngine.setMood('shocked');
+                    updateSpriteLabel('shocked');
+                }
+            }
+            
+            setLoading(false);
+        }
+
+        async function resetChat() {
+            chatHistory = [];
+            
+            const container = document.getElementById('chatContainer');
+            container.innerHTML = `
+                <div class="welcome">
+                    <p><b>*** SESSION RESET ***</b></p>
+                    <p>${currentPersona?.resetMessage || 'Starting fresh. What would you like to discuss?'}</p>
+                </div>
+            `;
+            
+            if (useSpriteMode && spriteEngine && spriteEngine.isReady()) {
+                spriteEngine.setMood('neutral');
+                updateSpriteLabel('neutral');
+            } else if (currentPersona?.asciiArt?.neutral) {
+                updateAsciiArt(currentPersona.asciiArt.neutral);
+            }
+            
+            try {
+                await fetch('/api/reset', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ persona_id: selectedPersonaId })
+                });
+            } catch (e) {
+                // Ignore
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // ============================================
+        // CHANGE THERAPIST
+        // ============================================
+        function showChangeConfirmation() {
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        function hideModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        function confirmChangeTherapist() {
+            hideModal();
+            
+            // Reset state
+            chatHistory = [];
+            currentPersona = null;
+            if (spriteEngine) {
+                spriteEngine.stop();
+                spriteEngine = null;
+            }
+            
+            // Reset theme to default
+            const root = document.documentElement;
+            root.style.setProperty('--primary', '#008080');
+            root.style.setProperty('--secondary', '#C0C0C0');
+            root.style.setProperty('--accent', '#FFFF00');
+            root.style.setProperty('--header-bg', '#000080');
+            root.style.setProperty('--header-text', '#FFFF00');
+            root.style.setProperty('--font-family', "'Comic Sans MS', cursive");
+            root.style.setProperty('--terminal-green', '#00FF00');
+            
+            // Switch screens
+            document.getElementById('chatScreen').classList.remove('active');
+            document.getElementById('personaSelectScreen').classList.remove('hidden');
+            
+            // Re-render persona cards
+            renderPersonaCards();
+        }
+*/
+    </script>
+</body>
+</html>

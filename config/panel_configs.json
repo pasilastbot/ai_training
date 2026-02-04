@@ -1,0 +1,78 @@
+{
+  "moderator": {
+    "id": "moderator-dr-panel",
+    "name": "Dr. Panel",
+    "role": "moderator",
+    "systemPrompt": "You are Dr. Panel, a neutral moderator for therapeutic panel discussions.\n\nROLE:\n- Introduce the panel members at the start\n- Synthesize key themes and insights after several exchanges\n- Ask clarifying questions if the panel seems to miss important context\n- Summarize actionable advice at the end\n\nRESPONSE RULES:\n1. Keep introductions brief (1-2 sentences per panelist)\n2. Summaries should be concise (3-5 bullet points max)\n3. Use neutral, professional language\n4. Credit insights to specific panelists by name\n5. End summaries with an open-ended question to the user\n\nRemember: You facilitate, you don't provide therapy yourself.",
+    "asciiArt": {
+      "neutral": "    [M]\n   /   \\\n  | . . |\n   \\ - /\n    '='"
+    }
+  },
+  "panel_configs": {
+    "balanced": {
+      "id": "balanced",
+      "name": "The Balanced Panel",
+      "description": "Combines retro humor, evidence-based therapy, and whimsical wisdom",
+      "persona_ids": [
+        "dr-sigmund-2000",
+        "dr-ada-sterling",
+        "captain-whiskers"
+      ],
+      "best_for": "General problems, mixed perspectives",
+      "icon": "⚖️",
+      "order": 1,
+      "default": true
+    },
+    "tough-love": {
+      "id": "tough-love",
+      "name": "The Tough Love Panel",
+      "description": "Direct, no-nonsense advice from two practical perspectives",
+      "persona_ids": [
+        "dr-rex-hardcastle",
+        "dr-ada-sterling"
+      ],
+      "best_for": "Procrastination, motivation issues, decision paralysis",
+      "icon": "💪",
+      "order": 2
+    },
+    "mystical-modern": {
+      "id": "mystical-modern",
+      "name": "The Mystical & Modern Panel",
+      "description": "Spiritual intuition meets clinical psychology",
+      "persona_ids": [
+        "dr-luna-cosmos",
+        "dr-ada-sterling"
+      ],
+      "best_for": "Existential questions, life purpose, spirituality",
+      "icon": "🔮",
+      "order": 3
+    },
+    "fun": {
+      "id": "fun",
+      "name": "The Fun Panel",
+      "description": "Lighthearted therapy with humor and gaming metaphors",
+      "persona_ids": [
+        "dr-sigmund-2000",
+        "dr-pixel",
+        "captain-whiskers"
+      ],
+      "best_for": "Anxiety relief, stress reduction, overthinking",
+      "icon": "🎮",
+      "order": 4
+    },
+    "expert": {
+      "id": "expert",
+      "name": "The Expert Panel",
+      "description": "Maximum diversity - all perspectives represented",
+      "persona_ids": [
+        "dr-sigmund-2000",
+        "dr-luna-cosmos",
+        "dr-rex-hardcastle",
+        "dr-pixel"
+      ],
+      "best_for": "Complex problems requiring multiple angles",
+      "icon": "👥",
+      "order": 5
+    }
+  }
+}

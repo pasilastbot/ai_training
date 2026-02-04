@@ -1,0 +1,31 @@
+{
+  "character": "retro pixel art psychiatrist doctor shocked, surprised expression, wide eyes, open mouth, round glasses, white coat, 90s computer game style",
+  "animation": "idle",
+  "frameCount": 4,
+  "style": "64x64 pixel art, limited color palette, teal green accent, surprised pose, centered, white background",
+  "size": "64x64",
+  "transparent": true,
+  "generatedAt": "2026-02-04T08:31:20.750Z",
+  "frames": [
+    {
+      "number": 0,
+      "prompt": "retro pixel art psychiatrist doctor shocked, surprised expression, wide eyes, open mouth, round glasses, white coat, 90s computer game style, idle standing pose, subtle breathing motion exhaling",
+      "file": "transparent_frame_000.png"
+    },
+    {
+      "number": 1,
+      "prompt": "retro pixel art psychiatrist doctor shocked, surprised expression, wide eyes, open mouth, round glasses, white coat, 90s computer game style, idle standing pose, subtle breathing motion inhaling",
+      "file": "transparent_frame_001.png"
+    },
+    {
+      "number": 2,
+      "prompt": "retro pixel art psychiatrist doctor shocked, surprised expression, wide eyes, open mouth, round glasses, white coat, 90s computer game style, idle standing pose, subtle breathing motion exhaling",
+      "file": "transparent_frame_002.png"
+    },
+    {
+      "number": 3,
+      "prompt": "retro pixel art psychiatrist doctor shocked, surprised expression, wide eyes, open mouth, round glasses, white coat, 90s computer game style, idle standing pose, subtle breathing motion exhaling",
+      "file": "transparent_frame_003.png"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "character": "pixel art robot",
+  "animation": "walk",
+  "frameCount": 6,
+  "style": "pixel art, 2D game sprite, centered, white background",
+  "size": "64x64",
+  "transparent": false,
+  "generatedAt": "2026-02-04T08:22:54.820Z",
+  "frames": [
+    {
+      "number": 0,
+      "prompt": "pixel art robot, walking animation frame, left leg forward, side view",
+      "file": "frame_000.png"
+    },
+    {
+      "number": 1,
+      "prompt": "pixel art robot, walking animation frame, left leg forward, side view",
+      "file": "frame_001.png"
+    },
+    {
+      "number": 2,
+      "prompt": "pixel art robot, walking animation frame, neutral stance, side view",
+      "file": "frame_002.png"
+    },
+    {
+      "number": 3,
+      "prompt": "pixel art robot, walking animation frame, right leg forward, side view",
+      "file": "frame_003.png"
+    },
+    {
+      "number": 4,
+      "prompt": "pixel art robot, walking animation frame, right leg forward, side view",
+      "file": "frame_004.png"
+    },
+    {
+      "number": 5,
+      "prompt": "pixel art robot, walking animation frame, neutral stance, side view",
+      "file": "frame_005.png"
+    }
+  ]
+}

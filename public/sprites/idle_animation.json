@@ -1,0 +1,31 @@
+{
+  "character": "simple pixel art heart",
+  "animation": "idle",
+  "frameCount": 4,
+  "style": "8-bit pixel art, 16x16 sprite, red heart, centered, white background",
+  "size": "32x32",
+  "transparent": false,
+  "generatedAt": "2026-02-04T08:22:29.191Z",
+  "frames": [
+    {
+      "number": 0,
+      "prompt": "simple pixel art heart, idle standing pose, subtle breathing motion exhaling",
+      "file": "frame_000.png"
+    },
+    {
+      "number": 1,
+      "prompt": "simple pixel art heart, idle standing pose, subtle breathing motion inhaling",
+      "file": "frame_001.png"
+    },
+    {
+      "number": 2,
+      "prompt": "simple pixel art heart, idle standing pose, subtle breathing motion exhaling",
+      "file": "frame_002.png"
+    },
+    {
+      "number": 3,
+      "prompt": "simple pixel art heart, idle standing pose, subtle breathing motion exhaling",
+      "file": "frame_003.png"
+    }
+  ]
+}
