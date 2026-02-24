@@ -1,7 +1,9 @@
 # Prompt 01: Explore Suroi Codebase
 
-**When to use:** PART 2 — REHEARSAL step (after cloning Suroi)
+**When to use:** PART 2 — REHEARSAL step (after cloning Suroi and copying AGENTS.md)
 **Goal:** Use AI to understand an unfamiliar 114k LOC codebase
+
+**Prerequisite:** You've already run `cp /path/to/AGENTS.md .` in the Suroi repo root.
 
 ---
 

@@ -1,72 +1,57 @@
 # Prompt 02: Document the Codebase
 
 **When to use:** PART 2 — After the 3-Tiered Documentation + Documentation Plan theory blocks
-**Goal:** Create a content-plan.md and document your chosen subsystem, then test & improve
+**Goal:** Create a content-plan.md and document your chosen subsystem using the AGENTS.md templates, then test & improve
 
 ---
 
 ## Step 1: Create content-plan.md
 
-Create `content-plan.md` in the Suroi project root:
+Use the Content Plan template from AGENTS.md to create the project documentation index.
 
 ```
+@AGENTS.md
 @codebase
 
 Create a Documentation Content Plan (content-plan.md) for this project.
 
-The plan should:
-1. List all major subsystems that need documentation
-2. Mark their documentation status (none exist yet, so all are "Not Started")
-3. Prioritize them by importance for a new developer
-4. Specify what each doc should cover
+Use the Content Plan template from AGENTS.md (PART 1 → Content Plan → Template).
+Follow the exact format: Overview, Documentation Index table (with Tier column),
+Status Legend, Generation Order, and "What Each Document Must Include" section.
 
-Use this format:
-
-# Documentation Content Plan
-
-## Overview
-[Brief project description]
-
-## Documentation Index
-| # | Module | Status | Path | Priority |
-|---|--------|--------|------|----------|
-| 1 | Architecture Overview | Not Started | docs/architecture.md | Critical |
-| 2 | ... | ... | ... | ... |
-
-## Generation Instructions
-[Order to generate docs in, what to include]
+Fill in the Documentation Index by identifying all major subsystems in this codebase.
+Mark all as "Not Started" since no docs exist yet.
+Prioritize by importance for a new developer joining the project.
 ```
 
 ---
 
 ## Step 2: Document your subsystem (3-Tiered Approach)
 
-Now create documentation for your chosen subsystem using all 3 tiers:
+Use the Tier 2 Subsystem README template from AGENTS.md to document your chosen subsystem.
 
 ```
+@AGENTS.md
 @[YOUR SUBSYSTEM KEY FILES]
 
-Create 3-tiered documentation for [YOUR SUBSYSTEM]:
+Create documentation for [YOUR SUBSYSTEM] using the templates in AGENTS.md:
 
-**Tier 1 — High-Level (add to content-plan.md):**
-- Purpose of this subsystem
-- Key design decisions
-- Entry points
+1. **Tier 2 — Subsystem README** (create docs/subsystems/[subsystem]/README.md):
+   Use the "Subsystem README Template" from AGENTS.md (PART 1 → Tier 2).
+   Include: Purpose, Key Files, Architecture, Data Flow, Interfaces, Dependencies.
 
-**Tier 2 — Module Overview (create docs/[subsystem].md):**
-- How the subsystem works step by step
-- Data flow diagram (text-based)
-- Key interfaces and their relationships
-- Dependencies on other subsystems
+2. **Update content-plan.md:**
+   Add Tier 1 entry for this subsystem's high-level description.
+   Mark your Tier 2 doc as "Done".
 
-**Tier 3 — Code-Level:**
-- Suggest inline comments for the 3-5 most complex functions
-- Document any implicit behavior or assumptions
+3. **Tier 3 — Code-Level:**
+   Suggest inline comments for the 3-5 most complex functions.
+   Document any implicit behavior or assumptions.
 
 Make the documentation AI-navigable:
 - Use @file references for related code
-- Link between tiers
-- Include "See also" references
+- Include cross-tier references (link up to Tier 1, down to Tier 3)
+- Include "See also" references to related subsystems
 ```
 
 ---
@@ -75,11 +60,11 @@ Make the documentation AI-navigable:
 
 > This step runs during BUILD step 9 (5 min), after the Architecture theory side bite.
 
-Now test your documentation by asking AI questions that require understanding the code. If AI can't answer using your docs, improve them.
+Test your documentation by asking AI questions that require understanding the code. If AI can't answer using your docs, improve them.
 
 ```
 @content-plan.md
-@docs/[your-subsystem].md
+@docs/subsystems/[your-subsystem]/README.md
 
 I'm a new developer on this project. Using ONLY the documentation above, answer these:
 
@@ -94,15 +79,14 @@ Then fix the gaps:
 
 ```
 The documentation is missing [what AI identified].
-Update docs/[your-subsystem].md to include this information.
+Update docs/subsystems/[your-subsystem]/README.md to include this information.
 ```
 
 ---
 
 ## What you should have after this step
 
-- [ ] `content-plan.md` listing all subsystems
-- [ ] `docs/[your-subsystem].md` with Tier 2 documentation
+- [ ] `content-plan.md` following the AGENTS.md template format
+- [ ] `docs/subsystems/[your-subsystem]/README.md` following the Tier 2 template
 - [ ] Updated `content-plan.md` marking your subsystem as "Done"
 - [ ] Documentation tested by asking AI questions — gaps filled
-- [ ] Understanding of how the 3-tiered structure helps AI navigate

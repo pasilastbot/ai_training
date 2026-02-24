@@ -28,7 +28,7 @@ I've made the changes from the spec. Help me verify them:
 Run a spec-grounded review — does the code match what we specified?
 
 ```
-@[your change spec]
+@specs/[your-change].md
 @[files you modified]
 
 Review my code changes against the spec.
@@ -68,7 +68,7 @@ After each fix, verify:
 ## Wrap-Up Reflection
 
 After reviewing:
-- How did documentation (`content-plan.md`) help you navigate the codebase?
+- How did documentation (`content-plan.md`, subsystem docs) help you navigate the codebase?
 - Did writing the spec before coding prevent mistakes?
 - What's the difference between "vibe coding" this change vs. grounding it with SDD?
 - What did the AI code review catch that you might have missed?

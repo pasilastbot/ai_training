@@ -26,10 +26,13 @@ Work with a real, large open-source codebase using AI. You'll learn to document,
 ```bash
 git clone https://github.com/HasangerGames/suroi.git
 cd suroi
+cp /path/to/ai_training/AGENTS.md .
 bun install
 bun dev
 # Open http://127.0.0.1:3000
 ```
+
+**Important:** Copy `AGENTS.md` into the Suroi repo root. The prompts reference its templates for documentation and specs.
 
 ---
 
@@ -42,7 +45,7 @@ bun dev
 | 2 | THEORY | Vibe Coding vs Grounded SDD | 5 min |
 | 3 | THEORY | ModernPath 4-Step Process (Document → Spec → Develop → Audit) | 5 min |
 | | | **— PART 2: DOCUMENTATION —** | |
-| 4 | **REHEARSAL** | **Clone Suroi, run `bun dev`, explore the codebase — 114k lines, no architecture docs** | **10 min** |
+| 4 | **REHEARSAL** | **Clone Suroi, copy AGENTS.md, run `bun dev`, explore the codebase** | **10 min** |
 | 5 | THEORY | Brownfield: 3-Tiered Documentation (High-level → Subsystem → Module) | 5 min |
 | 6 | THEORY | Documentation Plan (content-plan.md — map what exists, index for AI) | 5 min |
 | 7 | **BUILD** | **Document Suroi: create content-plan.md + document your subsystem** | **10 min** |
@@ -76,6 +79,6 @@ Choose ONE subsystem to focus on during the session:
 
 Follow these in order during the BUILD steps:
 1. `prompts/01-explore.md` — Explore the codebase with AI (REHEARSAL, Part 2)
-2. `prompts/02-document.md` — Create content-plan.md + 3-tiered docs, then test & improve (BUILD steps 7 + 9)
-3. `prompts/03-spec-change.md` — Prompt a change, generate grounded specs using SDD (BUILD step 10)
+2. `prompts/02-document.md` — Create content-plan.md + 3-tiered docs using AGENTS.md templates (BUILD steps 7 + 9)
+3. `prompts/03-spec-change.md` — Prompt a change, write a grounded spec using AGENTS.md spec template (BUILD step 10)
 4. `prompts/04-review.md` — Code review the change against the spec (BUILD step 12)

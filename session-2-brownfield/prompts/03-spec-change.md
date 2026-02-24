@@ -1,7 +1,7 @@
 # Prompt 03: Prompt a Change & Generate Specs Using SDD
 
 **When to use:** PART 3 — First BUILD step
-**Goal:** Pick a visible change to the game and write a grounded spec using Spec-Driven Development
+**Goal:** Pick a visible change to the game and write a grounded spec using the AGENTS.md spec template
 
 ---
 
@@ -23,50 +23,53 @@ Browse https://github.com/HasangerGames/suroi/issues for a small, well-defined i
 
 ---
 
-## Step 2: Generate grounded specs using SDD
+## Step 2: Write the spec yourself
 
-Use the 4-Step Process (Document → Spec → Develop → Audit):
+Write a change spec using the spec template from AGENTS.md. Save it as `specs/[your-change].md`.
 
-```
-@docs/[your-subsystem].md
-@[relevant source files]
+**Use the spec template from `AGENTS.md` (PART 2 → Workflow: spec → Spec Template) as your format.**
 
-I want to make this change: [describe your chosen change]
+Your spec must include:
+- **Current Behavior:** What the code does now — reference the docs you created in Prompt 02
+- **Proposed Change:** What it should do after
+- **Acceptance Criteria:** Given/When/Then for each behavior change
+- **Files to Modify:** Specific files and what changes in each
+- **Risk Assessment:** What could break? What subsystems could be affected?
+- **Testing Strategy:** How to verify (browser verification for a game)
 
-Following Spec-Driven Development, write a change specification:
-
-# Change Spec: [Name]
-
-## Current Behavior
-[What the code does now — reference the documentation we created]
-
-## Proposed Change
-[What it should do after the change]
-
-## Acceptance Criteria
-[Given/When/Then for each behavior change]
-
-## Files to Modify
-[List of files and what changes in each — be specific]
-
-## Risk Assessment
-[What could break? What subsystems could be affected?]
-
-## Verification
-[How to verify in the browser — what should I see/do to confirm it works?]
-
-Ground the spec in our documentation:
-- Reference the docs we created in Step 2
-- Use the actual file paths and function names from the codebase
-- Consider the architecture patterns we documented
-```
+Ground the spec in your documentation:
+- Reference the docs you created in Prompt 02
+- Use actual file paths and function names from the codebase
+- Consider the architecture patterns you documented
 
 ---
 
-## Step 3: Implement the spec
+## Step 3: Ask AI to review your spec
 
 ```
-@[your change spec]
+@AGENTS.md
+@specs/[your-change].md
+@docs/subsystems/[your-subsystem]/README.md
+
+Review this spec against the spec template in AGENTS.md:
+1. Is every AC testable with a concrete assertion?
+2. Are the files to modify correct and complete?
+3. Does the risk assessment identify what could break?
+4. Is the spec grounded in our documentation (not invented)?
+5. Is the change small enough to complete in 10 minutes?
+
+Check the Spec Readiness Checklist from AGENTS.md.
+List any issues found.
+```
+
+Fix any issues before proceeding.
+
+---
+
+## Step 4: Implement the spec
+
+```
+@specs/[your-change].md
 @[files to modify from the spec]
 
 Implement this change following the spec exactly.
@@ -82,10 +85,10 @@ Requirements:
 
 ## The "Is This Spec Ready?" Checklist
 
-Before implementation:
+Before implementation, check against the AGENTS.md Spec Readiness Checklist:
 - [ ] Every AC has Given/When/Then format
 - [ ] Files to modify are listed with specific changes
 - [ ] Risk assessment identifies what could break
-- [ ] Verification describes what to look for in the browser
+- [ ] Testing strategy describes how to verify
 - [ ] The change is small enough to complete in 10 minutes
 - [ ] The spec references our documentation (grounded, not vibe)
