@@ -7,40 +7,65 @@
 
 ## Step 1: Pick a change to the game
 
-Choose something **visible** — you want to see the result in the browser. Pick ONE:
+Choose something **visible** — you want to see the result in the browser at http://localhost:3000. Pick ONE:
 
-**Option A — Gameplay tweak:**
-Change a weapon's stats, adjust player speed, modify loot drop rates, change the safe zone timing
+### Option A — Gameplay tweaks (easiest to verify):
 
-**Option B — Visual change:**
-Adjust colors, modify particle effects, change obstacle appearance, add screen shake on hit
+| Change | File | Current Value | What to try |
+|--------|------|---------------|-------------|
+| Player speed | `common/src/constants.ts:19` | `0.03` | `0.06` (double speed) |
+| Player health | `common/src/constants.ts:20` | `100` | `200` (tank mode) |
+| AK-47 damage | `common/src/definitions/items/guns.ts` | `14` | `50` (one-shot kills) |
+| AK-47 fire rate | `common/src/definitions/items/guns.ts` | `100ms` | `30ms` (minigun mode) |
+| Mosin damage | `common/src/definitions/items/guns.ts` | `75` | `200` (instant kill) |
+| Shotgun pellet count | `common/src/definitions/items/guns.ts` | `9` | `20` (wall of lead) |
+| Frag grenade fuse | `common/src/definitions/items/throwables.ts` | `4000ms` | `1000ms` (quick fuse) |
+| Gas stage 1 damage | `server/src/data/gasStages.ts` | `1 DPS` | `10 DPS` (deadly storm) |
+| More gun spawns | `server/src/data/lootTables.ts` | weight `0.9` | `3.0` (guns everywhere) |
 
-**Option C — Small feature:**
-Add a kill counter display, show damage numbers, add a minimap marker, change the death screen
+### Option B — Visual/feel changes:
 
-**Option D — From GitHub issues:**
-Browse https://github.com/HasangerGames/suroi/issues for a small, well-defined issue
+| Change | What to look for | Area |
+|--------|-----------------|------|
+| Blood particle lifetime | `client/src/scripts/objects/player.ts` hitEffect() | Longer/shorter blood splatter |
+| Kill feed duration | `client/src/scripts/managers/uiManager.ts` | How long kills show on screen |
+| Map size | `server/src/data/maps.ts` width/height | Bigger/smaller arena |
+
+### Option C — Multi-file feature (more ambitious):
+
+| Change | Files involved |
+|--------|---------------|
+| New game mode with 2x player speed | `common/src/definitions/modes.ts` + `common/src/constants.ts` |
+| Custom weapon variant (e.g., golden AK-47 with double damage) | `common/src/definitions/items/guns.ts` |
+| Faster zone closing for quick matches | `server/src/data/gasStages.ts` (multiple stages) |
 
 ---
 
-## Step 2: Write the spec yourself
+## Step 2: Write the spec
 
 Write a change spec using the spec template from AGENTS.md. Save it as `specs/[your-change].md`.
 
 **Use the spec template from `AGENTS.md` (PART 2 → Workflow: spec → Spec Template) as your format.**
 
-Your spec must include:
-- **Current Behavior:** What the code does now — reference the docs you created in Prompt 02
-- **Proposed Change:** What it should do after
-- **Acceptance Criteria:** Given/When/Then for each behavior change
-- **Files to Modify:** Specific files and what changes in each
-- **Risk Assessment:** What could break? What subsystems could be affected?
-- **Testing Strategy:** How to verify (browser verification for a game)
+Example prompt for a gameplay tweak:
 
-Ground the spec in your documentation:
-- Reference the docs you created in Prompt 02
-- Use actual file paths and function names from the codebase
-- Consider the architecture patterns you documented
+```
+@AGENTS.md
+@common/src/constants.ts
+@docs/subsystems/[your-subsystem]/README.md
+
+I want to [describe your change — e.g., "double the player movement speed"].
+
+Write a change spec using the spec template from AGENTS.md (PART 2 → Workflow: spec → Spec Template).
+Save it as specs/[your-change].md.
+
+Ground the spec in the actual code:
+- Reference current values with file paths and line numbers
+- List exactly which files need to change
+- Consider: does this require incrementing protocolVersion? (Yes if definition lists change, no for value tweaks)
+- Include Given/When/Then acceptance criteria that I can verify in the browser
+- Risk assessment: what other systems could this affect?
+```
 
 ---
 
@@ -52,7 +77,7 @@ Ground the spec in your documentation:
 @docs/subsystems/[your-subsystem]/README.md
 
 Review this spec against the spec template in AGENTS.md:
-1. Is every AC testable with a concrete assertion?
+1. Is every AC testable by playing the game in the browser?
 2. Are the files to modify correct and complete?
 3. Does the risk assessment identify what could break?
 4. Is the spec grounded in our documentation (not invented)?
@@ -79,7 +104,10 @@ Requirements:
 - Follow existing code patterns in this project
 - Do not change any interfaces that other subsystems depend on
 - After each file change, explain what you changed and why
+- The dev server (bun dev) has hot reload — changes should appear immediately
 ```
+
+After implementation, open the game in the browser and test your change!
 
 ---
 
@@ -89,6 +117,6 @@ Before implementation, check against the AGENTS.md Spec Readiness Checklist:
 - [ ] Every AC has Given/When/Then format
 - [ ] Files to modify are listed with specific changes
 - [ ] Risk assessment identifies what could break
-- [ ] Testing strategy describes how to verify
+- [ ] Testing strategy describes how to verify in the browser
 - [ ] The change is small enough to complete in 10 minutes
 - [ ] The spec references our documentation (grounded, not vibe)
