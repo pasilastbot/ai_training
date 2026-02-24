@@ -1,0 +1,41 @@
+diff --git a/src/services/user-service.ts b/src/services/user-service.ts
+index abc1234..def5678 100644
+--- a/src/services/user-service.ts
++++ b/src/services/user-service.ts
+@@ -1,5 +1,7 @@
+ import { db } from '../lib/database';
++import { sendEmail } from '../lib/email';
+
++const API_KEY = 'sk-live-abc123xyz456';
+
+ interface User {
+   id: number;
+@@ -8,10 +10,25 @@ interface User {
+   role: string;
+ }
+
+-export async function getUser(id: number): Promise<User | null> {
+-  const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
++export async function getUser(id: string): Promise<User | null> {
++  const result = await db.query(`SELECT * FROM users WHERE id = ${id}`);
+   return result.rows[0] || null;
+ }
+
++export async function searchUsers(name: string): Promise<User[]> {
++  const query = `SELECT * FROM users WHERE name LIKE '%${name}%'`;
++  const result = await db.query(query);
++  return result.rows;
++}
++
++export async function createUser(data: any) {
++  const result = await db.query(
++    `INSERT INTO users (name, email) VALUES ('${data.name}', '${data.email}') RETURNING *`
++  );
++  sendEmail(data.email, 'Welcome!', 'Thanks for signing up');
++  return result.rows[0];
++}
++
+ export async function deleteUser(id: string) {
+-  await db.query('DELETE FROM users WHERE id = $1', [id]);
++  await db.query(`DELETE FROM users WHERE id = ${id}`);
+ }

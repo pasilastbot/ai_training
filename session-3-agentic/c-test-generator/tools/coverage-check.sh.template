@@ -1,0 +1,33 @@
+#!/bin/bash
+# coverage-check.sh — Run tests and report coverage percentage
+#
+# Usage: ./tools/coverage-check.sh [threshold]
+# Default threshold: 80%
+# Exit 0: Coverage meets threshold
+# Exit 1: Coverage below threshold
+#
+# TODO: Fill in the test runner and coverage parsing logic
+
+THRESHOLD="${1:-80}"
+
+echo "Running tests with coverage..."
+
+# TODO: Run vitest with coverage
+# HINT: npx vitest run --coverage --reporter=json
+# The JSON output will contain coverage percentages
+
+# TODO: Parse the coverage output
+# Extract the total line coverage percentage
+
+# TODO: Compare against threshold
+# COVERAGE=XX
+# if [ "$COVERAGE" -ge "$THRESHOLD" ]; then
+#   echo "PASS: Coverage ${COVERAGE}% meets threshold ${THRESHOLD}%"
+#   exit 0
+# else
+#   echo "FAIL: Coverage ${COVERAGE}% below threshold ${THRESHOLD}%"
+#   exit 1
+# fi
+
+echo "Coverage check complete."
+echo "Threshold: ${THRESHOLD}%"

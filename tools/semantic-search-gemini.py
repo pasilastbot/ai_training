@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Semantic search tool using Gemini embeddings and ChromaDB.
-Designed to work with documents indexed by index_site_gemini.py.
+Designed to work with documents indexed by rag_agents/index_site_gemini.py.
 
 Uses RETRIEVAL_QUERY task type for search queries, which pairs with
 RETRIEVAL_DOCUMENT task type used during indexing.

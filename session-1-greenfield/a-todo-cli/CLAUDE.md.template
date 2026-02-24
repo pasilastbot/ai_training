@@ -1,0 +1,28 @@
+# CLAUDE.md — Todo CLI
+
+## Project Overview
+<!-- Fill this in: What is this project? What does it do? -->
+This is a command-line todo manager built with TypeScript.
+
+## Key Commands
+- `npm run start` — Run the CLI
+- `npm run test` — Run tests with Vitest
+- `npm run lint` — Type-check with TypeScript
+
+## Coding Standards
+<!-- Fill these in based on what you want AI to follow -->
+- Use TypeScript strict mode — no `any` types
+- Use ES modules (import/export, not require)
+- <!-- Add your own rule: e.g., "Use interfaces for all data shapes" -->
+- <!-- Add your own rule: e.g., "Functions should be under 30 lines" -->
+
+## Testing Requirements
+- Use Vitest for all tests
+- Test files live next to source files as `*.test.ts`
+- Every public function needs at least: happy path test + error case test
+
+## Do NOT
+- Use `any` type without explicit justification
+- Skip input validation for user-facing functions
+- <!-- Add your own guardrail -->
+- <!-- Add your own guardrail -->

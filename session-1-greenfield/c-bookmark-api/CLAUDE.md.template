@@ -1,0 +1,35 @@
+# CLAUDE.md — Bookmark Manager API
+
+## Project Overview
+<!-- Fill this in -->
+This is a REST API for saving, tagging, and searching bookmarks, built with Express and TypeScript.
+
+## Key Commands
+- `npm run dev` — Start dev server with hot reload
+- `npm run test` — Run tests with Vitest
+- `npm run lint` — Type-check with TypeScript
+
+## Coding Standards
+- Use TypeScript strict mode — no `any` types
+- Use Express Router for route organization
+- All request bodies must be validated before processing
+- Use interfaces for all data shapes (Bookmark, Tag, etc.)
+- <!-- Add your own rule -->
+
+## API Conventions
+- All endpoints return JSON
+- POST returns 201 on success
+- Error responses: `{ error: string }`
+- List responses: `{ data: T[], count: number }`
+
+## Testing Requirements
+- Use Vitest for all tests
+- Test files: `*.test.ts` next to source files
+- Test the service layer, not Express routes directly
+- Mock storage for unit tests
+
+## Do NOT
+- Use `any` type
+- Allow bookmarks without URL validation
+- Skip error handling
+- <!-- Add your own guardrail -->

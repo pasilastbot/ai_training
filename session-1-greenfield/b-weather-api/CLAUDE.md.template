@@ -1,0 +1,33 @@
+# CLAUDE.md — Weather Dashboard API
+
+## Project Overview
+<!-- Fill this in -->
+This is a REST API that serves weather data, built with Express and TypeScript.
+
+## Key Commands
+- `npm run dev` — Start dev server with hot reload
+- `npm run test` — Run tests with Vitest
+- `npm run lint` — Type-check with TypeScript
+
+## Coding Standards
+- Use TypeScript strict mode — no `any` types
+- Use Express Router for route organization
+- Use interfaces for all request/response shapes
+- <!-- Add your own rule -->
+- <!-- Add your own rule -->
+
+## API Conventions
+- All endpoints return JSON
+- Error responses use format: `{ error: string, status: number }`
+- Success responses use format: `{ data: T }`
+
+## Testing Requirements
+- Use Vitest for all tests
+- Test files: `*.test.ts` next to source files
+- Test the service layer (business logic), not Express routes directly
+
+## Do NOT
+- Use `any` type
+- Make real HTTP calls to external APIs (use mock data)
+- Skip error handling on route handlers
+- <!-- Add your own guardrail -->

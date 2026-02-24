@@ -1,0 +1,20 @@
+{
+  "name": "todo-cli",
+  "version": "1.0.0",
+  "description": "Command-line todo manager — Session 1 Greenfield project",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "tsc",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0",
+    "@types/node": "^20.11.0"
+  }
+}

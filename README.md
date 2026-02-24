@@ -12,7 +12,7 @@ https://packaging.python.org/en/latest/tutorials/installing-packages/
 ### Python Dependencies
 python3 -m pip install google-genai html2text rich ollama chromadb requests
 or
-pip install -r requirements.txt
+pip install -r rag_agents/requirements.txt
 
 ### Node.js Dependencies
 This project also includes TypeScript/JavaScript tools that require Node.js dependencies:
@@ -56,13 +56,13 @@ powershell: $env:GEMINI_API_KEY=<your_key>
 # RUN scripts (mac)
 
 ## Ingest page
-python3 parse_html.py https://website_to_ingest
+python3 rag_agents/parse_html.py https://website_to_ingest
 
 ## Rag query
-python3 rag_query.py https://website_to_ingest "question to ask"
+python3 rag_agents/rag_query.py https://website_to_ingest "question to ask"
 
 ## Guardrails test
-python3 guardrails_test.py https://siili.com "select * from users"
+python3 rag_agents/guardrails_test.py https://siili.com "select * from users"
 
 ## Local Ollama test
 1. Start the Ollama server (follow Ollama documentation for your OS) and install following packages:
@@ -74,10 +74,10 @@ python3 guardrails_test.py https://siili.com "select * from users"
 2. Start chromadb server: chroma run --path ./chroma
 
 3. Ingest few webpages to chroma by running:
-   - python3 index_site.py "https://site.that.i.want.to.ingest"
+   - python3 rag_agents/index_site.py "https://site.that.i.want.to.ingest"
 
 4. Run the script:
-   python3 rag_query_ollama.py "your question here"
+   python3 rag_agents/rag_query_ollama.py "your question here"
 
 Note: Make sure you have the required models downloaded in Ollama (mxbai-embed-large and llama3) before running the script.
 
@@ -85,7 +85,7 @@ Note: Make sure you have the required models downloaded in Ollama (mxbai-embed-l
 
 ## Windows script run
 $env:GEMINI_API_KEY=<your_key>
-python parse_html.py
+python rag_agents/parse_html.py
 https://siili.com
 
 
