@@ -5,43 +5,44 @@
 
 ---
 
-## Step 1: Write the Spec
+## Step 1: Write the Spec Yourself
 
-Create `specs/list-todos.md`:
+Write a spec for the "List Todos" feature. Save it as `specs/list-todos.md`.
 
-```
-@specs/add-todo.md (use as format reference)
-@src/types.ts
+**Use the same format as your Feature 1 spec (which follows the AGENTS.md template).**
 
-Write a spec for "List Todos" with these acceptance criteria:
+### Feature Requirements
 
-AC1: List all todos
-- Given 3 todos exist
-- When the user runs `list`
-- Then all 3 todos are displayed with id, title, status, priority
+The `list` command shows all todos, optionally filtered.
 
-AC2: Filter by category
-- Given todos exist in categories "work" and "personal"
-- When the user runs `list --category work`
-- Then only "work" todos are shown
-
-AC3: Filter by status
-- Given completed and incomplete todos exist
-- When the user runs `list --done`
-- Then only completed todos are shown
-
-AC4: Empty list
-- Given no todos exist
-- When the user runs `list`
-- Then output: "No todos yet. Add one with: add <title>"
-
-Include error case: invalid category filter.
-Use the same spec format as add-todo.md.
-```
+Behaviors to cover:
+- Listing all todos (displays id, title, status, priority)
+- Filtering by category (`--category work`)
+- Filtering by completion status (`--done`)
+- Empty list (no todos exist — what message?)
+- Invalid category filter (no matches)
 
 ---
 
-## Step 2: TDD Implementation
+## Step 2: Ask AI to Review Your Spec
+
+```
+@specs/list-todos.md
+@specs/add-todo.md
+
+Review this spec for completeness:
+1. Is every AC testable with a concrete assertion?
+2. Are there missing edge cases?
+3. Does it follow the same format as add-todo.md?
+
+List any issues found.
+```
+
+Fix any issues before proceeding.
+
+---
+
+## Step 3: TDD Implementation
 
 ```
 @specs/list-todos.md

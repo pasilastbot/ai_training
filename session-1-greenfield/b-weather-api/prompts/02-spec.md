@@ -1,75 +1,56 @@
 # Prompt 02: Write Your Feature Spec
 
 **When to use:** After the SDD + Specifications theory blocks
-**Goal:** Write a spec for Feature 1 (Get Current Weather)
+**Goal:** Write a spec for Feature 1 (Get Current Weather) using the AGENTS.md spec template
 
 ---
 
-## Create `specs/get-weather.md`
+## Your Task
 
-```markdown
-# Feature: Get Current Weather
+Write a spec for the "Get Current Weather" feature. Save it as `specs/get-weather.md`.
 
-## Overview
-Returns current weather data for a given city from the mock data source.
+**Use the spec template from `../../AGENTS.md` (Workflow: spec → Spec Template) as your format.**
 
-## User Story
-As an API consumer, I want to get current weather for a city so that I can display it in my dashboard.
+### Feature Requirements
 
-## Acceptance Criteria
+The GET /weather/:city endpoint returns current weather data from mock data.
 
-### AC1: Return weather for valid city
-**Given** "Helsinki" exists in the mock data
-**When** GET /weather/Helsinki is called
-**Then** return 200 with:
-  - city: "Helsinki"
-  - temperature: number (in Celsius)
-  - condition: string (e.g., "Cloudy", "Sunny")
-  - humidity: number (percentage)
-  - windSpeed: number (km/h)
+Behaviors to cover:
+- Returning weather for a valid city (what fields? what types?)
+- City not found (what status code? what error message?)
+- Case-insensitive city lookup (e.g., "helsinki" vs "Helsinki")
+- Response format (what JSON wrapper structure?)
 
-### AC2: City not found
-**Given** "Atlantis" does not exist in mock data
-**When** GET /weather/Atlantis is called
-**Then** return 404 with error: "City not found: Atlantis"
-
-### AC3: Case-insensitive lookup
-**Given** "Helsinki" exists in mock data
-**When** GET /weather/helsinki is called (lowercase)
-**Then** return the same data as GET /weather/Helsinki
-
-### AC4: Response format
-**Given** any valid city request
-**When** the response is returned
-**Then** it matches this shape:
-  ```json
-  {
-    "data": {
-      "city": "string",
-      "temperature": "number",
-      "condition": "string",
-      "humidity": "number",
-      "windSpeed": "number",
-      "updatedAt": "ISO 8601 string"
-    }
-  }
-  ```
-
-## Technical Constraints
+Technical constraints:
 - Use mock data only — no external API calls
-- Service function is a pure function (takes city name, returns WeatherData or null)
-- Response wrapper: `{ data: WeatherData }` for success, `{ error: string }` for errors
-
-## Test Strategy
-- Unit tests for weather-service (AC1, AC2, AC3)
-- Test response format separately (AC4)
-```
+- Service function is pure (takes city name, returns data or null)
+- Success response: `{ data: WeatherData }`
+- Error response: `{ error: string }`
 
 ---
 
-## Validate your spec
+## The "Can AI Test This?" Check
 
-Run the "Can AI Test This?" check on each AC:
-- Can you write `expect(response.status).toBe(200)` for AC1?
-- Can you write `expect(response.body.error).toBe("City not found: Atlantis")` for AC2?
-- Are all field names and types explicit?
+Before moving on, verify each AC you wrote:
+1. Does every AC have specific expected values (status codes, field names, types)?
+2. Could you write an `expect()` assertion for each **Then** clause?
+3. Are error cases covered with exact error messages?
+
+If any answer is "no" — rewrite the AC until it's testable.
+
+---
+
+## Ask AI to Review Your Spec
+
+```
+@specs/get-weather.md
+@../../AGENTS.md
+
+Review this spec against the spec template in AGENTS.md:
+1. Is every AC testable with a concrete assertion?
+2. Are there missing edge cases?
+3. Does the response format match the technical constraints?
+4. Is the test strategy complete?
+
+List any issues found.
+```

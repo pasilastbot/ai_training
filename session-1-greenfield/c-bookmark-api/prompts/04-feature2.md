@@ -1,45 +1,52 @@
 # Prompt 04: Spec + Build Feature 2
 
 **When to use:** After completing Feature 1 with TDD
-**Goal:** Repeat the full cycle for "Search Bookmarks by Tag"
+**Goal:** Repeat the full cycle — spec → test → implement — for "Search Bookmarks by Tag"
 
 ---
 
-## Step 1: Write the Spec
+## Step 1: Write the Spec Yourself
 
-```
-@specs/create-bookmark.md (use as format reference)
-@src/types.ts
+Write a spec for the "Search Bookmarks by Tag" feature. Save it as `specs/search-bookmarks.md`.
 
-Write a spec for "Search Bookmarks by Tag" with these acceptance criteria:
+**Use the same format as your Feature 1 spec (which follows the AGENTS.md template).**
 
-AC1: List all bookmarks
-- Given 3 bookmarks exist
-- When GET /bookmarks
-- Then return 200 with all 3 bookmarks and count: 3
+### Feature Requirements
 
-AC2: Filter by tag
-- Given bookmarks tagged "work", "personal", and "work"
-- When GET /bookmarks?tag=work
-- Then return only the 2 bookmarks tagged "work"
+The GET /bookmarks endpoint lists all bookmarks, optionally filtered by tag.
 
-AC3: Tag not found
-- Given bookmarks exist but none tagged "travel"
-- When GET /bookmarks?tag=travel
-- Then return 200 with empty array and count: 0
+Behaviors to cover:
+- Listing all bookmarks (what response format? include count?)
+- Filtering by tag query parameter
+- No matching tags (what to return?)
+- Case-insensitive tag matching
 
-AC4: Case-insensitive tag search
-- Given a bookmark tagged "Work"
-- When GET /bookmarks?tag=work (lowercase)
-- Then return the bookmark (tags normalized to lowercase)
-
-Include response format: { data: Bookmark[], count: number }
-Save as specs/search-bookmarks.md
-```
+Technical constraints:
+- Response format: `{ data: Bookmark[], count: number }`
+- No pagination required for v1
 
 ---
 
-## Step 2: TDD Implementation
+## Step 2: Ask AI to Review Your Spec
+
+```
+@specs/search-bookmarks.md
+@specs/create-bookmark.md
+
+Review this spec for completeness:
+1. Is every AC testable with a concrete assertion?
+2. Are there missing edge cases?
+3. Does the response format include count?
+4. Does it follow the same format as create-bookmark.md?
+
+List any issues found.
+```
+
+Fix any issues the AI identifies before proceeding.
+
+---
+
+## Step 3: TDD — RED for AC1 (List all)
 
 ```
 @specs/search-bookmarks.md
@@ -47,15 +54,52 @@ Save as specs/search-bookmarks.md
 @src/services/bookmark-service.ts
 @src/storage.ts
 
-Implement "Search Bookmarks" using TDD:
+Looking at AC1 (List all bookmarks), write a failing test.
 
-1. Write failing tests for AC1 and AC3 in src/services/bookmark-service.test.ts
-2. Implement listBookmarks(tag?: string) to pass them
-3. Add tests for AC2 (tag filter) and AC4 (case-insensitive)
-4. Update implementation
-5. Run ALL tests to verify nothing broke
+Requirements:
+- Add tests to src/services/bookmark-service.test.ts (same file as Feature 1)
+- Test listBookmarks() returns all bookmarks with correct count
+- Do NOT implement yet
 
-Follow Red-Green-Refactor throughout.
+Run the test to confirm it fails.
+```
+
+**Verify:** `npm test` — the new test should FAIL.
+
+---
+
+## Step 4: GREEN for AC1
+
+```
+The listBookmarks test is failing.
+
+Implement listBookmarks(tag?: string) in src/services/bookmark-service.ts.
+
+Requirements:
+- Return all bookmarks from storage
+- Keep it simple — just make the test pass
+
+Run tests to confirm they pass.
+```
+
+**Verify:** `npm test` — all tests pass (create + list).
+
+---
+
+## Step 5: RED/GREEN for remaining ACs
+
+```
+@specs/search-bookmarks.md
+@src/services/bookmark-service.test.ts
+@src/services/bookmark-service.ts
+
+Add tests for the remaining ACs from your spec one at a time:
+- Tag filter returns only matching bookmarks
+- Empty result when no tags match
+- Case-insensitive tag matching
+
+For each: write the test, run it, then implement to make it pass.
+All existing tests must still pass after each step.
 ```
 
 ---

@@ -1,62 +1,118 @@
 # Prompt 04: Spec + Build Feature 2
 
 **When to use:** After completing Feature 1 with TDD
-**Goal:** Repeat the full cycle for "Get 5-Day Forecast with Caching"
+**Goal:** Repeat the full cycle — spec → test → implement — for "Get 5-Day Forecast with Caching"
 
 ---
 
-## Step 1: Write the Spec
+## Step 1: Write the Spec Yourself
 
-```
-@specs/get-weather.md (use as format reference)
-@src/types.ts
+Write a spec for the "Get 5-Day Forecast" feature. Save it as `specs/get-forecast.md`.
 
-Write a spec for "Get 5-Day Forecast" with these acceptance criteria:
+**Use the same format as your Feature 1 spec (which follows the AGENTS.md template).**
 
-AC1: Return forecast for valid city
-- Given "Helsinki" exists in mock data
-- When GET /forecast/Helsinki
-- Then return 200 with array of 5 ForecastDay objects (date, high, low, condition)
+### Feature Requirements
 
-AC2: City not found
-- Given "Atlantis" does not exist
-- When GET /forecast/Atlantis
-- Then return 404 with error message
+The GET /forecast/:city endpoint returns a 5-day weather forecast with caching.
 
-AC3: Caching
-- Given forecast was fetched for "Helsinki" less than 5 minutes ago
-- When GET /forecast/Helsinki is called again
-- Then return cached result without re-computing
-- And response includes header: X-Cache: HIT
+Behaviors to cover:
+- Returning a forecast for a valid city (what does each day contain?)
+- City not found
+- Cache hit — fetched recently, return cached result (how to signal this?)
+- Cache miss — first fetch or cache expired (what's the TTL?)
 
-AC4: Cache miss
-- Given forecast was never fetched or cache expired
-- When GET /forecast/Helsinki
-- Then compute fresh result
-- And response includes header: X-Cache: MISS
-
-Use the same spec format as get-weather.md.
-Save as specs/get-forecast.md
-```
+Technical constraints:
+- Use mock data — no external API calls
+- Cache uses a simple Map with TTL
+- Response wrapper: `{ data: ForecastDay[] }`
 
 ---
 
-## Step 2: TDD Implementation
+## Step 2: Ask AI to Review Your Spec
+
+```
+@specs/get-forecast.md
+@specs/get-weather.md
+
+Review this spec for completeness:
+1. Is every AC testable with a concrete assertion?
+2. Are there missing edge cases?
+3. Does the caching strategy make sense?
+4. Does it follow the same format as get-weather.md?
+
+List any issues found.
+```
+
+Fix any issues the AI identifies before proceeding.
+
+---
+
+## Step 3: TDD — RED for AC1
 
 ```
 @specs/get-forecast.md
 @src/types.ts
 @src/services/weather-service.ts
 
-Implement "Get Forecast" using TDD:
+Looking at AC1 (Return forecast for valid city), write a failing test.
 
-1. Write failing tests for AC1 and AC2 in src/services/forecast-service.test.ts
-2. Implement minimum code in src/services/forecast-service.ts
-3. Add caching tests (AC3 + AC4) — use a simple Map for cache
-4. Implement caching logic
-5. Run ALL tests (weather + forecast) to verify nothing broke
+Requirements:
+- Use Vitest
+- Test file: src/services/forecast-service.test.ts
+- Test getForecast("Helsinki") returns array of 5 ForecastDay objects
+- Do NOT implement yet
 
-Follow Red-Green-Refactor throughout.
+Run the test to confirm it fails.
+```
+
+**Verify:** `npm test` — the new test should FAIL.
+
+---
+
+## Step 4: GREEN for AC1
+
+```
+The forecast test is failing.
+
+Implement getForecast() in src/services/forecast-service.ts to make the AC1 test pass.
+
+Requirements:
+- Look up the city in mock data
+- Generate 5 forecast days
+- Return the array or null if city not found
+- Keep it simple — just make the test pass
+
+Run tests to confirm they pass.
+```
+
+**Verify:** `npm test` — all tests pass (weather + forecast).
+
+---
+
+## Step 5: RED/GREEN for AC2 (City not found)
+
+```
+@specs/get-forecast.md
+@src/services/forecast-service.test.ts
+
+Add a test for AC2 (city not found):
+- getForecast("Atlantis") should return null
+
+Run tests. If it already passes, move on. If not, update implementation.
+```
+
+---
+
+## Step 6: RED/GREEN for Caching ACs
+
+```
+@specs/get-forecast.md
+@src/services/forecast-service.test.ts
+@src/services/forecast-service.ts
+
+Add tests for caching behavior from your spec.
+Implement caching using a simple Map with TTL.
+Run ALL tests (weather + forecast) to verify nothing broke.
 ```
 
 ---

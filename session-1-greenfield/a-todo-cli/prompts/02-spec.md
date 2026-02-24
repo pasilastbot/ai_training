@@ -1,76 +1,58 @@
 # Prompt 02: Write Your Feature Spec
 
 **When to use:** After the SDD + Specifications theory blocks
-**Goal:** Write a spec for Feature 1 (Add Todo) with Given/When/Then acceptance criteria
+**Goal:** Write a spec for Feature 1 (Add Todo) using the AGENTS.md spec template
 
 ---
 
-## The Spec Template
+## Your Task
 
-Create a file called `specs/add-todo.md` with this content. Fill in the `[brackets]`:
+Write a spec for the "Add Todo" feature. Save it as `specs/add-todo.md`.
 
-```markdown
-# Feature: Add Todo
+**Use the spec template from `../../AGENTS.md` (Workflow: spec → Spec Template) as your format.**
 
-## Overview
-Users can add a new todo item with a title, category, and priority level via the CLI.
+### Feature Requirements
 
-## User Story
-As a CLI user, I want to add todos with categories and priorities so that I can organize my tasks.
+The `add` command lets users create a new todo item via the CLI.
 
-## Acceptance Criteria
+Behaviors to cover:
+- Adding a basic todo with just a title (what defaults apply?)
+- Adding a todo with a custom priority (`--priority high`)
+- Adding a todo with a category (`--category work`)
+- Rejecting an empty title
+- Rejecting an invalid priority value
 
-### AC1: Add basic todo
-**Given** the todo list is empty
-**When** the user runs `add "Buy groceries"`
-**Then** a todo is created with:
-  - title: "Buy groceries"
-  - completed: false
-  - priority: "medium" (default)
-  - id: auto-generated unique number
-**And** the CLI outputs: "Added todo #1: Buy groceries"
-
-### AC2: Add todo with priority
-**Given** the todo list may have existing items
-**When** the user runs `add "Fix bug" --priority high`
-**Then** a todo is created with priority "high"
-**And** the CLI outputs: "Added todo #[id]: Fix bug [HIGH]"
-
-### AC3: Add todo with category
-**Given** the todo list may have existing items
-**When** the user runs `add "Write tests" --category work`
-**Then** a todo is created with category "work"
-
-### AC4: Reject empty title
-**Given** any state
-**When** the user runs `add ""`
-**Then** no todo is created
-**And** the CLI outputs an error: "Title cannot be empty"
-
-### AC5: Reject invalid priority
-**Given** any state
-**When** the user runs `add "Task" --priority urgent`
-**Then** no todo is created
-**And** the CLI outputs an error: "Invalid priority. Use: low, medium, high"
-
-## Technical Constraints
+Technical constraints:
 - Pure functions for business logic (testable without CLI)
 - In-memory storage (no database)
 - IDs are sequential integers starting from 1
-
-## Test Strategy
-- Unit tests for each AC
-- Edge case: very long title (200+ chars)
-```
+- Valid priorities: low, medium, high
 
 ---
 
 ## The "Can AI Test This?" Check
 
-Before moving on, verify each AC:
-1. Does every AC have specific expected output strings?
+Before moving on, verify each AC you wrote:
+1. Does every AC have a specific expected value or output string?
 2. Could you write an `expect()` assertion for each **Then** clause?
-3. Are error cases covered (AC4, AC5)?
-4. Are defaults explicit (AC1: priority "medium")?
+3. Are error cases covered with exact error messages?
+4. Are defaults explicit (e.g., what's the default priority)?
 
 If any answer is "no" — rewrite the AC until it's testable.
+
+---
+
+## Ask AI to Review Your Spec
+
+```
+@specs/add-todo.md
+@../../AGENTS.md
+
+Review this spec against the spec template in AGENTS.md:
+1. Is every AC testable with a concrete assertion?
+2. Are there missing edge cases?
+3. Does it follow the Given/When/Then format?
+4. Is the test strategy complete?
+
+List any issues found.
+```

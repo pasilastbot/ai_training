@@ -1,80 +1,60 @@
 # Prompt 02: Write Your Feature Spec
 
 **When to use:** After the SDD + Specifications theory blocks
-**Goal:** Write a spec for Feature 1 (Create Bookmark)
+**Goal:** Write a spec for Feature 1 (Create Bookmark) using the AGENTS.md spec template
 
 ---
 
-## Create `specs/create-bookmark.md`
+## Your Task
 
-```markdown
-# Feature: Create Bookmark
+Write a spec for the "Create Bookmark" feature. Save it as `specs/create-bookmark.md`.
 
-## Overview
-Users can save a bookmark with a URL, title, optional description, and tags.
+**Use the spec template from `../../AGENTS.md` (Workflow: spec → Spec Template) as your format.**
 
-## User Story
-As an API consumer, I want to save bookmarks with tags so I can organize and find them later.
+### Feature Requirements
 
-## Acceptance Criteria
+The POST /bookmarks endpoint creates a new bookmark with URL validation and tags.
 
-### AC1: Create bookmark with valid URL
-**Given** the bookmarks list may have existing items
-**When** POST /bookmarks with:
-  ```json
-  { "url": "https://example.com", "title": "Example", "tags": ["reference"] }
-  ```
-**Then** return 201 with the created bookmark including:
-  - id: auto-generated string
-  - url: "https://example.com"
-  - title: "Example"
-  - tags: ["reference"]
-  - createdAt: ISO 8601 timestamp
+Behaviors to cover:
+- Creating a bookmark with valid URL, title, and tags (what fields in response?)
+- Rejecting an invalid URL (what counts as invalid?)
+- Rejecting a missing title
+- Rejecting a duplicate URL (what if it already exists?)
+- Default behavior when tags are not provided
 
-### AC2: Reject invalid URL
-**Given** any state
-**When** POST /bookmarks with:
-  ```json
-  { "url": "not-a-url", "title": "Bad" }
-  ```
-**Then** return 400 with error: "Invalid URL format"
-
-### AC3: Reject missing title
-**Given** any state
-**When** POST /bookmarks with:
-  ```json
-  { "url": "https://example.com" }
-  ```
-**Then** return 400 with error: "Title is required"
-
-### AC4: Reject duplicate URL
-**Given** a bookmark with url "https://example.com" already exists
-**When** POST /bookmarks with the same URL
-**Then** return 409 with error: "Bookmark already exists for this URL"
-
-### AC5: Default empty tags
-**Given** any state
-**When** POST /bookmarks without tags field
-**Then** create the bookmark with tags: []
-
-## Technical Constraints
+Technical constraints:
 - URL validation: must start with http:// or https://
 - Title: required, max 200 characters
 - Tags: optional array of lowercase strings
-- IDs: use a simple counter or timestamp-based
-
-## Test Strategy
-- Unit tests for validation (AC2, AC3)
-- Unit tests for service logic (AC1, AC4, AC5)
-- Edge case: very long URL, special characters in title
-```
+- IDs: simple counter or timestamp-based
+- POST returns 201 on success
+- Error response: `{ error: string }`
 
 ---
 
-## Validate each AC
+## The "Can AI Test This?" Check
 
-For every **Then** clause, write the assertion in your head:
-- AC1: `expect(response.status).toBe(201)` and `expect(body.url).toBe("https://example.com")`
-- AC2: `expect(response.status).toBe(400)` and `expect(body.error).toBe("Invalid URL format")`
+Before moving on, verify each AC you wrote:
+1. Does every AC have specific expected status codes and error messages?
+2. Could you write an `expect()` assertion for each **Then** clause?
+3. Are error cases covered (invalid URL, missing title, duplicate)?
+4. Are defaults explicit (what happens with no tags)?
 
-If you can't write the assertion, the AC needs more detail.
+If any answer is "no" — rewrite the AC until it's testable.
+
+---
+
+## Ask AI to Review Your Spec
+
+```
+@specs/create-bookmark.md
+@../../AGENTS.md
+
+Review this spec against the spec template in AGENTS.md:
+1. Is every AC testable with a concrete assertion?
+2. Are there missing edge cases?
+3. Are the error messages consistent?
+4. Is the test strategy complete?
+
+List any issues found.
+```
