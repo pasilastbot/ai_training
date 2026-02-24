@@ -6,6 +6,32 @@ Build a RAG pipeline that indexes real content, queries it with AI, and powers t
 
 ---
 
+## Prerequisites
+
+### Python 3
+https://www.python.org/downloads/
+
+### PIP
+https://packaging.python.org/en/latest/tutorials/installing-packages/
+
+### Ollama (for local-first workflows)
+Follow the instructions at https://ollama.ai/ to install Ollama for your operating system.
+
+Pull the models you need:
+```bash
+ollama pull gemma3:4b           # small machines
+ollama pull gemma3:12b          # >16GB memory
+ollama pull gemma3:32b          # >64GB shared memory
+ollama pull mxbai-embed-large   # embeddings
+```
+
+### ChromaDB
+```bash
+pip install chromadb
+```
+
+---
+
 ## Setup
 
 ```bash
@@ -16,9 +42,40 @@ pip install -r requirements.txt
 chroma run --path ./chroma-data
 ```
 
-**Environment variables** (in `.env.local`):
-- `GOOGLE_AI_STUDIO_KEY` or `GEMINI_API_KEY` — for Gemini embeddings and generation
-- Ollama running locally — for local-first workflows
+**Environment variables:**
+```bash
+# macOS / Linux
+export GEMINI_API_KEY=<your_key>
+
+# Windows CMD
+set GEMINI_API_KEY=<your_key>
+
+# Windows PowerShell
+$env:GEMINI_API_KEY="<your_key>"
+```
+
+### Running the scripts
+
+**Index a website:**
+```bash
+python3 parse_html.py https://website_to_ingest
+```
+
+**RAG query:**
+```bash
+python3 rag_query.py https://website_to_ingest "question to ask"
+```
+
+**Guardrails test:**
+```bash
+python3 guardrails_test.py https://siili.com "select * from users"
+```
+
+**Local Ollama workflow:**
+1. Start Ollama server and ensure models are pulled (see Prerequisites above)
+2. Start ChromaDB: `chroma run --path ./chroma-data`
+3. Index pages: `python3 index_site.py "https://site.to.ingest"`
+4. Query: `python3 rag_query_ollama.py "your question here"`
 
 ---
 
