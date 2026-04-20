@@ -813,7 +813,7 @@ d. **Scalability:**
 ### Review Principles
 - **Be honest:** Don't claim 100% if it's 78%. Identify real gaps.
 - **Be specific:** Cite line numbers, file names, test names.
-- **Be constructive:** For each issue, suggest a fix.
+- **Be critical but constructive:** For each issue, suggest a fix.
 - **Be thorough:** Check everything the spec requires.
 - **Be practical:** Distinguish "must fix before production" vs "nice to have later".
 
