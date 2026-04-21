@@ -16,12 +16,14 @@ import json
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, List, Optional
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv('.env.local')
-load_dotenv()
+_AGENT_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_AGENT_DIR))
+from agent_env import load_agent_environment
+
+load_agent_environment()
 
 from google import genai
 from google.genai import types

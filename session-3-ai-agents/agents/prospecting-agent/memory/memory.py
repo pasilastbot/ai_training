@@ -26,6 +26,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+_AGENT_ROOT = Path(__file__).resolve().parent.parent
+if str(_AGENT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_AGENT_ROOT))
+from agent_env import load_agent_environment
+
+load_agent_environment()
+
 # Try to import chromadb, fall back to file-based storage
 try:
     import chromadb

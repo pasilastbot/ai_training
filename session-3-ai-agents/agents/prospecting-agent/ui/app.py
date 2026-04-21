@@ -23,6 +23,10 @@ from flask_cors import CORS
 
 # Add parent to path for imports
 AGENT_DIR = Path(__file__).parent.parent
+sys.path.insert(0, str(AGENT_DIR))
+from agent_env import load_agent_environment
+
+load_agent_environment()
 sys.path.insert(0, str(AGENT_DIR / "memory"))
 
 from memory import MemoryStore
