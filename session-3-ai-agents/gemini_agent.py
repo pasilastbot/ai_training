@@ -55,7 +55,7 @@ except Exception:  # pragma: no cover
     stdio_client = None  # type: ignore
 
 
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "gemini-3-flash-preview"
 
 
 def load_env_files() -> None:
@@ -275,7 +275,7 @@ def build_cli_function_declarations() -> List[Dict[str, Any]]:
                 "type": "object",
                 "properties": {
                     "query": {"type": "string", "description": "Search query"},
-                    "model": {"type": "string", "description": "Gemini model to use", "default": "gemini-2.5-flash"},
+                    "model": {"type": "string", "description": "Gemini model to use", "default": "gemini-3-flash-preview"},
                     "max_results": {"type": "integer", "description": "Maximum number of sources to show", "default": 10, "minimum": 1, "maximum": 20},
                     "show_sources": {"type": "boolean", "description": "Show source URLs and titles", "default": True},
                     "format": {"type": "string", "enum": ["text", "json"], "description": "Output format", "default": "text"},
@@ -308,7 +308,7 @@ def build_cli_function_declarations() -> List[Dict[str, Any]]:
                     "file": {"type": "string", "description": "Path to local file to index"},
                     "output": {"type": "string", "description": "Output file to save processed document JSON"},
                     "collection": {"type": "string", "description": "ChromaDB collection name", "default": "gemini-docs"},
-                    "model": {"type": "string", "description": "Gemini model for content processing", "default": "gemini-2.5-flash"},
+                    "model": {"type": "string", "description": "Gemini model for content processing", "default": "gemini-3-flash-preview"},
                     "embedding_model": {"type": "string", "description": "Gemini model for embeddings", "default": "gemini-embedding-001"},
                     "chroma_host": {"type": "string", "description": "ChromaDB host", "default": "localhost"},
                     "chroma_port": {"type": "integer", "description": "ChromaDB port", "default": 8000},
@@ -929,9 +929,12 @@ async def run_single_turn_async(client: genai.Client, model: str, user_prompt: s
             calls = find_function_call_parts(response)
             if not calls:
                 break
+            # Preserve model response (includes thought_signature for Gemini 3)
+            if response.candidates and response.candidates[0].content:
+                contents.append(response.candidates[0].content)
             name, fargs = calls[0]
             result = execute_cli_function(name, fargs)
-            contents.append(types.Content(role="tool", parts=[make_function_response_part(name, result)]))
+            contents.append(types.Content(role="user", parts=[make_function_response_part(name, result)]))
             response = await client.aio.models.generate_content(
                 model=model,
                 contents=contents,
@@ -956,11 +959,15 @@ async def run_single_turn_async(client: genai.Client, model: str, user_prompt: s
                 calls = find_function_call_parts(response)
                 if not calls:
                     break
+                # Preserve model response (includes thought_signature for Gemini 3)
+                if response.candidates and response.candidates[0].content:
+                    contents.append(response.candidates[0].content)
                 name, fargs = calls[0]
                 result = execute_cli_function(name, fargs)
+                contents.append(types.Content(role="user", parts=[make_function_response_part(name, result)]))
                 response = await client.aio.models.generate_content(
                     model=model,
-                    contents=[user_prompt, make_function_response_part(name, result)],
+                    contents=contents,
                     config=config,
                 )
             print_response(response)
@@ -1014,9 +1021,12 @@ async def run_chat_loop_async(client: genai.Client, model: str, *, mcp_params: O
                 calls = find_function_call_parts(response)
                 if not calls:
                     break
+                # Preserve model response (includes thought_signature for Gemini 3)
+                if response.candidates and response.candidates[0].content:
+                    contents.append(response.candidates[0].content)
                 name, fargs = calls[0]
                 result = execute_cli_function(name, fargs)
-                contents.append(types.Content(role="tool", parts=[make_function_response_part(name, result)]))
+                contents.append(types.Content(role="user", parts=[make_function_response_part(name, result)]))
                 response = await client.aio.models.generate_content(
                     model=model,
                     contents=contents,
@@ -1039,21 +1049,21 @@ async def run_chat_loop_async(client: genai.Client, model: str, *, mcp_params: O
                         calls = find_function_call_parts(response)
                         if not calls:
                             break
+                        # Preserve model response (includes thought_signature for Gemini 3)
+                        if response.candidates and response.candidates[0].content:
+                            contents.append(response.candidates[0].content)
                         name, fargs = calls[0]
                         result = execute_cli_function(name, fargs)
-                        contents.append(types.Content(role="tool", parts=[make_function_response_part(name, result)]))
+                        contents.append(types.Content(role="user", parts=[make_function_response_part(name, result)]))
                         response = await client.aio.models.generate_content(
                             model=model,
                             contents=contents,
                             config=config,
                         )
         print_response(response)
-        try:
-            model_content = response.candidates[0].content
-            if model_content is not None:
-                history.append(model_content)
-        except Exception:
-            pass
+        # Preserve final response in history (includes thought_signature for Gemini 3)
+        if response.candidates and response.candidates[0].content:
+            history.append(response.candidates[0].content)
 
 
 def slugify_filename(text: str) -> str:
