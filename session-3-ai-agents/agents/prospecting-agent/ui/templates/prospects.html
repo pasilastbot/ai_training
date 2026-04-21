@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Prospects - Prospecting Agent{% endblock %}
+{% block content %}
+<h2>Prospects</h2>
+
+<form method="GET" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <input type="text" name="q" class="form-control" placeholder="Search..." value="{{ filters.q }}">
+    </div>
+    <div class="col-md-2">
+        <select name="status" class="form-select">
+            <option value="">All Status</option>
+            <option value="new" {{ 'selected' if filters.status == 'new' }}>New</option>
+            <option value="enriched" {{ 'selected' if filters.status == 'enriched' }}>Enriched</option>
+            <option value="qualified" {{ 'selected' if filters.status == 'qualified' }}>Qualified</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="min_score" class="form-control" placeholder="Min Score" value="{{ filters.min_score }}">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-primary">Filter</button>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Industry</th>
+                <th>Location</th>
+                <th>Size</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in prospects %}
+            <tr class="status-{{ p.status }}">
+                <td><a href="/prospects/{{ p.id }}"><strong>{{ p.company_name }}</strong></a></td>
+                <td>{{ p.industry or '-' }}</td>
+                <td>{{ p.headquarters.city if p.headquarters else '-' }}</td>
+                <td>{{ p.employee_count or '-' }}</td>
+                <td><span class="badge bg-secondary">{{ p.status }}</span></td>
+                <td>{% if p.score %}<span class="badge bg-{{ 'success' if p.score >= 70 else 'warning' if p.score >= 50 else 'secondary' }}">{{ p.score }}</span>{% else %}-{% endif %}</td>
+                <td>
+                    <a href="/prospects/{{ p.id }}" class="btn btn-sm btn-outline-primary">View</a>
+                    {% if p.status != 'enriched' %}
+                    <form method="POST" action="/prospects/{{ p.id }}/enrich" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-success">Enrich</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="text-muted">No prospects found</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

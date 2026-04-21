@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{{ prospect.company_name }} - Prospecting Agent{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/prospects">Prospects</a></li>
+        <li class="breadcrumb-item active">{{ prospect.company_name }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <h2>{{ prospect.company_name }}</h2>
+        <p class="lead">{{ prospect.description or 'No description available' }}</p>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Company Info</h5>
+                <ul class="list-unstyled">
+                    <li><strong>Industry:</strong> {{ prospect.industry or '-' }}</li>
+                    <li><strong>Sub-industry:</strong> {{ prospect.sub_industry or '-' }}</li>
+                    <li><strong>Website:</strong> {% if prospect.website %}<a href="{{ prospect.website }}" target="_blank">{{ prospect.website }}</a>{% else %}-{% endif %}</li>
+                    <li><strong>Employees:</strong> {{ prospect.employee_count or '-' }}</li>
+                    <li><strong>Revenue:</strong> {{ '$' + '{:,.0f}'.format(prospect.revenue_estimate_usd) if prospect.revenue_estimate_usd else '-' }}</li>
+                    <li><strong>Funding:</strong> {{ prospect.funding_stage or '-' }}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5>Location</h5>
+                {% if prospect.headquarters %}
+                <p>
+                    {{ prospect.headquarters.city or '' }}{% if prospect.headquarters.state %}, {{ prospect.headquarters.state }}{% endif %}<br>
+                    {{ prospect.headquarters.country or '' }}
+                </p>
+                {% else %}
+                <p class="text-muted">No location data</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if prospect.technologies %}
+        <h5>Technologies</h5>
+        <p>
+            {% for tech in prospect.technologies %}
+            <span class="badge bg-info">{{ tech }}</span>
+            {% endfor %}
+        </p>
+        {% endif %}
+        
+        {% if prospect.contacts %}
+        <h5>Contacts</h5>
+        <ul>
+            {% for contact in prospect.contacts %}
+            <li><strong>{{ contact.name }}</strong> - {{ contact.title }}
+                {% if contact.linkedin %}<a href="{{ contact.linkedin }}" target="_blank">(LinkedIn)</a>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        
+        {% if prospect.signals %}
+        <h5>Signals</h5>
+        <ul>
+            {% if prospect.signals.hiring %}<li class="text-success">Actively hiring</li>{% endif %}
+            {% if prospect.signals.recent_funding %}<li class="text-success">Recent funding</li>{% endif %}
+            {% if prospect.signals.recent_news %}
+                {% for news in prospect.signals.recent_news %}
+                <li>{{ news }}</li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Status</h5>
+                <p><span class="badge bg-{{ 'success' if prospect.status == 'enriched' else 'secondary' }} fs-5">{{ prospect.status }}</span></p>
+                
+                {% if prospect.score %}
+                <h5>ICP Score</h5>
+                <p class="display-4">{{ prospect.score }}</p>
+                {% endif %}
+                
+                <hr>
+                
+                <p class="text-muted small">
+                    Created: {{ prospect.created_at[:10] if prospect.created_at else '-' }}<br>
+                    Updated: {{ prospect.updated_at[:10] if prospect.updated_at else '-' }}<br>
+                    {% if prospect.enriched_at %}Enriched: {{ prospect.enriched_at[:10] }}{% endif %}
+                </p>
+                
+                {% if prospect.status != 'enriched' %}
+                <form method="POST" action="/prospects/{{ prospect.id }}/enrich">
+                    <button type="submit" class="btn btn-success w-100">Enrich This Prospect</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

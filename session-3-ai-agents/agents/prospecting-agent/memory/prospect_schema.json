@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Prospect",
+  "description": "Schema for a sales prospect record",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique prospect identifier"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Company name"
+    },
+    "website": {
+      "type": "string",
+      "format": "uri",
+      "description": "Company website URL"
+    },
+    "industry": {
+      "type": "string",
+      "description": "Primary industry"
+    },
+    "sub_industry": {
+      "type": "string",
+      "description": "Sub-industry or vertical"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief company description"
+    },
+    "employee_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Estimated employee count"
+    },
+    "revenue_estimate_usd": {
+      "type": "integer",
+      "description": "Estimated annual revenue in USD"
+    },
+    "funding_stage": {
+      "type": "string",
+      "enum": ["seed", "series-a", "series-b", "series-c", "series-d+", "public", "bootstrapped", "unknown"],
+      "description": "Current funding stage"
+    },
+    "total_funding_usd": {
+      "type": "integer",
+      "description": "Total funding raised in USD"
+    },
+    "headquarters": {
+      "type": "object",
+      "properties": {
+        "city": {"type": "string"},
+        "state": {"type": "string"},
+        "country": {"type": "string"},
+        "address": {"type": "string"}
+      },
+      "description": "Headquarters location"
+    },
+    "technologies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Technologies used by the company"
+    },
+    "contacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "title": {"type": "string"},
+          "email": {"type": "string", "format": "email"},
+          "linkedin": {"type": "string", "format": "uri"}
+        }
+      },
+      "description": "Key contacts at the company"
+    },
+    "signals": {
+      "type": "object",
+      "properties": {
+        "hiring": {"type": "boolean"},
+        "recent_funding": {"type": "boolean"},
+        "recent_news": {"type": "array", "items": {"type": "string"}},
+        "growth_indicators": {"type": "array", "items": {"type": "string"}}
+      },
+      "description": "Buying signals detected"
+    },
+    "score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "ICP fit score (0-100)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["new", "researching", "enriched", "qualified", "contacted", "archived"],
+      "description": "Prospect status"
+    },
+    "source": {
+      "type": "string",
+      "description": "How the prospect was found"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "enriched_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["id", "company_name", "status", "created_at"]
+}

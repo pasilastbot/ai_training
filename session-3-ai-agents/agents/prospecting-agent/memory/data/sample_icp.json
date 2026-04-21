@@ -1,0 +1,24 @@
+{
+  "name": "B2B SaaS Tech Companies",
+  "target_industries": ["SaaS", "Fintech", "Healthcare Tech", "EdTech"],
+  "company_size": {
+    "min_employees": 50,
+    "max_employees": 500
+  },
+  "revenue_range": {
+    "min_usd": 5000000,
+    "max_usd": 100000000
+  },
+  "geography": ["US", "UK", "Germany", "Canada", "Australia"],
+  "keywords": ["AI", "machine learning", "automation", "data analytics", "cloud native"],
+  "technologies": ["AWS", "GCP", "Python", "Kubernetes", "React"],
+  "exclusions": ["consulting", "agency", "government", "non-profit"],
+  "funding_stage": ["series-a", "series-b", "series-c"],
+  "decision_makers": ["CTO", "VP Engineering", "Head of Data", "Chief Data Officer"],
+  "signals": {
+    "hiring": true,
+    "recent_funding": true,
+    "tech_adoption": true,
+    "growth": true
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "notification_email": {
+    "value": "user@example.com",
+    "metadata": null,
+    "updated_at": "2026-04-21T04:26:02.550646"
+  },
+  "auto_enrich": {
+    "value": true,
+    "metadata": null,
+    "updated_at": "2026-04-21T04:26:03.744795"
+  }
+}

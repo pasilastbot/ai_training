@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Prospecting Agent{% endblock %}
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Total Prospects</h5>
+                <p class="display-6">{{ stats.get('total', 0) }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Enriched</h5>
+                <p class="display-6">{{ stats.get('by_status', {}).get('enriched', 0) }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Avg Score</h5>
+                <p class="display-6">{{ stats.get('avg_score', '-') }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">ICP</h5>
+                <p class="text-muted">{{ icp.get('name', 'Not set') }}</p>
+                <a href="/icp" class="btn btn-sm btn-outline-primary">Configure</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>Recent Prospects</h4>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Industry</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in prospects %}
+            <tr>
+                <td><a href="/prospects/{{ p.id }}">{{ p.company_name }}</a></td>
+                <td>{{ p.industry or '-' }}</td>
+                <td><span class="badge bg-secondary">{{ p.status }}</span></td>
+                <td>{{ p.score or '-' }}</td>
+                <td><a href="/prospects/{{ p.id }}" class="btn btn-sm btn-outline-primary">View</a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="text-muted">No prospects yet. <a href="/search">Start searching</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

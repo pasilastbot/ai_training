@@ -1,0 +1,42 @@
+{
+  "current_icp": {
+    "name": "B2B SaaS Tech Companies",
+    "target_industries": [
+      "SaaS",
+      "Fintech",
+      "Healthcare Tech",
+      "EdTech"
+    ],
+    "geography": [
+      "Finland",
+      "Sweden",
+      "Norway",
+      "Estonia",
+      "Germany"
+    ],
+    "keywords": [
+      "AI",
+      "machine learning",
+      "automation",
+      "data analytics",
+      "cloud native"
+    ],
+    "exclusions": [
+      "consulting",
+      "agency",
+      "government",
+      "non-profit"
+    ],
+    "funding_stage": [
+      "series-a",
+      "series-b",
+      "series-c"
+    ],
+    "updated_at": "2026-04-21T05:14:50.338056",
+    "company_size": {
+      "min_employees": 50,
+      "max_employees": 500
+    },
+    "created_at": "2026-04-21T04:35:59.840404"
+  }
+}

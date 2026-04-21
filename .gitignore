@@ -3,3 +3,9 @@ chroma.log
 .env.*
 node_modules
 .venv311
+__pycache__/
+*.pyc
+*.db
+chat_history.json
+session.json
+sessions.json

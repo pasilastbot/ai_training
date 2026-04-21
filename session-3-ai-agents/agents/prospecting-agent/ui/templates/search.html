@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Search - Prospecting Agent{% endblock %}
+{% block content %}
+<h2>Search Prospects</h2>
+
+<form method="POST" class="mb-4">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Search Query</label>
+            <input type="text" name="query" class="form-control" value="{{ query }}" placeholder="e.g., AI startups in San Francisco">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Industries</label>
+            <input type="text" name="industries" class="form-control" placeholder="e.g., SaaS, Fintech" value="{{ icp.get('target_industries', [])|join(', ') }}">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Geography</label>
+            <input type="text" name="geography" class="form-control" placeholder="e.g., US, UK" value="{{ icp.get('geography', [])|join(', ') }}">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Company Size</label>
+            <input type="text" name="size" class="form-control" placeholder="e.g., 50-500">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Search</button>
+</form>
+
+{% if results %}
+<h4>Results</h4>
+{% if results.error %}
+<div class="alert alert-danger">{{ results.error }}</div>
+{% else %}
+<p class="text-muted">Found {{ results.get('prospects', [])|length }} prospects</p>
+<div class="row">
+    {% for p in results.get('prospects', []) %}
+    <div class="col-md-6 mb-3">
+        <div class="card prospect-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ p.company_name }}</h5>
+                <p class="card-text text-muted">{{ p.description[:150] if p.description else '' }}...</p>
+                <p>
+                    <span class="badge bg-info">{{ p.industry or 'Unknown' }}</span>
+                    {% if p.relevance_score %}<span class="badge bg-success">Score: {{ p.relevance_score }}</span>{% endif %}
+                </p>
+                {% if p.website %}<a href="{{ p.website }}" target="_blank" class="btn btn-sm btn-outline-secondary">Website</a>{% endif %}
+                <form method="POST" action="/api/store" class="d-inline">
+                    <input type="hidden" name="prospect" value="{{ p|tojson }}">
+                    <button type="button" class="btn btn-sm btn-primary save-btn" data-prospect="{{ p|tojson|e }}">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.save-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const prospect = JSON.parse(btn.dataset.prospect);
+        const res = await fetch('/api/store', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(prospect)
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            btn.textContent = 'Saved!';
+            btn.disabled = true;
+        }
+    });
+});
+</script>
+{% endblock %}

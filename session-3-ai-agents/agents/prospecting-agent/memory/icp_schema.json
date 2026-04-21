@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ideal Customer Profile (ICP)",
+  "description": "Schema for defining target prospect criteria",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of this ICP profile"
+    },
+    "target_industries": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Target industry sectors",
+      "examples": [["SaaS", "Fintech", "Healthcare Tech"]]
+    },
+    "company_size": {
+      "type": "object",
+      "properties": {
+        "min_employees": {"type": "integer", "minimum": 1},
+        "max_employees": {"type": "integer"}
+      },
+      "description": "Target company size by employee count"
+    },
+    "revenue_range": {
+      "type": "object",
+      "properties": {
+        "min_usd": {"type": "integer", "minimum": 0},
+        "max_usd": {"type": "integer"}
+      },
+      "description": "Target annual revenue range in USD"
+    },
+    "geography": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Target geographic regions or countries",
+      "examples": [["US", "EU", "UK", "Canada"]]
+    },
+    "keywords": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Keywords indicating good fit",
+      "examples": [["AI", "automation", "machine learning", "data analytics"]]
+    },
+    "technologies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Technologies the prospect should use",
+      "examples": [["AWS", "Python", "React", "Kubernetes"]]
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Keywords or industries to exclude",
+      "examples": [["consulting", "agency", "non-profit"]]
+    },
+    "funding_stage": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["seed", "series-a", "series-b", "series-c", "series-d+", "public", "bootstrapped"]
+      },
+      "description": "Target funding stages"
+    },
+    "decision_makers": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Target job titles for decision makers",
+      "examples": [["CTO", "VP Engineering", "Head of Data", "CEO"]]
+    },
+    "signals": {
+      "type": "object",
+      "properties": {
+        "hiring": {"type": "boolean", "description": "Company is actively hiring"},
+        "recent_funding": {"type": "boolean", "description": "Raised funding recently"},
+        "tech_adoption": {"type": "boolean", "description": "Adopting new technologies"},
+        "growth": {"type": "boolean", "description": "Showing growth signals"}
+      },
+      "description": "Buying signals to look for"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["name", "target_industries", "geography"]
+}

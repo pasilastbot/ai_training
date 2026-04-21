@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Error - Prospecting Agent{% endblock %}
+{% block content %}
+<div class="alert alert-danger">
+    <h4>Error</h4>
+    <p>{{ error }}</p>
+</div>
+<a href="/" class="btn btn-primary">Go to Dashboard</a>
+{% endblock %}

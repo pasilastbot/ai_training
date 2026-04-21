@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% block title %}Chat - Prospecting Agent{% endblock %}
+{% block content %}
+<style>
+    .status-panel {
+        background: #1a1a2e;
+        color: #0f0;
+        font-family: 'Monaco', 'Consolas', monospace;
+        font-size: 12px;
+        border-radius: 8px;
+        padding: 12px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    .status-line {
+        margin: 2px 0;
+        padding: 2px 4px;
+    }
+    .status-line.tool { color: #ff79c6; }
+    .status-line.status { color: #8be9fd; }
+    .status-line.error { color: #ff5555; }
+    .status-line.response { color: #50fa7b; }
+    .chat-bubble {
+        max-width: 85%;
+        word-wrap: break-word;
+    }
+    .agent-thinking {
+        display: inline-block;
+        padding: 8px 16px;
+        background: #f0f0f0;
+        border-radius: 16px;
+        color: #666;
+    }
+    .agent-thinking .dots::after {
+        content: '';
+        animation: dots 1.5s infinite;
+    }
+    @keyframes dots {
+        0%, 20% { content: '.'; }
+        40% { content: '..'; }
+        60%, 100% { content: '...'; }
+    }
+</style>
+
+<div class="d-flex flex-column" style="height: calc(100vh - 100px);">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Chat with Prospecting Agent</h2>
+        <div>
+            <button class="btn btn-sm btn-outline-secondary me-2" onclick="clearChat()">Clear Chat</button>
+            <span class="badge bg-info">ICP: {{ icp.get('name', 'Not set') }}</span>
+        </div>
+    </div>
+    
+    <!-- Status Panel -->
+    <div class="status-panel mb-3" id="status-panel" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <strong style="color: #bd93f9;">Agent Activity</strong>
+            <button class="btn btn-sm btn-outline-light" onclick="document.getElementById('status-panel').style.display='none'" style="font-size: 10px; padding: 2px 8px;">Hide</button>
+        </div>
+        <div id="status-messages"></div>
+    </div>
+    
+    <div class="card flex-grow-1 mb-3">
+        <div class="card-body overflow-auto" id="chat-messages" style="max-height: 50vh;">
+            <div class="text-muted text-center py-5" id="welcome-message">
+                <h5>Welcome to the Prospecting Agent</h5>
+                <p>Ask me to search for prospects, enrich company data, or manage your ICP.</p>
+                <p class="small">Try: "Find AI startups in Berlin" or "What companies do we have?"</p>
+            </div>
+        </div>
+    </div>
+    
+    <form id="chat-form" class="d-flex gap-2">
+        <input type="text" id="chat-input" class="form-control form-control-lg" 
+               placeholder="Ask the agent to search, enrich, or manage prospects..." autofocus>
+        <button type="submit" class="btn btn-primary btn-lg px-4" id="send-btn">
+            <span id="send-text">Send</span>
+            <span id="send-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const chatMessages = document.getElementById('chat-messages');
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+const sendText = document.getElementById('send-text');
+const sendSpinner = document.getElementById('send-spinner');
+const welcomeMessage = document.getElementById('welcome-message');
+const statusPanel = document.getElementById('status-panel');
+const statusMessages = document.getElementById('status-messages');
+
+let thinkingIndicator = null;
+
+function addStatusMessage(type, message) {
+    statusPanel.style.display = 'block';
+    const line = document.createElement('div');
+    line.className = `status-line ${type}`;
+    line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+    statusMessages.appendChild(line);
+    statusMessages.scrollTop = statusMessages.scrollHeight;
+}
+
+function clearStatus() {
+    statusMessages.innerHTML = '';
+}
+
+function addMessage(content, isUser, isThinking = false) {
+    if (welcomeMessage) {
+        welcomeMessage.remove();
+    }
+    
+    // Remove thinking indicator if exists
+    if (thinkingIndicator) {
+        thinkingIndicator.remove();
+        thinkingIndicator = null;
+    }
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `mb-3 ${isUser ? 'text-end' : ''}`;
+    
+    if (isThinking) {
+        messageDiv.innerHTML = `<div class="agent-thinking">Agent is working<span class="dots"></span></div>`;
+        thinkingIndicator = messageDiv;
+    } else {
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble d-inline-block p-3 rounded-3 ${isUser ? 'bg-primary text-white' : 'bg-light'}`;
+        bubble.style.textAlign = 'left';
+        
+        // Format the content - simple text formatting
+        let formattedContent = content;
+        // Handle both escaped and actual newlines
+        formattedContent = formattedContent.split(String.fromCharCode(10)).join('<br>');
+        formattedContent = formattedContent.split('\\n').join('<br>');
+        // Bold and italic
+        formattedContent = formattedContent.replace(/[*][*]([^*]+)[*][*]/g, '<strong>$1</strong>');
+        formattedContent = formattedContent.replace(/[*]([^*]+)[*]/g, '<em>$1</em>');
+        
+        bubble.innerHTML = `<div style="white-space: pre-wrap;">${formattedContent}</div>`;
+        
+        const timestamp = document.createElement('small');
+        timestamp.className = 'text-muted d-block mt-1';
+        timestamp.textContent = new Date().toLocaleTimeString();
+        
+        messageDiv.appendChild(bubble);
+        messageDiv.appendChild(timestamp);
+    }
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    return messageDiv;
+}
+
+function setLoading(loading) {
+    chatInput.disabled = loading;
+    sendBtn.disabled = loading;
+    sendText.classList.toggle('d-none', loading);
+    sendSpinner.classList.toggle('d-none', !loading);
+}
+
+chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const message = chatInput.value.trim();
+    if (!message) return;
+    
+    addMessage(message, true);
+    chatInput.value = '';
+    setLoading(true);
+    clearStatus();
+    
+    // Show thinking indicator
+    addMessage('', false, true);
+    
+    try {
+        // Use streaming endpoint
+        const response = await fetch('/api/chat/stream', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let finalResponse = '';
+        
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            const text = decoder.decode(value);
+            const lines = text.split(String.fromCharCode(10));
+            
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        const data = JSON.parse(line.slice(6));
+                        
+                        if (data.type === 'status' || data.type === 'tool' || data.type === 'error') {
+                            addStatusMessage(data.type, data.message);
+                        } else if (data.type === 'response') {
+                            finalResponse = data.message;
+                        } else if (data.type === 'done') {
+                            // Show final response
+                            addMessage(finalResponse || 'No response from agent', false);
+                        }
+                    } catch (e) {
+                        // Ignore parse errors
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        addMessage('Error: Failed to communicate with the agent. Please try again.', false);
+    } finally {
+        setLoading(false);
+        chatInput.focus();
+    }
+});
+
+async function clearChat() {
+    if (!confirm('Clear conversation history?')) return;
+    
+    try {
+        await fetch('/api/chat/clear', { method: 'POST' });
+        chatMessages.innerHTML = `
+            <div class="text-muted text-center py-5" id="welcome-message">
+                <h5>Welcome to the Prospecting Agent</h5>
+                <p>Ask me to search for prospects, enrich company data, or manage your ICP.</p>
+                <p class="small">Try: "Find AI startups in Berlin" or "What companies do we have?"</p>
+            </div>`;
+        statusMessages.innerHTML = '';
+        statusPanel.style.display = 'none';
+    } catch (e) {
+        alert('Failed to clear chat');
+    }
+}
+</script>
+{% endblock %}

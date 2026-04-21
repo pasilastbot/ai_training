@@ -1,0 +1,24 @@
+# Prospecting Agent Dependencies
+
+# Core
+google-genai>=1.0.0
+python-dotenv>=1.0.0
+
+# Memory / Database
+chromadb>=0.6.3
+numpy>=1.24.0
+
+# Database (optional - for PostgreSQL storage)
+psycopg2-binary>=2.9.0
+
+# API
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
+
+# UI
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# Utilities
+requests>=2.32.0

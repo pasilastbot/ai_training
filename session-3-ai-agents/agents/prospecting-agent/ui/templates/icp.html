@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}ICP Settings - Prospecting Agent{% endblock %}
+{% block content %}
+<h2>Ideal Customer Profile (ICP)</h2>
+<p class="text-muted">Define your target customer criteria</p>
+
+<form method="POST">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Profile Name</label>
+            <input type="text" name="name" class="form-control" value="{{ icp.get('name', 'default') }}">
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Target Industries (comma-separated)</label>
+            <input type="text" name="industries" class="form-control" 
+                   value="{{ icp.get('target_industries', [])|join(', ') }}"
+                   placeholder="SaaS, Fintech, HealthTech">
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Geography (comma-separated)</label>
+            <input type="text" name="geography" class="form-control" 
+                   value="{{ icp.get('geography', [])|join(', ') }}"
+                   placeholder="US, UK, Germany">
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Keywords (comma-separated)</label>
+            <input type="text" name="keywords" class="form-control" 
+                   value="{{ icp.get('keywords', [])|join(', ') }}"
+                   placeholder="AI, automation, cloud">
+        </div>
+        
+        <div class="col-md-3">
+            <label class="form-label">Min Employees</label>
+            <input type="number" name="min_employees" class="form-control" 
+                   value="{{ icp.get('company_size', {}).get('min_employees', '') }}">
+        </div>
+        
+        <div class="col-md-3">
+            <label class="form-label">Max Employees</label>
+            <input type="number" name="max_employees" class="form-control" 
+                   value="{{ icp.get('company_size', {}).get('max_employees', '') }}">
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Funding Stage</label>
+            <div>
+                {% for stage in ['seed', 'series-a', 'series-b', 'series-c', 'series-d+'] %}
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="funding_stage" 
+                           value="{{ stage }}" {{ 'checked' if stage in icp.get('funding_stage', []) }}>
+                    <label class="form-check-label">{{ stage }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Exclusions (comma-separated)</label>
+            <input type="text" name="exclusions" class="form-control" 
+                   value="{{ icp.get('exclusions', [])|join(', ') }}"
+                   placeholder="consulting, agency">
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary mt-4">Save ICP</button>
+</form>
+{% endblock %}

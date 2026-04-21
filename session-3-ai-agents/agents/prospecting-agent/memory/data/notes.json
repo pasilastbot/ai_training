@@ -1,0 +1,37 @@
+{
+  "note1": {
+    "value": "Meeting with TechCorp AI about their ML platform, very promising lead",
+    "metadata": null,
+    "updated_at": "2026-04-21T04:30:23.678192"
+  },
+  "note2": {
+    "value": "HealthTech Solutions focuses on hospital management software",
+    "metadata": null,
+    "updated_at": "2026-04-21T04:30:24.935393"
+  },
+  "note3": {
+    "value": "FinanceFlow is building payment processing infrastructure for banks",
+    "metadata": null,
+    "updated_at": "2026-04-21T04:30:26.140177"
+  },
+  "note4": {
+    "value": "CloudBase offers cloud storage and computing services",
+    "metadata": null,
+    "updated_at": "2026-04-21T04:30:27.296062"
+  },
+  "note_chroma1": {
+    "value": "Meeting with TechCorp AI about their ML platform, very promising lead",
+    "metadata": null,
+    "updated_at": "2026-04-21T04:30:57.817782"
+  },
+  "note_chroma2": {
+    "value": "HealthTech Solutions focuses on hospital management software",
+    "metadata": null,
+    "updated_at": "2026-04-21T04:31:00.007121"
+  },
+  "note_chroma3": {
+    "value": "FinanceFlow is building payment processing infrastructure for banks",
+    "metadata": null,
+    "updated_at": "2026-04-21T04:31:02.132498"
+  }
+}
