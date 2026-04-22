@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Restaurants - Lunch Selection Agent{% endblock %}
+{% block content %}
+<h2>Restaurants</h2>
+
+<form method="GET" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <select name="city" class="form-select">
+            <option value="">All Cities</option>
+            {% for city in cities %}
+            <option value="{{ city }}" {{ 'selected' if filters.city == city }}>{{ city }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="cuisine" class="form-select">
+            <option value="">All Cuisines</option>
+            {% for cuisine in cuisines %}
+            <option value="{{ cuisine }}" {{ 'selected' if filters.cuisine == cuisine }}>{{ cuisine }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="q" class="form-control" placeholder="Search..." value="{{ filters.q }}">
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Filter</button>
+    </div>
+</form>
+
+<div class="row">
+    {% for r in restaurants %}
+    <div class="col-md-4 mb-3">
+        <div class="card restaurant-card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ r.name }}</h5>
+                <p class="card-text text-muted">{{ r.city }}{% if r.address %} - {{ r.address }}{% endif %}</p>
+                <p>
+                    {% for cuisine in r.get('cuisine_types', [])[:3] %}
+                    <span class="badge bg-info">{{ cuisine }}</span>
+                    {% endfor %}
+                    {% if r.price_range %}
+                    <span class="badge bg-{{ 'success' if r.price_range == 'budget' else 'warning' if r.price_range == 'moderate' else 'danger' }}">{{ r.price_range }}</span>
+                    {% endif %}
+                </p>
+                <a href="/restaurants/{{ r.id }}" class="btn btn-sm btn-outline-primary">View</a>
+                {% if r.website %}
+                <a href="{{ r.website }}" target="_blank" class="btn btn-sm btn-outline-secondary">Website</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <p class="text-muted">No restaurants found. <a href="/search">Search for restaurants</a> first.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

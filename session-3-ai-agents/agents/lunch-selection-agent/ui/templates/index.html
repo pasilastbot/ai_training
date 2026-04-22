@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Lunch Selection Agent{% endblock %}
+{% block content %}
+<h2>🍽️ Lunch Selection Dashboard</h2>
+<p class="lead">{{ today }}, {{ today_date }}</p>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Restaurants</h5>
+                <p class="display-6">{{ stats.get('total_restaurants', 0) }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Selections</h5>
+                <p class="display-6">{{ stats.get('total_selections', 0) }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Avg Rating</h5>
+                <p class="display-6">{{ stats.get('average_rating') or '-' }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Preferences</h5>
+                <p class="text-muted">{{ 'Set' if prefs.get('liked_cuisines') else 'Not set' }}</p>
+                <a href="/preferences" class="btn btn-sm btn-outline-primary">Configure</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Quick Actions</h4>
+        <div class="list-group">
+            <a href="/chat" class="list-group-item list-group-item-action">💬 Chat with agent</a>
+            <a href="/search" class="list-group-item list-group-item-action">🔍 Search restaurants</a>
+            <a href="/recommend" class="list-group-item list-group-item-action">💡 Get recommendation</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h4>Recent Selections</h4>
+        {% if recent_selections %}
+        <ul class="list-group">
+            {% for sel in recent_selections %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ sel.dish_name }}</strong>
+                    <small class="text-muted">at {{ sel.restaurant_name }}</small>
+                </div>
+                {% if sel.rating %}
+                <span class="badge bg-primary">{{ sel.rating }}⭐</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No recent selections. Start recording your lunches!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}History - Lunch Selection Agent{% endblock %}
+{% block content %}
+<h2>Lunch History</h2>
+
+<form method="GET" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <select name="days" class="form-select">
+            <option value="">All Time</option>
+            <option value="7" {{ 'selected' if filters.days == 7 }}>Last 7 days</option>
+            <option value="30" {{ 'selected' if filters.days == 30 }}>Last 30 days</option>
+            <option value="90" {{ 'selected' if filters.days == 90 }}>Last 90 days</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="min_rating" class="form-select">
+            <option value="">Any Rating</option>
+            <option value="4" {{ 'selected' if filters.min_rating == 4 }}>4+ stars</option>
+            <option value="3" {{ 'selected' if filters.min_rating == 3 }}>3+ stars</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-primary">Filter</button>
+    </div>
+</form>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Restaurant</th>
+            <th>Dish</th>
+            <th>Rating</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sel in selections %}
+        <tr>
+            <td>{{ sel.date }}</td>
+            <td>{{ sel.restaurant_name }}</td>
+            <td>{{ sel.dish_name }}</td>
+            <td>{% if sel.rating %}{{ '⭐' * sel.rating }}{% else %}-{% endif %}</td>
+            <td>{{ sel.notes or '-' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-muted">No selections recorded yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4 class="mt-4">Record New Selection</h4>
+<form method="POST" action="/selections/add" class="row g-3">
+    <div class="col-md-3">
+        <input type="text" name="restaurant_name" class="form-control" placeholder="Restaurant name" required>
+    </div>
+    <div class="col-md-3">
+        <input type="text" name="dish_name" class="form-control" placeholder="Dish name" required>
+    </div>
+    <div class="col-md-2">
+        <input type="text" name="city" class="form-control" placeholder="City">
+    </div>
+    <div class="col-md-2">
+        <select name="rating" class="form-select">
+            <option value="">Rating</option>
+            <option value="5">5 ⭐</option>
+            <option value="4">4 ⭐</option>
+            <option value="3">3 ⭐</option>
+            <option value="2">2 ⭐</option>
+            <option value="1">1 ⭐</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Add</button>
+    </div>
+</form>
+{% endblock %}

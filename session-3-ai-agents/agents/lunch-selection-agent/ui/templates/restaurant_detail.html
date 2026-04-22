@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}{{ restaurant.name }} - Lunch Selection Agent{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/restaurants">Restaurants</a></li>
+        <li class="breadcrumb-item active">{{ restaurant.name }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <h2>{{ restaurant.name }}</h2>
+        <p class="lead">{{ restaurant.city }}{% if restaurant.address %} - {{ restaurant.address }}{% endif %}</p>
+        
+        <p>
+            {% for cuisine in restaurant.get('cuisine_types', []) %}
+            <span class="badge bg-info">{{ cuisine }}</span>
+            {% endfor %}
+            {% if restaurant.price_range %}
+            <span class="badge bg-secondary">{{ restaurant.price_range }}</span>
+            {% endif %}
+        </p>
+        
+        {% if restaurant.website %}
+        <p><a href="{{ restaurant.website }}" target="_blank">{{ restaurant.website }}</a></p>
+        {% endif %}
+        
+        {% if restaurant.cached_menu and restaurant.cached_menu.dishes %}
+        <h4 class="mt-4">Today's Menu</h4>
+        <small class="text-muted">Last fetched: {{ restaurant.last_menu_fetch[:10] if restaurant.last_menu_fetch else 'Never' }}</small>
+        <ul class="list-group mt-2">
+            {% for dish in restaurant.cached_menu.dishes %}
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div>
+                    <strong>{{ dish.name }}</strong>
+                    {% if dish.description %}<br><small class="text-muted">{{ dish.description }}</small>{% endif %}
+                    {% for tag in dish.get('dietary', []) %}
+                    <span class="badge bg-success dietary-badge">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% if dish.price %}
+                <span class="badge bg-primary">€{{ dish.price }}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="alert alert-info mt-4">
+            <p>No menu cached. Fetch today's menu to see lunch options.</p>
+            <form method="POST" action="/restaurants/{{ restaurant.id }}/menu">
+                <button type="submit" class="btn btn-primary">Fetch Menu</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Actions</h5>
+                <form method="POST" action="/restaurants/{{ restaurant.id }}/menu" class="mb-3">
+                    <button type="submit" class="btn btn-success w-100">🔄 Refresh Menu</button>
+                </form>
+                
+                <h6 class="mt-4">Record Selection</h6>
+                <form method="POST" action="/selections/add">
+                    <input type="hidden" name="restaurant_name" value="{{ restaurant.name }}">
+                    <input type="hidden" name="city" value="{{ restaurant.city }}">
+                    <div class="mb-2">
+                        <input type="text" name="dish_name" class="form-control" placeholder="Dish name" required>
+                    </div>
+                    <div class="mb-2">
+                        <select name="rating" class="form-select">
+                            <option value="">Rate (optional)</option>
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Record Selection</button>
+                </form>
+            </div>
+        </div>
+        
+        {% if selections %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <h6>Your History Here</h6>
+                <ul class="list-group list-group-flush">
+                    {% for sel in selections %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ sel.dish_name }}</span>
+                        {% if sel.rating %}<span>{{ sel.rating }}⭐</span>{% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

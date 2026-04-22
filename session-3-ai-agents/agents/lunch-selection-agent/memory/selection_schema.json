@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LunchSelection",
+  "description": "Schema for a lunch selection record",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique selection identifier"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the lunch (YYYY-MM-DD)"
+    },
+    "restaurant_id": {
+      "type": "string",
+      "description": "Reference to the restaurant"
+    },
+    "restaurant_name": {
+      "type": "string",
+      "description": "Restaurant name (denormalized for convenience)"
+    },
+    "city": {
+      "type": "string",
+      "description": "City where lunch was had"
+    },
+    "dish_name": {
+      "type": "string",
+      "description": "Name of the dish ordered"
+    },
+    "dish_description": {
+      "type": "string",
+      "description": "Description of the dish"
+    },
+    "cuisine_type": {
+      "type": "string",
+      "description": "Type of cuisine"
+    },
+    "price": {
+      "type": "number",
+      "description": "Price paid in EUR"
+    },
+    "rating": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "User rating (1-5 stars)"
+    },
+    "would_order_again": {
+      "type": "boolean",
+      "description": "Would the user order this dish again?"
+    },
+    "notes": {
+      "type": "string",
+      "description": "User notes about the meal"
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Tags like 'spicy', 'healthy', 'comfort-food'"
+    },
+    "was_recommendation": {
+      "type": "boolean",
+      "description": "Was this dish recommended by the agent?"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["id", "date", "restaurant_name", "dish_name", "created_at"]
+}

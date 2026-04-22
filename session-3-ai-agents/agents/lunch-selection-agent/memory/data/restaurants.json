@@ -1,0 +1,993 @@
+{
+  "rest_20260421080454_0": {
+    "name": "Test Ravintola",
+    "city": "Helsinki",
+    "website": "https://test.fi",
+    "cuisine_types": [
+      "Finnish",
+      "Nordic"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421080454_0",
+    "created_at": "2026-04-21T08:04:54.584416",
+    "updated_at": "2026-04-21T08:04:54.584416"
+  },
+  "rest_20260421080821_1": {
+    "name": "4 Vuodenaikaa",
+    "city": "Tampere",
+    "address": "H\u00e4meenkatu 19 (Market Hall), 33100 Tampere",
+    "website": "https://4vuodenaikaa.fi/",
+    "cuisine_types": [
+      "French",
+      "Finnish"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421080821_1",
+    "created_at": "2026-04-21T08:08:21.237330",
+    "updated_at": "2026-04-21T08:08:33.530857",
+    "cached_menu": {
+      "restaurant": "4 Vuodenaikaa",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "daily_special",
+      "dishes": [
+        {
+          "name": "Hauki Wallenberg",
+          "description": "Hauki wallenberg, kermaista polentaa, hernepyreet\u00e4 & gremolataa",
+          "price": 16.8,
+          "dietary": [],
+          "category": "main"
+        },
+        {
+          "name": "Paahdettua maissikananrintaa",
+          "description": "Paahdettua maissikananrintaa fra, glaseerattua paksoita, valkosipuliriisi\u00e4 & friteerattua palsternakkaa",
+          "price": 16.8,
+          "dietary": [],
+          "category": "main"
+        }
+      ],
+      "lunch_hours": "11:00-17:45",
+      "includes": [],
+      "buffet_price": null,
+      "source_url": "https://4vuodenaikaa.fi/lounas",
+      "extraction_notes": "Menu items were retrieved from a third-party lunch aggregator (lounaat.info) as the direct website was inaccessible. Note: Prices listed as 16.80\u20ac per dish, with a 'combo' option mentioned at 22.80\u20ac. Kitchen closes at 17:45.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:08:33.434741",
+        "source_url": "https://4vuodenaikaa.fi/lounas"
+      },
+      "grounding_sources": [
+        {
+          "title": "lounaat.info",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGtfSprr1G0tkO_see6V3Hd2v6ZNKkHh0t-o15_QmW-0ul9eYbhtdA4CYTJ-goCpjyth5Z4TdgAEPMfycpEs4klvnozkay6s7U_MgVk89klHxDMyZA4sinW2cRGybsVCUfk98mQl5S1t0x8-5_Uc-I="
+        },
+        {
+          "title": "tampere.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHMMnoh3uI5mGtG20-zz-JA0USz_ljjO2F6a_fRH8hpyUhvJVHbWXf98GOdLufx-wS_5fJotWxuAZ5jUSGeI66U7jX-RwnnSJCs0yry4r2mRTikKDZ-KbR4dmpW1jX-F7cDAiXvf_3fGIoNvg=="
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:08:33.530849"
+  },
+  "rest_20260421080821_2": {
+    "name": "Ravintola Puisto",
+    "city": "Tampere",
+    "address": "Kuninkaankatu 1, 33210 Tampere",
+    "website": "https://www.ravintolapuisto.fi/",
+    "cuisine_types": [
+      "European",
+      "Scandinavian"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421080821_2",
+    "created_at": "2026-04-21T08:08:21.237817",
+    "updated_at": "2026-04-21T08:09:04.884334",
+    "cached_menu": {
+      "restaurant": "Ravintola Puisto",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "buffet",
+      "dishes": [],
+      "lunch_hours": "11:00-14:30",
+      "includes": [
+        "salad bar",
+        "bread",
+        "coffee",
+        "cookie"
+      ],
+      "buffet_price": null,
+      "source_url": "https://www.ravintolapuisto.fi/lounas/",
+      "extraction_notes": "The direct URL provided could not be accessed. Based on current search results for the restaurant located in Tampere, they operate a buffet lunch, but the specific menu for today (2026-04-21) is not dynamically available in the search snippets. Please check the restaurant's official Raflaamo page or their website directly for today's changing warm food options.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:09:04.778472",
+        "source_url": "https://www.ravintolapuisto.fi/lounas/"
+      },
+      "grounding_sources": [
+        {
+          "title": "parkhotel.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFq2PH12_GrVWozsO7Bq25qZQrBcmTW_V_raA-of-EZDfG9hFnRQHe-vm9kHWDRKSnyOhlzwN5QpWUOTWSLA-66zJQC0qaVlLH28k8MERoalKQb4YXL-41wpPA7_v9BDw=="
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:09:04.884288"
+  },
+  "rest_20260421080821_3": {
+    "name": "Kasvisravintola Gopal",
+    "city": "Tampere",
+    "address": "Kuninkaankatu 15, 33210 Tampere",
+    "website": "https://gopal.fi/",
+    "cuisine_types": [
+      "Vegetarian",
+      "Vegan",
+      "Indian-inspired"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421080821_3",
+    "created_at": "2026-04-21T08:08:21.238028",
+    "updated_at": "2026-04-21T08:09:08.242549",
+    "cached_menu": {
+      "restaurant": "Kasvisravintola Gopal",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "buffet",
+      "dishes": [],
+      "lunch_hours": null,
+      "includes": [
+        "bread",
+        "drink",
+        "iced tea"
+      ],
+      "buffet_price": 2.2,
+      "source_url": "https://gopal.fi/lounas/",
+      "extraction_notes": "The restaurant operates as a buffet priced by weight (2.20 \u20ac / 100g) rather than providing a daily rotating menu of specific dish names. They also offer a soup option for 4.50 \u20ac. The website notes that all food is egg-free, and many options are gluten-free, lactose-free, and onion-free.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:09:08.134837",
+        "source_url": "https://gopal.fi/lounas/"
+      },
+      "grounding_sources": [
+        {
+          "title": "Lunch | Kasvisravintola Gopal",
+          "url": "https://gopal.fi/lounas/"
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:09:08.242540"
+  },
+  "rest_20260421080821_4": {
+    "name": "Faasai",
+    "city": "Tampere",
+    "address": "Koskikatu 7, 33100 Tampere",
+    "website": "https://faasai.fi/ lounas",
+    "cuisine_types": [
+      "Thai"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421080821_4",
+    "created_at": "2026-04-21T08:08:21.238191",
+    "updated_at": "2026-04-21T08:08:27.849595",
+    "cached_menu": {
+      "restaurant": "Faasai",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "buffet",
+      "dishes": [],
+      "lunch_hours": "10:30-15:00",
+      "includes": [
+        "salad bar",
+        "coffee",
+        "tea"
+      ],
+      "buffet_price": null,
+      "source_url": "https://faasai.fi/lounas",
+      "extraction_notes": "The restaurant provides a lunch buffet, but the specific daily dishes are not listed on their main website or searchable public pages for today's date. The website directs visitors to check the restaurant for the current daily menu. The buffet typically includes a salad bar and warm dishes.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:08:27.753365",
+        "source_url": "https://faasai.fi/lounas"
+      },
+      "grounding_sources": [
+        {
+          "title": "wolt.com",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFPoTJZ0iBeX_HUJ0_YRO201_s0ZQJLtcg1OJ51MBHZAgSlxRToOiEWPd7gE4eiX5Q8FyBuUxD1DD5B4FIGLOPIwvtni5hsfvtM5N2SCz0U_tpus4h1hko2TLVW5UqoXg9i-Kah4jk1kPdn4ZJZQjR2"
+        },
+        {
+          "title": "lounaat.info",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGAe1buabTrk-lmWdpyNz10eSOM3lFnpwTY4O-1rJSoL_vUds9ytCOQxX3l-2DgLf69eAc3IV5IBxEyjZ6HLwIDIMUBLpGLxP_9QIc2tuAA9qk8RE0xfjeVxdY-bspXcGsNhmz161mpgfI="
+        },
+        {
+          "title": "lounasmenu.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQESgqKOPwK8GtmTHNEd6ZnsVl0kXL7xo4LjENX-gAzBYjyLg1V4nBxTOmTLAKY9eR4cTm5Qh_bN8YKUqrRHphUKGXn9AnYZbWyhtXEg1w9w4alXFS-_ws7yuNxwj3LS-r03u2w1h2QAr3Lp"
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:08:27.849583"
+  },
+  "rest_20260421080821_5": {
+    "name": "Panimoravintola Plevna",
+    "city": "Tampere",
+    "address": "It\u00e4inenkatu 8, 33210 Tampere",
+    "website": "https://plevna.fi/",
+    "cuisine_types": [
+      "Finnish",
+      "European",
+      "Brewery restaurant"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421080821_5",
+    "created_at": "2026-04-21T08:08:21.238340",
+    "updated_at": "2026-04-21T08:08:37.898519",
+    "cached_menu": {
+      "restaurant": "Panimoravintola Plevna",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "weekly_rotating",
+      "dishes": [
+        {
+          "name": "Perinteisi\u00e4 silakkapihvej\u00e4",
+          "description": "Perinteisi\u00e4 silakkapihvej\u00e4, tilli-kermaviilikastiketta ja perunamuusia",
+          "price": 13.7,
+          "dietary": [
+            "lactose-free"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "Vegecurrywurst",
+          "description": "Pariloituja vegaanisia nakkeja, tomaattista curry-viherpippurikastiketta ja maalaislohkoperunoita. Tulista ja syntisen hyv\u00e4\u00e4!",
+          "price": 13.7,
+          "dietary": [
+            "vegetarian",
+            "vegan",
+            "lactose-free",
+            "gluten-free",
+            "milk-free"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "Vegepyttipannu",
+          "description": "Talon mausteiseen kaurakerma-sinappikastikkeeseen muhennettua vegaanista pyttipannua ja raastesalaattia",
+          "price": 13.7,
+          "dietary": [
+            "vegetarian",
+            "vegan",
+            "lactose-free",
+            "gluten-free",
+            "milk-free"
+          ],
+          "category": "main"
+        }
+      ],
+      "lunch_hours": "11:00-14:00",
+      "includes": [
+        "j\u00e4\u00e4vesi",
+        "kahvi",
+        "tee"
+      ],
+      "buffet_price": null,
+      "source_url": "https://plevna.fi/lounas",
+      "extraction_notes": "Lunch price is 13.70 \u20ac. The menu includes coffee/tea and ice water. The vegan options (Vegecurrywurst/Vegepyttipannu) are listed as standard vegan alternatives available throughout the week.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:08:37.803169",
+        "source_url": "https://plevna.fi/lounas"
+      },
+      "grounding_sources": [
+        {
+          "title": "Lounaslista - Panimoravintola Plevna ja Koskipanimo",
+          "url": "https://plevna.fi/lounas"
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:08:37.898510"
+  },
+  "rest_20260421080920_6": {
+    "name": "Pizzeria Napoli",
+    "city": "Tampere",
+    "address": "Aleksanterinkatu 31, 33100 Tampere",
+    "website": "https://pizzerianapoli.fi",
+    "cuisine_types": [
+      "Italian",
+      "Pizzeria"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421080920_6",
+    "created_at": "2026-04-21T08:09:20.810478",
+    "updated_at": "2026-04-21T08:09:20.810478"
+  },
+  "rest_20260421080920_7": {
+    "name": "Ristorante Pulcinella",
+    "city": "Tampere",
+    "address": "Kytt\u00e4l\u00e4nkatu 11, 33100 Tampere",
+    "website": "https://ristorantepulcinella.fi",
+    "cuisine_types": [
+      "Italian",
+      "Mediterranean"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421080920_7",
+    "created_at": "2026-04-21T08:09:20.811736",
+    "updated_at": "2026-04-21T08:09:20.811736"
+  },
+  "rest_20260421081244_8": {
+    "name": "Ristorante Fiorina",
+    "city": "Tampere",
+    "address": null,
+    "website": "https://ristorantefiorina.fi",
+    "cuisine_types": [
+      "Italian",
+      "Pizza",
+      "Pasta"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421081244_8",
+    "created_at": "2026-04-21T08:12:44.588177",
+    "updated_at": "2026-04-21T08:12:44.588177"
+  },
+  "rest_20260421081244_9": {
+    "name": "Ravintola Don Franco",
+    "city": "Tampere",
+    "address": null,
+    "website": "https://donfranco.fi",
+    "cuisine_types": [
+      "Italian",
+      "Neapolitan Pizza"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421081244_9",
+    "created_at": "2026-04-21T08:12:44.588998",
+    "updated_at": "2026-04-21T08:12:44.588998"
+  },
+  "rest_20260421081244_10": {
+    "name": "Piazzetta Romana",
+    "city": "Tampere",
+    "address": null,
+    "website": "https://piazzettaromana.fi",
+    "cuisine_types": [
+      "Italian"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421081244_10",
+    "created_at": "2026-04-21T08:12:44.589583",
+    "updated_at": "2026-04-21T08:12:44.589583"
+  },
+  "rest_20260421081637_11": {
+    "name": "Noodle Bar 9",
+    "city": "Oulu",
+    "address": "Isokatu 18, 90100 Oulu",
+    "website": "https://noodlebar9.fi",
+    "cuisine_types": [
+      "Thai",
+      "Asian Fusion"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421081637_11",
+    "created_at": "2026-04-21T08:16:37.129796",
+    "updated_at": "2026-04-21T08:18:33.395055",
+    "cached_menu": {
+      "restaurant": "Noodle Bar 9",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "fixed",
+      "dishes": [
+        {
+          "name": "L\u00e4mmin Nuudelisalaatti Tofulla",
+          "description": "Keitetyt riisinuudelit, j\u00e4\u00e4vuorisalaatti. P\u00e4hkin\u00e4kastike ja chili-kalakastike (sekoitetaan itse), minttu.",
+          "price": 16.9,
+          "dietary": [
+            "vegetarian"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "Thaimaalaiset Nuudelikeitot",
+          "description": "Riisinuudelit, tuoreet kasvikset, sienet, chilitahna. Tofukeitto pyydett\u00e4ess\u00e4 vegaaninen. Kotimainen naudan- ja possun liha.",
+          "price": 17.5,
+          "dietary": [],
+          "category": "main"
+        },
+        {
+          "name": "Pad Thai (Tofulla, j\u00e4ttiravuilla tai lihalla)",
+          "description": "Paistetut riisinuudelit, maap\u00e4hkin\u00e4, idut, tofu, kananmuna, kev\u00e4tsipuli. Ei chili\u00e4, pyydett\u00e4ess\u00e4 vegaaninen ja gluteeniton. (sis. p\u00e4hkin\u00e4\u00e4)",
+          "price": 18.9,
+          "dietary": [],
+          "category": "main"
+        },
+        {
+          "name": "J\u00e4ttirapu Tom Yum Nuudelikeitto",
+          "description": "Riisinuudelit, kookosmaito, tuoreet kasvikset, kalakastike.",
+          "price": 17.9,
+          "dietary": [],
+          "category": "main"
+        },
+        {
+          "name": "Paistetut Nuudelit tai Riisi Kanalla",
+          "description": "Sis\u00e4lt\u00e4v\u00e4t maap\u00e4hkin\u00e4\u00e4, osterikastiketta ja riisi- ja munanuudeliannokset my\u00f6s kananmunaa. Tuoreet kasvikset: kiinankaali, punakaali, punasipuli, purjo, paprika sek\u00e4 kes\u00e4kurpitsa.",
+          "price": 16.9,
+          "dietary": [],
+          "category": "main"
+        }
+      ],
+      "lunch_hours": null,
+      "includes": [],
+      "buffet_price": null,
+      "source_url": "https://noodlebar9.fi",
+      "extraction_notes": "The restaurant website does not feature a specific rotating 'lunch menu' or daily specials. It provides a static menu that applies generally. Prices listed reflect the standard menu pricing.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:18:33.295916",
+        "source_url": "https://noodlebar9.fi"
+      },
+      "grounding_sources": [
+        {
+          "title": "noodlebar9",
+          "url": "https://noodlebar9.fi"
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:18:33.395042"
+  },
+  "rest_20260421081637_12": {
+    "name": "Phuket Thai",
+    "city": "Oulu",
+    "address": "Kaskiahontie 1, 90240 Oulu",
+    "website": "https://phuketthai.fi",
+    "cuisine_types": [
+      "Thai"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421081637_12",
+    "created_at": "2026-04-21T08:16:37.131376",
+    "updated_at": "2026-04-21T08:22:25.967733",
+    "cached_menu": {
+      "restaurant": "Phuket Thai",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": null,
+      "dishes": [],
+      "lunch_hours": null,
+      "includes": [],
+      "buffet_price": null,
+      "source_url": "https://phuketthai.fi/lounas/",
+      "extraction_notes": "The specified website (https://phuketthai.fi/lounas/) could not be accessed. Public search results for 'Phuket Thai' in Finland show multiple locations or entities with similar names (e.g., in Oulu, or various 'Phuket' branded takeaways), but none provide a definitive, universally applicable daily lunch menu for today at the requested domain. Therefore, no menu could be reliably extracted.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:22:25.862183",
+        "source_url": "https://phuketthai.fi/lounas/"
+      },
+      "grounding_sources": [
+        {
+          "title": "phuketthai.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEm6wNIBhaJ539uIGC6Yw3GSW5LyMQhFAyhPc7PRk7OZpNm5krGVsBNYwntYI1AciAsCmtryZzRA7Zd6HmAMRF3U9h3_0iBs1cnLjmtsWnSVQM="
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:22:25.967726"
+  },
+  "rest_20260421081637_13": {
+    "name": "Flavour Palace",
+    "city": "Oulu",
+    "address": "Saaristonkatu 5, 90100 Oulu",
+    "website": "https://flavourpalaceoulu.fi/lounas/",
+    "cuisine_types": [
+      "Chinese",
+      "Sichuan"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421081637_13",
+    "created_at": "2026-04-21T08:16:37.134088",
+    "updated_at": "2026-04-21T08:22:20.677433",
+    "cached_menu": {
+      "restaurant": "Flavour Palace",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "buffet",
+      "dishes": [],
+      "lunch_hours": "10:30-15:00",
+      "includes": [
+        "salad bar",
+        "warm buffet with 6 different main courses (chicken, beef, pork)",
+        "fried noodles",
+        "rice",
+        "deep-fried options (e.g., chicken balls, spring rolls)",
+        "sushi",
+        "dessert",
+        "coffee",
+        "tea",
+        "beverages (soda, water, milk)"
+      ],
+      "buffet_price": 13.5,
+      "source_url": "https://flavourpalaceoulu.fi/lounas/",
+      "extraction_notes": "The restaurant offers a daily lunch buffet. The specific daily dish names are not listed on their general website, as they serve a recurring buffet selection that includes 6 rotating main courses (chicken, beef, and pork), fried noodles, rice, deep-fried items, and sushi. Dietary indicators are not provided on the website.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:22:20.580341",
+        "source_url": "https://flavourpalaceoulu.fi/lounas/"
+      },
+      "grounding_sources": [
+        {
+          "title": "lounaspaikka.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGubYElueUvVBuzj4cnv0sfZZGAqSsnnuCOUl_PtPoG27XCTQIOTXAISVvSbTWVyR1tfL3mBJVLgjB2EKAfq4_xhvD9MRl6M-YndXTK_1sBZ9hj_itlEipy20cByM9KGT0="
+        },
+        {
+          "title": "flavourpalaceoulu.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGwPbOdwLT4_zeFWpZ_yuodFV1c4XxiTjCAENTh6WZkRr33c4dAxAJgP8_VmsUTsWPvMF1ShxwZujISmWkgazPHB6S7dbeORRPoDeNpPmZMZoP_HJqpo80t"
+        },
+        {
+          "title": "lounaat.info",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH-RfS2miGW1OOifpnODL0Z0IydnEoWstEImV9veUQycnFHZp0Ew8-qrP6dJiVY-6iVvn5uOONxZyUzJmrawBfThcJ4fl-wzA8mVdEI7EmUBpUxWphzRw0g3EipcT2GxlLwYRVRVXVFo4ZhPTTR9A=="
+        },
+        {
+          "title": null,
+          "url": "https://www.google.com/search?q=time+in+Oulu,+FI"
+        },
+        {
+          "title": "evendo.com",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGlYt1n6eqoJCxNtu_PGsAqHiZvoZa661Tle3MoZLOqUCI0d-pSMx1bHepgh_0ouifq2zQwHqgkyq8MI_-lWkKgJjdqGry1BJej9YUwLsBsM4kfRIiudRNF1t4-4ItnNVDgNbXd5vharfk8upt6vVVOLe0IWexm_05KS7Hu3Bu3ed3fAnRQYXA4jO6h"
+        },
+        {
+          "title": "restaurantguru.com",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEiokaWxGE6ts9vXGKeBWN03EjZNd5z8iXhJQqajLNfc_h8aZ9EAmMDro1iCoUAjV88vxjrPj_pI431z8wla1Zfo6Vh-7rQHP5qD4JQC-GjUUUddUS-Y0xvybHS8m07d0b7KZXZOdShaUM="
+        },
+        {
+          "title": "flavourpalace.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG4BI-TCMt0Bnev90xOFQ_AigT-W5SkRzRHBmgaCEBBAE9HDdt1ixYCWRoeYXjT3GVDjrobv7OhrSKJX2l_WakKspOjNT8aPkWYJsynv-E-gXeO2se7eqDrr14f4m72DnoG-g=="
+        },
+        {
+          "title": "flavourpalaceoulu.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG8jYwDf2fz6cJBuGM7ffbX2RtqtA0d1bXziDSlo2CX4zMHljAI5Zpx7nMPkwkPRF5cbcBuU4RnCLoW5qgcDAXbXwbWagGBtIl1ex71ERptEmylWHTh-YccxD2Wu1s="
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:22:20.677426"
+  },
+  "rest_20260421081956_14": {
+    "name": "Ravintola Puistola",
+    "city": "Oulu",
+    "address": "Pakkahuoneenkatu 15, 90100 Oulu",
+    "website": "https://ravintolapuistola.fi/lounas",
+    "cuisine_types": [
+      "Modern Finnish",
+      "European",
+      "Artisan Pizza"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421081956_14",
+    "created_at": "2026-04-21T08:19:56.104522",
+    "updated_at": "2026-04-21T08:20:02.529443",
+    "cached_menu": {
+      "restaurant": "Ravintola Puistola",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "weekly_rotating",
+      "dishes": [
+        {
+          "name": "Karitsan jauhelihapihvi\u00e4",
+          "description": "Tzatziki-kastiketta, paahdettua munakoisoa, pinjansiemeni\u00e4 ja korianteria",
+          "price": 15.2,
+          "dietary": [],
+          "category": "main"
+        },
+        {
+          "name": "Hernerisottoa",
+          "description": "Vuohenjuusto-yrttimoussea",
+          "price": 13.9,
+          "dietary": [
+            "vegetarian"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "P\u00e4iv\u00e4n kala",
+          "description": "Kalastajan saaliin mukaan",
+          "price": 28.0,
+          "dietary": [],
+          "category": "main"
+        }
+      ],
+      "lunch_hours": "11:00-14:00",
+      "includes": [
+        "salad bar",
+        "bread",
+        "coffee",
+        "tea"
+      ],
+      "buffet_price": null,
+      "source_url": "https://ravintolapuistola.fi/lounas",
+      "extraction_notes": "The menu is served to the table. The price includes a starter salad from the buffet, fresh bread from the bakery, and coffee or tea. Take-away coffee/tea costs an additional 1.00\u20ac.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:20:02.439615",
+        "source_url": "https://ravintolapuistola.fi/lounas"
+      },
+      "grounding_sources": [
+        {
+          "title": "Ravintola Puistolan maukas lounas Oulussa",
+          "url": "https://ravintolapuistola.fi/lounas"
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:20:02.529421"
+  },
+  "rest_20260421081956_15": {
+    "name": "Ravintola Pannu",
+    "city": "Oulu",
+    "address": "Kauppurienkatu 12, 90100 Oulu",
+    "website": "https://ravintolapannu.fi/lounas",
+    "cuisine_types": [
+      "Grill",
+      "International",
+      "Italian-inspired"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421081956_15",
+    "created_at": "2026-04-21T08:19:56.105455",
+    "updated_at": "2026-04-21T08:20:06.691951",
+    "cached_menu": {
+      "restaurant": "Ravintola Pannu",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "weekly_rotating",
+      "dishes": [
+        {
+          "name": "Pannupizzapaloja (kana, persikka ja bbq-kastike)",
+          "description": "Pan pizza slices with chicken, peach, and bbq-sauce",
+          "price": 6.5,
+          "dietary": [
+            "low-lactose"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "Pannupizzapaloja ja ranskalaiset perunat (kana, persikka ja bbq-kastike)",
+          "description": "Pan pizza slices and french fries with chicken, peach, and bbq-sauce",
+          "price": 9.4,
+          "dietary": [
+            "low-lactose"
+          ],
+          "category": "main"
+        }
+      ],
+      "lunch_hours": "11:00-14:00",
+      "includes": [
+        "salad bar",
+        "water or soda water",
+        "coffee or tea"
+      ],
+      "buffet_price": null,
+      "source_url": "https://ravintolapannu.fi/lounas",
+      "extraction_notes": "The menu follows a weekly structure arranged by days (MA, TI, KE, TO, PE). Today is 'TI' (Tuesday). The options listed for Tuesday are pan pizza slices with specific toppings (chicken, peach, bbq-sauce) available in various combinations with or without fries. The restaurant also serves 'Kotiruoka', 'Lounaskeitto', 'Lounaskala', and 'Lounas burger' which seem to have fixed weekly menus, but they are not specifically mapped to days in the text provided. Only the pizza options were explicitly grouped under the Tuesday (TI) header.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:20:06.593368",
+        "source_url": "https://ravintolapannu.fi/lounas"
+      },
+      "grounding_sources": [
+        {
+          "title": "Lounas Oulun Ravintola Pannussa - Pannu kuumana my\u00f6s ...",
+          "url": "https://ravintolapannu.fi/lounas"
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:20:06.691944"
+  },
+  "rest_20260421081956_16": {
+    "name": "Oula Kitchen & Bar",
+    "city": "Oulu",
+    "address": "Kirkkokatu 3, 90100 Oulu",
+    "website": "https://kitchenoula.fi/menut",
+    "cuisine_types": [
+      "Nordic",
+      "Lapland cuisine"
+    ],
+    "price_range": "expensive",
+    "id": "rest_20260421081956_16",
+    "created_at": "2026-04-21T08:19:56.106109",
+    "updated_at": "2026-04-21T08:20:13.550490",
+    "cached_menu": {
+      "restaurant": "Oula Kitchen & Bar",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "fixed",
+      "dishes": [],
+      "lunch_hours": null,
+      "includes": [],
+      "buffet_price": null,
+      "source_url": "https://kitchenoula.fi/menut",
+      "extraction_notes": "The provided website does not contain a specific daily or weekly lunch menu. The menu section lists breakfast, surprise menus, a-la-carte, children's menu, and drink lists, suggesting that Oula Kitchen & Bar may not offer a standard daily lunch special or is not publishing it on this specific page.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:20:13.445012",
+        "source_url": "https://kitchenoula.fi/menut"
+      }
+    },
+    "last_menu_fetch": "2026-04-21T08:20:13.550481"
+  },
+  "rest_20260421081956_17": {
+    "name": "Rosso Oulu",
+    "city": "Oulu",
+    "address": "Isokatu 24, 90100 Oulu",
+    "website": "https://www.raflaamo.fi/fi/ravintola/rosso-oulu",
+    "cuisine_types": [
+      "Italian-American"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421081956_17",
+    "created_at": "2026-04-21T08:19:56.106779",
+    "updated_at": "2026-04-21T08:22:35.172587",
+    "cached_menu": {
+      "restaurant": "Rosso Oulu",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "weekly_rotating",
+      "dishes": [],
+      "lunch_hours": "10:30-14:00",
+      "includes": [
+        "salad bar",
+        "water",
+        "coffee/tea"
+      ],
+      "buffet_price": null,
+      "source_url": "https://www.raflaamo.fi/fi/ravintola/rosso-oulu/menu/lounas",
+      "extraction_notes": "The direct lunch menu page was unreachable via the automated tool. While general information about the lunch service (hours, inclusions) was found on the official Raflaamo site and third-party aggregators, specific daily dishes for Tuesday, April 21, 2026, could not be reliably confirmed from the available snippets.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:22:35.060646",
+        "source_url": "https://www.raflaamo.fi/fi/ravintola/rosso-oulu/menu/lounas"
+      }
+    },
+    "last_menu_fetch": "2026-04-21T08:22:35.172579"
+  },
+  "rest_20260421081956_18": {
+    "name": "Antell Piha",
+    "city": "Oulu",
+    "address": "Kauppurienkatu 7, 90100 Oulu",
+    "website": "https://antell.fi/lounas",
+    "cuisine_types": [
+      "Finnish",
+      "Buffet"
+    ],
+    "price_range": "budget",
+    "id": "rest_20260421081956_18",
+    "created_at": "2026-04-21T08:19:56.107715",
+    "updated_at": "2026-04-21T08:20:19.903170",
+    "cached_menu": {
+      "restaurant": "Antell Piha",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "daily_special",
+      "dishes": [
+        {
+          "name": "Antellin lasagne",
+          "description": "Perinteinen lasagne (pyyd\u00e4 gluteeniton)",
+          "price": null,
+          "dietary": [],
+          "category": "main"
+        },
+        {
+          "name": "Itte tehdyt punajuuri-halloumipihvit",
+          "description": "Itsetehdyt pihvit punajuuresta ja halloumijuustosta",
+          "price": null,
+          "dietary": [
+            "vegetarian"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "Intialaista linssikeittoa",
+          "description": "Mausteinen intialainen linssikeitto",
+          "price": null,
+          "dietary": [
+            "vegetarian"
+          ],
+          "category": "soup"
+        },
+        {
+          "name": "Timjamilla maustetut viipaleperunat",
+          "description": "Timjamilla maustetut perunaviipaleet",
+          "price": null,
+          "dietary": [],
+          "category": "main"
+        },
+        {
+          "name": "Palsternakka-kes\u00e4kurpitsa-punasipulipaistos",
+          "description": "Kasvispaistos",
+          "price": null,
+          "dietary": [],
+          "category": "main"
+        },
+        {
+          "name": "Tzatziki",
+          "description": "Kylm\u00e4 jogurttikastike",
+          "price": null,
+          "dietary": [
+            "vegetarian"
+          ],
+          "category": "main"
+        }
+      ],
+      "lunch_hours": "11:00-13:30",
+      "includes": [
+        "salad bar",
+        "bread",
+        "coffee"
+      ],
+      "buffet_price": null,
+      "source_url": "https://antell.fi/lounas",
+      "extraction_notes": "Menu tiedot on koottu kolmannen osapuolen lounaslistapalvelusta, sill\u00e4 Antellin virallinen sivusto ei tarjoa j\u00e4sennelty\u00e4 dataa suoraan. Antell Pihan lounasaika on 11:00-13:30. Buffet-hintoja ei ollut eritelty suoraan t\u00e4m\u00e4n p\u00e4iv\u00e4n osalta.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:20:19.809012",
+        "source_url": "https://antell.fi/lounas"
+      },
+      "grounding_sources": [
+        {
+          "title": "lounaat.info",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQQjMkz5-smQcHJ0kJVfaVnDk7sXla00iML-V5Ej0fXqBFSnmPxFmZIpOwzxKhiM9cS1qVUB8ok4uiQ0QwX61n9vxaxfgbCjoClRTEF4BK1OlobWkc1nbI4bMClxVdJpDythrYwmhY9ludwSHpUeuQ"
+        },
+        {
+          "title": "lounaat.info",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHPBC0-3XqSZskzHPprFf1Mq8_0lM1TzgK_gf5e2r6LPUUUTYD6cn1C7wkshZpezAALc7z__35msX-AXiWqr1950VCw2FsmYaccCv0z5881pda2oaWmrldw"
+        },
+        {
+          "title": "ravintolapiha.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEL9pMlfo35CV5BRsVfLGpXW6d5sKxIMVGfKVZk5UqggrCMM0gHjl_v_Lv2wsJd_r4mZFWvOZWJjhV9XXh5yb_GFsmbdI4NDdFciab-q1yGszMKDqw9lTu3apJUgmT4"
+        },
+        {
+          "title": "antell.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGptw_oNABxLs3XjdWoAuKL1oyOT75SXtlbeILGWePFVCgXH0ThqNWeDlkN-M4elxg5aD-qpIIpbGmvHO6I8naVI8wtJ00-km6DsKdLoj852WO240btJ0dbhcJ2ejbu"
+        },
+        {
+          "title": "lounaspaikka.fi",
+          "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHLZQjRTGDJpnFySRd97cYCiV5aS5BL9dHHgWBhClVnLxycdq7j31ico6voWrJya5Mc957ZXZsOE6AUWnkhkYfGrnJd4fjVyWpBxtKmV8yozW07DIhYNszvBc8Fp93K1iA="
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:20:19.903163"
+  },
+  "rest_20260421082321_19": {
+    "name": "Ravintola Pannu",
+    "city": "Oulu",
+    "address": "Kauppurienkatu 12, 90100 Oulu",
+    "website": "https://ravintolapannu.fi",
+    "cuisine_types": [
+      "Finnish",
+      "Italian",
+      "Grill"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421082321_19",
+    "created_at": "2026-04-21T08:23:21.559566",
+    "updated_at": "2026-04-21T08:24:18.480187",
+    "cached_menu": {
+      "restaurant": "Ravintola Pannu",
+      "menu_date": "2026-04-21",
+      "weekday": "Tuesday",
+      "menu_type": "weekly_rotating",
+      "dishes": [
+        {
+          "name": "Pannupizzapaloja",
+          "description": "T\u00e4ytteill\u00e4 kana, persikka ja bbq-kastike",
+          "price": 6.5,
+          "dietary": [
+            "low-lactose"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "Pannupizzapaloja + ranskalaiset perunat",
+          "description": "T\u00e4ytteill\u00e4 kana, persikka ja bbq-kastike",
+          "price": 9.4,
+          "dietary": [
+            "low-lactose"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "Pannupizzapaloja (2 palaa)",
+          "description": "T\u00e4ytteill\u00e4 kana, persikka ja bbq-kastike",
+          "price": 9.7,
+          "dietary": [
+            "low-lactose"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "Pannupizzapaloja (2 palaa) + ranskalaiset perunat",
+          "description": "T\u00e4ytteill\u00e4 kana, persikka ja bbq-kastike",
+          "price": 12.6,
+          "dietary": [
+            "low-lactose"
+          ],
+          "category": "main"
+        },
+        {
+          "name": "Pannupizzapaloja (3 palaa)",
+          "description": "T\u00e4ytteill\u00e4 kana, persikka ja bbq-kastike",
+          "price": 12.9,
+          "dietary": [
+            "low-lactose"
+          ],
+          "category": "main"
+        }
+      ],
+      "lunch_hours": "11:00-14:00",
+      "includes": [
+        "salad bar",
+        "water/soda water",
+        "coffee or tea"
+      ],
+      "buffet_price": null,
+      "source_url": "https://ravintolapannu.fi/lounas",
+      "extraction_notes": "The menu follows a weekly schedule where specific dishes are assigned to weekdays. For Tuesday (TI), the website lists 'Pannupizzapaloja' with specific toppings (kana, persikka ja bbq-kastike). Note: The generic 'Kotiruoka', 'Lounaskeitto', 'Lounaskala', and 'Lounas burger' listed on the page are not explicitly tagged to a single day, but appear to be rotating options or constant features; however, based on the page layout, the daily-specific pizza options are the clearly defined Tuesday offering.",
+      "extraction_metadata": {
+        "model": "gemini-3.1-flash-lite-preview",
+        "timestamp": "2026-04-21T08:24:18.376148",
+        "source_url": "https://ravintolapannu.fi/lounas"
+      },
+      "grounding_sources": [
+        {
+          "title": "Lounas Oulun Ravintola Pannussa - Pannu kuumana my\u00f6s ...",
+          "url": "https://ravintolapannu.fi/lounas"
+        }
+      ]
+    },
+    "last_menu_fetch": "2026-04-21T08:24:18.480177"
+  },
+  "rest_20260421082321_20": {
+    "name": "Ravintola Puistola",
+    "city": "Oulu",
+    "address": "Palokunnanaukio 2, 90100 Oulu",
+    "website": "https://ravintolapuistola.fi",
+    "cuisine_types": [
+      "European",
+      "Scandinavian"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421082321_20",
+    "created_at": "2026-04-21T08:23:21.561867",
+    "updated_at": "2026-04-21T08:23:21.561867"
+  },
+  "rest_20260421082321_21": {
+    "name": "Alfred Kitchen & Bar",
+    "city": "Oulu",
+    "address": "Pakkahuoneenkatu 16, 90100 Oulu",
+    "website": "https://alfredoulu.fi",
+    "cuisine_types": [
+      "International",
+      "Modern"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421082321_21",
+    "created_at": "2026-04-21T08:23:21.562974",
+    "updated_at": "2026-04-21T08:23:21.562974"
+  },
+  "rest_20260421082321_22": {
+    "name": "Amarillo Oulu",
+    "city": "Oulu",
+    "address": "Kirkkokatu 15, 90100 Oulu",
+    "website": "https://raflaamo.fi/en/restaurant/amarillo-oulu",
+    "cuisine_types": [
+      "Tex-Mex"
+    ],
+    "price_range": "moderate",
+    "id": "rest_20260421082321_22",
+    "created_at": "2026-04-21T08:23:21.563724",
+    "updated_at": "2026-04-21T08:23:21.563724"
+  },
+  "rest_20260421082321_23": {
+    "name": "Ravintola Nallikari",
+    "city": "Oulu",
+    "address": "Nallikarinranta 15, 90510 Oulu",
+    "website": "https://ravintolanallikari.fi",
+    "cuisine_types": [
+      "Nordic"
+    ],
+    "price_range": "moderate-premium",
+    "id": "rest_20260421082321_23",
+    "created_at": "2026-04-21T08:23:21.564603",
+    "updated_at": "2026-04-21T08:23:21.564603"
+  }
+}

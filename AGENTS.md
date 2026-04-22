@@ -928,6 +928,7 @@ conditions), followed by command, options, requirements, and examples.
 | [remove-background](.agents/skills/remove-background/SKILL.md) | `npm run remove-background-advanced` | Local background removal with Sharp (no API key) |
 | [html-to-md](.agents/skills/html-to-md/SKILL.md) | `npm run html-to-md` | Scrape webpage to Markdown |
 | [download-file](.agents/skills/download-file/SKILL.md) | `npm run download-file` | Download files with progress tracking |
+| [grounding-dino](.agents/skills/grounding-dino/SKILL.md) | `npm run grounding-dino` | Text-guided object detection (Grounding DINO on Replicate) |
 | [generate-video](.agents/skills/generate-video/SKILL.md) | `npm run generate-video` | AI video generation via Replicate (Kling, MiniMax, etc.) |
 | [qwen3-tts](.agents/skills/qwen3-tts/SKILL.md) | `npm run qwen3-tts` | Text-to-speech with voice/clone/design modes |
 | [play-audio](.agents/skills/play-audio/SKILL.md) | `npm run play-audio` | Play audio files via system player |
@@ -937,6 +938,7 @@ conditions), followed by command, options, requirements, and examples.
 | [semantic-search](.agents/skills/semantic-search/SKILL.md) | `npm run semantic-search` | Vector search over ChromaDB-indexed documents |
 | [google-search](.agents/skills/google-search/SKILL.md) | `npm run google-search` | Real-time Google Search via Gemini grounding |
 | [datetime](.agents/skills/datetime/SKILL.md) | `npm run datetime` | Current date/time in various formats and timezones |
+| [coding-preferences](.agents/skills/coding-preferences/SKILL.md) | `npm run coding-preferences` | Store and retrieve personal coding preferences (SQLite in skill folder) |
 
 ---
 

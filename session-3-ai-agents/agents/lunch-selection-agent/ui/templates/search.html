@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Search - Lunch Selection Agent{% endblock %}
+{% block content %}
+<h2>Search Restaurants</h2>
+
+<form method="POST" class="row g-3 mb-4">
+    <div class="col-md-5">
+        <label class="form-label">City</label>
+        <input type="text" name="city" class="form-control" value="{{ city }}" placeholder="e.g., Helsinki, Tampere, Oulu" required>
+    </div>
+    <div class="col-md-5">
+        <label class="form-label">Cuisine (optional)</label>
+        <input type="text" name="cuisine" class="form-control" value="{{ cuisine }}" placeholder="e.g., Italian, Thai, Finnish">
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+    </div>
+</form>
+
+{% if results %}
+    {% if results.error %}
+    <div class="alert alert-danger">{{ results.error }}</div>
+    {% else %}
+    <p class="text-muted">Found {{ results.get('restaurants', [])|length }} restaurants in {{ city }}</p>
+    <div class="row">
+        {% for r in results.get('restaurants', []) %}
+        <div class="col-md-6 mb-3">
+            <div class="card restaurant-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ r.name }}</h5>
+                    <p class="card-text text-muted">{{ r.address or r.city }}</p>
+                    <p>
+                        {% for cuisine in r.get('cuisine_types', [])[:3] %}
+                        <span class="badge bg-info">{{ cuisine }}</span>
+                        {% endfor %}
+                    </p>
+                    {% if r.website %}
+                    <a href="{{ r.website }}" target="_blank" class="btn btn-sm btn-outline-secondary">Website</a>
+                    {% endif %}
+                    <span class="badge bg-success">Saved ✓</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <a href="/restaurants?city={{ city }}" class="btn btn-primary">View All in {{ city }}</a>
+    {% endif %}
+{% endif %}
+{% endblock %}

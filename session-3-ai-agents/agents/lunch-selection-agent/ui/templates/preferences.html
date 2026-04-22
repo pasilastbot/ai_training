@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Preferences - Lunch Selection Agent{% endblock %}
+{% block content %}
+<h2>Food Preferences</h2>
+<p class="text-muted">Configure your preferences for better recommendations</p>
+
+<form method="POST">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Liked Cuisines (comma-separated)</label>
+            <input type="text" name="liked_cuisines" class="form-control" 
+                   value="{{ prefs.get('liked_cuisines', [])|join(', ') }}"
+                   placeholder="Italian, Thai, Finnish, Mexican">
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Disliked Cuisines (comma-separated)</label>
+            <input type="text" name="disliked_cuisines" class="form-control" 
+                   value="{{ prefs.get('disliked_cuisines', [])|join(', ') }}"
+                   placeholder="Fast food, Deep fried">
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Dietary Restrictions</label>
+            <div>
+                {% for restriction in ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'nut-free', 'halal', 'kosher', 'pescatarian', 'low-carb'] %}
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="dietary_restrictions" 
+                           value="{{ restriction }}" {{ 'checked' if restriction in prefs.get('dietary_restrictions', []) }}>
+                    <label class="form-check-label">{{ restriction }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Allergies (comma-separated)</label>
+            <input type="text" name="allergies" class="form-control" 
+                   value="{{ prefs.get('allergies', [])|join(', ') }}"
+                   placeholder="shellfish, peanuts, eggs">
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Avoided Ingredients (comma-separated)</label>
+            <input type="text" name="avoided_ingredients" class="form-control" 
+                   value="{{ prefs.get('avoided_ingredients', [])|join(', ') }}"
+                   placeholder="cilantro, mushrooms, olives">
+        </div>
+        
+        <div class="col-md-3">
+            <label class="form-label">Price Preference</label>
+            <select name="price_preference" class="form-select">
+                <option value="any" {{ 'selected' if prefs.get('price_preference') == 'any' }}>Any</option>
+                <option value="budget" {{ 'selected' if prefs.get('price_preference') == 'budget' }}>Budget</option>
+                <option value="moderate" {{ 'selected' if prefs.get('price_preference') == 'moderate' }}>Moderate</option>
+                <option value="expensive" {{ 'selected' if prefs.get('price_preference') == 'expensive' }}>Expensive</option>
+            </select>
+        </div>
+        
+        <div class="col-md-3">
+            <label class="form-label">Spice Tolerance</label>
+            <select name="spice_tolerance" class="form-select">
+                <option value="none" {{ 'selected' if prefs.get('spice_tolerance') == 'none' }}>None</option>
+                <option value="mild" {{ 'selected' if prefs.get('spice_tolerance') == 'mild' }}>Mild</option>
+                <option value="medium" {{ 'selected' if prefs.get('spice_tolerance') == 'medium' }}>Medium</option>
+                <option value="hot" {{ 'selected' if prefs.get('spice_tolerance') == 'hot' }}>Hot</option>
+                <option value="extra-hot" {{ 'selected' if prefs.get('spice_tolerance') == 'extra-hot' }}>Extra Hot</option>
+            </select>
+        </div>
+        
+        <div class="col-md-6">
+            <label class="form-label">Variety Preference</label>
+            <select name="variety_preference" class="form-select">
+                <option value="stick-to-favorites" {{ 'selected' if prefs.get('variety_preference') == 'stick-to-favorites' }}>Stick to Favorites</option>
+                <option value="balanced" {{ 'selected' if prefs.get('variety_preference') == 'balanced' }}>Balanced</option>
+                <option value="adventurous" {{ 'selected' if prefs.get('variety_preference') == 'adventurous' }}>Adventurous</option>
+            </select>
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary mt-4">Save Preferences</button>
+</form>
+{% endblock %}

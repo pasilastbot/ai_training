@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Restaurant",
+  "description": "Schema for a restaurant record",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique restaurant identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Restaurant name"
+    },
+    "city": {
+      "type": "string",
+      "description": "City where the restaurant is located"
+    },
+    "address": {
+      "type": "string",
+      "description": "Full street address"
+    },
+    "website": {
+      "type": "string",
+      "format": "uri",
+      "description": "Restaurant website URL"
+    },
+    "menu_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Direct URL to lunch menu page (if different from main site)"
+    },
+    "cuisine_types": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Types of cuisine served (e.g., Italian, Finnish, Asian)"
+    },
+    "price_range": {
+      "type": "string",
+      "enum": ["budget", "moderate", "expensive"],
+      "description": "Typical price range for lunch"
+    },
+    "average_price": {
+      "type": "number",
+      "description": "Average lunch price in EUR"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "opening_hours": {
+      "type": "object",
+      "properties": {
+        "lunch_start": {"type": "string", "description": "Lunch service start time"},
+        "lunch_end": {"type": "string", "description": "Lunch service end time"}
+      },
+      "description": "Operating hours for lunch"
+    },
+    "features": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Features like vegetarian options, takeaway, terrace"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Average rating if available"
+    },
+    "last_menu_fetch": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the menu was last fetched"
+    },
+    "cached_menu": {
+      "type": "object",
+      "description": "Cached menu data from last fetch"
+    },
+    "source": {
+      "type": "string",
+      "description": "How the restaurant was discovered"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["id", "name", "city", "created_at"]
+}

@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UserPreferences",
+  "description": "Schema for user food preferences",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "default": "default",
+      "description": "User identifier (default for single-user mode)"
+    },
+    "liked_cuisines": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Cuisine types the user enjoys (e.g., Italian, Thai, Finnish)"
+    },
+    "disliked_cuisines": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Cuisine types the user wants to avoid"
+    },
+    "dietary_restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["vegetarian", "vegan", "gluten-free", "dairy-free", "nut-free", "halal", "kosher", "pescatarian", "low-carb"]
+      },
+      "description": "Dietary restrictions to always respect"
+    },
+    "allergies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Food allergies (e.g., shellfish, peanuts)"
+    },
+    "avoided_ingredients": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Specific ingredients to avoid (e.g., cilantro, mushrooms)"
+    },
+    "favorite_dishes": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Specific dishes the user loves"
+    },
+    "price_preference": {
+      "type": "string",
+      "enum": ["budget", "moderate", "expensive", "any"],
+      "default": "any",
+      "description": "Preferred price range"
+    },
+    "max_price": {
+      "type": "number",
+      "description": "Maximum price willing to pay for lunch in EUR"
+    },
+    "spice_tolerance": {
+      "type": "string",
+      "enum": ["none", "mild", "medium", "hot", "extra-hot"],
+      "default": "medium",
+      "description": "Tolerance for spicy food"
+    },
+    "portion_preference": {
+      "type": "string",
+      "enum": ["small", "regular", "large"],
+      "default": "regular",
+      "description": "Preferred portion size"
+    },
+    "variety_preference": {
+      "type": "string",
+      "enum": ["stick-to-favorites", "balanced", "adventurous"],
+      "default": "balanced",
+      "description": "How much the user likes to try new things"
+    },
+    "implicit_preferences": {
+      "type": "object",
+      "properties": {
+        "cuisine_weights": {
+          "type": "object",
+          "additionalProperties": {"type": "number"},
+          "description": "Learned weights for cuisines based on selections"
+        },
+        "restaurant_weights": {
+          "type": "object",
+          "additionalProperties": {"type": "number"},
+          "description": "Learned weights for specific restaurants"
+        }
+      },
+      "description": "Automatically learned preferences from selection history"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["user_id"]
+}

@@ -221,6 +221,7 @@ Register new agents by creating their folder structure. The framework automatica
 | Agent | Description | Status |
 |-------|-------------|--------|
 | `prospecting-agent` | B2B prospect search and enrichment | Active |
+| `lunch-selection-agent` | Restaurant discovery, menu extraction, and personalized lunch recommendations | Active |
 
 ---
 

@@ -2,10 +2,9 @@
   "current_icp": {
     "name": "B2B SaaS Tech Companies",
     "target_industries": [
-      "SaaS",
-      "Fintech",
-      "Healthcare Tech",
-      "EdTech"
+      "Movie Theaters",
+      "Cinema",
+      "Entertainment"
     ],
     "geography": [
       "Finland",
@@ -15,27 +14,27 @@
       "Germany"
     ],
     "keywords": [
-      "AI",
-      "machine learning",
-      "automation",
-      "data analytics",
-      "cloud native"
+      "cinema",
+      "movie theater",
+      "independent cinema",
+      "film house",
+      "local theater"
     ],
     "exclusions": [
-      "consulting",
-      "agency",
-      "government",
-      "non-profit"
+      "multiplex chains",
+      "streaming services",
+      "film distribution",
+      "production companies"
     ],
     "funding_stage": [
       "series-a",
       "series-b",
       "series-c"
     ],
-    "updated_at": "2026-04-21T05:14:50.338056",
+    "updated_at": "2026-04-21T06:17:21.633027",
     "company_size": {
-      "min_employees": 50,
-      "max_employees": 500
+      "min_employees": 2,
+      "max_employees": 50
     },
     "created_at": "2026-04-21T04:35:59.840404"
   }

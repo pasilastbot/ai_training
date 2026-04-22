@@ -1,0 +1,32 @@
+{
+  "default": {
+    "user_id": "default",
+    "liked_cuisines": [
+      "Italian",
+      "Thai",
+      "Finnish",
+      "Asian",
+      "Indian",
+      "Chinese",
+      "Korean"
+    ],
+    "disliked_cuisines": [
+      "Japanese"
+    ],
+    "dietary_restrictions": [],
+    "allergies": [],
+    "avoided_ingredients": [],
+    "favorite_dishes": [],
+    "price_preference": "any",
+    "spice_tolerance": "hot",
+    "variety_preference": "balanced",
+    "implicit_preferences": {
+      "cuisine_weights": {
+        "Finnish": 0.2,
+        "Italian": 0.2
+      },
+      "restaurant_weights": {}
+    },
+    "updated_at": "2026-04-21T08:22:11.280806"
+  }
+}

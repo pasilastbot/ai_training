@@ -1,0 +1,24 @@
+{
+  "sel_20260421080459_0": {
+    "restaurant_name": "Test Ravintola",
+    "dish_name": "Salmon Soup",
+    "cuisine_type": "Finnish",
+    "rating": 5,
+    "city": "Helsinki",
+    "id": "sel_20260421080459_0",
+    "date": "2026-04-21",
+    "created_at": "2026-04-21T08:04:59.994977"
+  },
+  "sel_20260421081000_1": {
+    "restaurant_name": "Pizzeria Napoli",
+    "dish_name": "Margherita pizza",
+    "cuisine_type": "Italian",
+    "rating": 5,
+    "would_order_again": true,
+    "notes": "User said it was amazing!",
+    "was_recommendation": false,
+    "id": "sel_20260421081000_1",
+    "date": "2026-04-21",
+    "created_at": "2026-04-21T08:10:00.089539"
+  }
+}

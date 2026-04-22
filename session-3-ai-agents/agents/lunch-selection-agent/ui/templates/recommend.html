@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Recommend - Lunch Selection Agent{% endblock %}
+{% block content %}
+<h2>💡 Get Lunch Recommendation</h2>
+
+<form method="GET" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">City</label>
+        <select name="city" class="form-select" required>
+            <option value="">Select a city...</option>
+            {% for c in cities %}
+            <option value="{{ c }}" {{ 'selected' if city == c }}>{{ c }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary">Get Recommendation</button>
+    </div>
+</form>
+
+{% if recommendation %}
+    {% if recommendation.recommendation %}
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">🎯 {{ recommendation.recommendation.dish_name or 'Visit this restaurant' }}</h3>
+            <h5 class="card-subtitle text-muted">at {{ recommendation.recommendation.restaurant_name }}</h5>
+            
+            {% if recommendation.recommendation.dish_description %}
+            <p class="mt-3">{{ recommendation.recommendation.dish_description }}</p>
+            {% endif %}
+            
+            {% if recommendation.recommendation.price %}
+            <p><strong>Price:</strong> €{{ recommendation.recommendation.price }}</p>
+            {% endif %}
+            
+            <p class="text-muted"><em>{{ recommendation.recommendation.reason }}</em></p>
+            
+            {% if recommendation.alternatives %}
+            <h6 class="mt-4">Other options:</h6>
+            <ul>
+                {% for alt in recommendation.alternatives %}
+                <li><strong>{{ alt.dish_name or 'Visit' }}</strong> at {{ alt.restaurant_name }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        {{ recommendation.message }}
+        {% if recommendation.suggestion %}
+        <p class="mb-0 mt-2"><strong>Suggestion:</strong> {{ recommendation.suggestion }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+{% elif city %}
+<div class="alert alert-warning">
+    No restaurants found for {{ city }}. <a href="/search?city={{ city }}">Search for restaurants</a> first.
+</div>
+{% endif %}
+{% endblock %}
