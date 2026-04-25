@@ -1,0 +1,242 @@
+{
+  "id": "teknologiateollisuuden_tyontekijat_2025-2027",
+  "name": "Teknologiateollisuuden työntekijöiden työehtosopimus",
+  "name_en": "Collective Agreement for the Technology Industry Employees",
+  "union": "Teollisuusliitto ry",
+  "employer_org": "Teknologiateollisuuden työnantajat ry",
+  "industry": "Technology industry",
+  "scope": {
+    "description": "Covers employees in member companies of Teknologiateollisuuden työnantajat ry in metal processing, manufacturing, and related maintenance/installation services.",
+    "included_roles": [
+      "Employees in mechanical and electrical work"
+    ],
+    "excluded_roles": [
+      "Employees covered by the collective agreement for the construction sheet metal and industrial insulation sector (MTHL)",
+      "Employees covered by the collective agreement for ore mines",
+      "Employees covered by the collective agreement for technical maintenance and repair (Teollisuusliitto)"
+    ],
+    "pdf_page": 43,
+    "section": "1"
+  },
+  "validity_start": "2025-02-22",
+  "validity_end": "2027-11-30",
+  "salary_tables": [
+    {
+      "table_name": "Työkohtaiset tunti- ja kuukausipalkat (voimaan tullessa)",
+      "classification_system": "Työnvaativuusryhmä (1-9)",
+      "experience_levels": [
+        {
+          "level": "1",
+          "minimum_salary": 1746,
+          "hourly_rate": 10.02
+        },
+        {
+          "level": "2",
+          "minimum_salary": 1833,
+          "hourly_rate": 10.52
+        },
+        {
+          "level": "3",
+          "minimum_salary": 1925,
+          "hourly_rate": 11.05
+        },
+        {
+          "level": "4",
+          "minimum_salary": 2021,
+          "hourly_rate": 11.6
+        },
+        {
+          "level": "5",
+          "minimum_salary": 2122,
+          "hourly_rate": 12.18
+        },
+        {
+          "level": "6",
+          "minimum_salary": 2228,
+          "hourly_rate": 12.79
+        },
+        {
+          "level": "7",
+          "minimum_salary": 2340,
+          "hourly_rate": 13.43
+        },
+        {
+          "level": "8",
+          "minimum_salary": 2457,
+          "hourly_rate": 14.1
+        },
+        {
+          "level": "9",
+          "minimum_salary": 2580,
+          "hourly_rate": 14.8
+        }
+      ],
+      "pdf_page": 51,
+      "section": "8.1.2"
+    }
+  ],
+  "salary_increases": {
+    "scheduled_increases": [
+      {
+        "date": "2025-04-01",
+        "percentage": 2.1,
+        "description": "General increase if no local agreement reached"
+      },
+      {
+        "date": "2026-03-01",
+        "percentage": 2.3,
+        "description": "General increase if no local agreement reached"
+      },
+      {
+        "date": "2027-03-01",
+        "percentage": 2.0,
+        "description": "General increase if no local agreement reached"
+      }
+    ],
+    "local_bargaining_share": "0.4% (2025), 0.6% (2026), 0.4% (2027) allocated to company-specific increases.",
+    "pdf_page": 36,
+    "section": "2"
+  },
+  "working_hours": {
+    "weekly_hours": 40,
+    "daily_hours": 8,
+    "pdf_page": 77,
+    "section": "19.1"
+  },
+  "overtime": {
+    "daily_overtime": {
+      "threshold_hours": 8,
+      "first_hours_compensation": "+50%",
+      "additional_hours_compensation": "+100%"
+    },
+    "pdf_page": 89,
+    "section": "20.1"
+  },
+  "shift_work": {
+    "evening_shift": {
+      "allowance_flat": 1.32
+    },
+    "night_shift": {
+      "allowance_flat": 2.44
+    },
+    "pdf_page": 68,
+    "section": "14.2"
+  },
+  "vacation": {
+    "vacation_bonus": "50% of annual leave pay",
+    "pdf_page": 103,
+    "section": "21.5"
+  },
+  "sick_leave": {
+    "waiting_period": "1 day (if employment < 6 months)",
+    "pdf_page": 133,
+    "section": "31.1.4"
+  },
+  "child_sick_leave": {
+    "max_days": 4,
+    "child_age_limit": 10,
+    "pdf_page": 139,
+    "section": "31.3"
+  },
+  "other_leaves": {
+    "marriage_leave": "Yes",
+    "bereavement_leave": {
+      "close_family": "Yes"
+    },
+    "50th_60th_birthday": "Yes",
+    "pdf_page": 115,
+    "section": "23.3.1"
+  },
+  "travel": {
+    "mileage_allowance": 0,
+    "pdf_page": 107,
+    "section": "22.4.1"
+  },
+  "notice_periods": {
+    "employer_notice": [
+      {
+        "service_years": "0-1",
+        "notice_period": "2 weeks"
+      },
+      {
+        "service_years": "1-4",
+        "notice_period": "1 month"
+      },
+      {
+        "service_years": "4-8",
+        "notice_period": "2 months"
+      },
+      {
+        "service_years": "8-12",
+        "notice_period": "4 months"
+      },
+      {
+        "service_years": "12+",
+        "notice_period": "6 months"
+      }
+    ],
+    "pdf_page": 155,
+    "section": "38.1"
+  },
+  "trial_period": {
+    "max_duration": "As per law",
+    "pdf_page": 147,
+    "section": "33"
+  },
+  "termination": {
+    "re_employment_obligation": "Yes",
+    "pdf_page": 150,
+    "section": "35.4"
+  },
+  "union_rights": {
+    "shop_steward_rights": "Yes",
+    "pdf_page": 164,
+    "section": "43"
+  },
+  "dispute_resolution": {
+    "negotiation_procedure": "Local negotiation first, then union mediation",
+    "labor_court": "Yes",
+    "pdf_page": 186,
+    "section": "45"
+  },
+  "peace_obligation": {
+    "scope": "Full industrial peace obligation",
+    "pdf_page": 44,
+    "section": "3"
+  },
+  "other_terms": {
+    "professional_degree_bonus": "300 EUR for professional degree, 400 EUR for specialist professional degree",
+    "service_year_bonus": "Calculated based on years of service (10-25+ years)"
+  },
+  "_extracted_fields": [
+    "name",
+    "union",
+    "employer_org",
+    "validity_start",
+    "validity_end",
+    "salary_tables",
+    "salary_increases",
+    "working_hours",
+    "overtime",
+    "shift_work",
+    "vacation",
+    "sick_leave",
+    "child_sick_leave",
+    "other_leaves",
+    "notice_periods",
+    "termination",
+    "union_rights",
+    "dispute_resolution",
+    "peace_obligation"
+  ],
+  "_extraction_notes": "Salary tables are provided for 2025, 2026, and 2027 in the document. Only the initial table is extracted as an example.",
+  "_suggested_fields": [
+    "local_agreement_templates",
+    "training_compensation_details"
+  ],
+  "source_url": "https://www.teollisuusliitto.fi/wp-content/uploads/2025/04/Teknologiateollisuuden-tyontekijoiden-tyoehtosopimus-2025-2027.pdf",
+  "pdf_path": "/Users/pasivuorio/lastbot/ai_training/session-3-ai-agents/agents/tes-agent/memory/data/pdfs/teknologiateollisuuden_työntekijöiden_työehtosopimus_20260423.pdf",
+  "indexed_at": "2026-04-23T19:23:07.029276",
+  "_schema_version": 1,
+  "_source_method": "search"
+}

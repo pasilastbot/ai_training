@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}Legal References - TES Agent{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="bi bi-book"></i> Legal Cross-References</h2>
+    <p class="text-muted">Finnish labor law references linked to TES terms</p>
+
+    <!-- Laws Overview -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Finnish Labor Laws</h5>
+        </div>
+        <div class="card-body">
+            <div class="row" id="lawsContainer">
+                <div class="text-center"><div class="spinner-border" role="status"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Topic Browser -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Browse by Topic</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label">Select Topic</label>
+                    <select class="form-select" id="topicSelect">
+                        <option value="">Loading topics...</option>
+                    </select>
+                </div>
+                <div class="col-md-8">
+                    <div id="topicRefs"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TES Legal Analysis -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">TES Legal Analysis</h5>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-end mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Select TES Document</label>
+                    <select class="form-select" id="tesSelect">
+                        <option value="">Loading TES documents...</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-primary" onclick="analyzeTes()">
+                        <i class="bi bi-search"></i> Analyze Legal References
+                    </button>
+                </div>
+            </div>
+            
+            <div id="tesAnalysis"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadLaws();
+    loadTopics();
+    loadTESList();
+});
+
+async function loadLaws() {
+    try {
+        const response = await fetch('/api/legal/laws');
+        const data = await response.json();
+        
+        let html = '';
+        for (const law of data.laws) {
+            html += `
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">${law.name}</h6>
+                            <p class="text-muted small">${law.name_en}</p>
+                            <p class="small mb-1"><strong>Number:</strong> ${law.number}</p>
+                            <p class="small mb-2"><strong>Sections:</strong> ${law.section_count}</p>
+                            <a href="${law.url}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-box-arrow-up-right"></i> Finlex
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        document.getElementById('lawsContainer').innerHTML = html;
+    } catch (error) {
+        document.getElementById('lawsContainer').innerHTML = 
+            `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+
+async function loadTopics() {
+    try {
+        const response = await fetch('/api/legal/topics');
+        const data = await response.json();
+        
+        const select = document.getElementById('topicSelect');
+        select.innerHTML = '<option value="">Select a topic...</option>';
+        
+        for (const topic of Object.keys(data.topics).sort()) {
+            const displayName = topic.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            select.innerHTML += `<option value="${topic}">${displayName}</option>`;
+        }
+        
+        select.addEventListener('change', async function() {
+            if (!this.value) {
+                document.getElementById('topicRefs').innerHTML = '';
+                return;
+            }
+            
+            try {
+                const resp = await fetch(`/api/legal/topic/${this.value}`);
+                const refs = await resp.json();
+                
+                let html = '<div class="mt-3"><h6>Legal References</h6><ul class="list-group">';
+                for (const ref of refs.references) {
+                    html += `
+                        <li class="list-group-item">
+                            <strong>${ref.law}</strong> § ${ref.section} - ${ref.title}
+                            <p class="mb-1 text-muted small">${ref.summary}</p>
+                            ${ref.url ? `<a href="${ref.url}" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="bi bi-link-45deg"></i> Finlex</a>` : ''}
+                        </li>
+                    `;
+                }
+                html += '</ul></div>';
+                
+                document.getElementById('topicRefs').innerHTML = html;
+            } catch (error) {
+                document.getElementById('topicRefs').innerHTML = 
+                    `<div class="alert alert-warning">No references found for this topic</div>`;
+            }
+        });
+        
+    } catch (error) {
+        document.getElementById('topicSelect').innerHTML = 
+            `<option value="">Error loading topics</option>`;
+    }
+}
+
+async function loadTESList() {
+    try {
+        const response = await fetch('/api/tes');
+        const data = await response.json();
+        
+        const select = document.getElementById('tesSelect');
+        
+        if (!data.tes || data.tes.length === 0) {
+            select.innerHTML = '<option value="">No TES documents indexed</option>';
+            return;
+        }
+        
+        select.innerHTML = '<option value="">Select a TES...</option>';
+        for (const tes of data.tes) {
+            select.innerHTML += `<option value="${tes.id || tes.name}">${tes.name}</option>`;
+        }
+    } catch (error) {
+        document.getElementById('tesSelect').innerHTML = 
+            `<option value="">Error loading TES</option>`;
+    }
+}
+
+async function analyzeTes() {
+    const tesId = document.getElementById('tesSelect').value;
+    if (!tesId) {
+        alert('Please select a TES document');
+        return;
+    }
+    
+    document.getElementById('tesAnalysis').innerHTML = 
+        '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+    
+    try {
+        const response = await fetch(`/api/legal/tes/${encodeURIComponent(tesId)}`);
+        const data = await response.json();
+        
+        let html = `<h5>${data.tes_name}</h5>`;
+        
+        // Legal References
+        html += '<h6 class="mt-4">Legal References by Section</h6>';
+        
+        if (Object.keys(data.legal_references).length === 0) {
+            html += '<p class="text-muted">No legal references found for this TES</p>';
+        } else {
+            for (const [section, refs] of Object.entries(data.legal_references)) {
+                const sectionName = section.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                html += `<div class="card mb-2"><div class="card-header py-2"><strong>${sectionName}</strong></div>`;
+                html += '<ul class="list-group list-group-flush">';
+                
+                for (const ref of refs) {
+                    html += `
+                        <li class="list-group-item py-2">
+                            <strong>${ref.law}</strong> § ${ref.section} - ${ref.title}
+                            <span class="text-muted small d-block">${ref.summary}</span>
+                        </li>
+                    `;
+                }
+                html += '</ul></div>';
+            }
+        }
+        
+        // Statutory Comparisons
+        html += '<h6 class="mt-4">Comparison to Statutory Minimums</h6>';
+        
+        if (Object.keys(data.statutory_comparisons).length === 0) {
+            html += '<p class="text-muted">No statutory comparison data available</p>';
+        } else {
+            html += '<div class="table-responsive"><table class="table table-sm">';
+            html += '<thead><tr><th>Topic</th><th>Statutory</th><th>TES Provision</th><th>Note</th></tr></thead><tbody>';
+            
+            for (const [topic, comp] of Object.entries(data.statutory_comparisons)) {
+                const topicName = topic.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                let statutory = comp.statutory_min || comp.statutory_max || JSON.stringify(comp.statutory || '');
+                let tesProvision = typeof comp.tes_provision === 'object' 
+                    ? JSON.stringify(comp.tes_provision).substring(0, 100) + '...'
+                    : comp.tes_provision;
+                
+                html += `<tr>
+                    <td>${topicName}</td>
+                    <td class="small">${statutory}</td>
+                    <td class="small">${tesProvision}</td>
+                    <td class="small text-muted">${comp.note || ''}</td>
+                </tr>`;
+            }
+            
+            html += '</tbody></table></div>';
+        }
+        
+        document.getElementById('tesAnalysis').innerHTML = html;
+        
+    } catch (error) {
+        document.getElementById('tesAnalysis').innerHTML = 
+            `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+</script>
+{% endblock %}

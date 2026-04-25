@@ -9,3 +9,5 @@ __pycache__/
 chat_history.json
 session.json
 sessions.json
+# Large vector database files
+session-3-ai-agents/agents/*/memory/data/vector_db/

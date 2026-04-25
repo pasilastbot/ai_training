@@ -1,0 +1,183 @@
+{
+  "id": "SOTE-sopimus-2025-2028",
+  "name": "SOTE-sopimus 2025–2028",
+  "name_en": "Social and Health Care Personnel Collective Agreement 2025–2028",
+  "union": "JUKO ry, JAU ry, SOTE ry",
+  "employer_org": "Kunta- ja hyvinvointialuetyönantajat KT",
+  "industry": "Social and Health Care",
+  "scope": {
+    "description": "Personnel working in social and health care tasks in wellbeing services counties or wellbeing services joint authorities.",
+    "included_roles": [
+      "nurses",
+      "practical nurses",
+      "instructors",
+      "public health nurses",
+      "department secretaries",
+      "social workers",
+      "facility cleaners",
+      "management and supervisory staff"
+    ],
+    "geographic_scope": "Finland (wellbeing services counties and joint authorities)"
+  },
+  "validity_start": "2025-05-01",
+  "validity_end": "2028-02-29",
+  "source_url": "https://www.kt.fi/sopimukset/sote/2025-2028",
+  "salary_tables": [
+    {
+      "table_name": "Johtotehtävät (S1JOH100)",
+      "role_category": "Management",
+      "experience_levels": [
+        {
+          "level": "1.2.2024",
+          "minimum_salary": 4100.0
+        },
+        {
+          "level": "1.6.2024",
+          "minimum_salary": 4193.07
+        },
+        {
+          "level": "1.10.2025",
+          "minimum_salary": 4297.9
+        }
+      ],
+      "section": "Liite 1, 2 §"
+    },
+    {
+      "table_name": "Esihenkilötehtävät (S1ESI100)",
+      "role_category": "Supervisory",
+      "experience_levels": [
+        {
+          "level": "1.2.2024",
+          "minimum_salary": 3430.0
+        },
+        {
+          "level": "1.6.2024",
+          "minimum_salary": 3507.86
+        },
+        {
+          "level": "1.10.2025",
+          "minimum_salary": 3595.56
+        }
+      ],
+      "section": "Liite 1, 2 §"
+    },
+    {
+      "table_name": "Työnjohdolliset tehtävät (S1TYT100)",
+      "role_category": "Team Lead",
+      "experience_levels": [
+        {
+          "level": "1.2.2024",
+          "minimum_salary": 3100.0
+        },
+        {
+          "level": "1.6.2024",
+          "minimum_salary": 3170.37
+        },
+        {
+          "level": "1.10.2025",
+          "minimum_salary": 3249.63
+        }
+      ],
+      "section": "Liite 1, 2 §"
+    }
+  ],
+  "salary_increases": {
+    "scheduled_increases": [
+      {
+        "date": "2025-10-01",
+        "flat_amount": 53,
+        "description": "General increase, min 2.5%"
+      },
+      {
+        "date": "2026-08-01",
+        "percentage": 2.27,
+        "description": "General increase"
+      },
+      {
+        "date": "2027-04-01",
+        "percentage": 2.0,
+        "description": "General increase"
+      }
+    ],
+    "local_bargaining_share": "0.2% (2026), 0.4% (2027)",
+    "section": "Allekirjoituspöytäkirja 2-6 §"
+  },
+  "working_hours": {
+    "weekly_hours": 38.25,
+    "max_daily_hours": 9,
+    "section": "III luku 7 §"
+  },
+  "overtime": {
+    "daily_overtime": {
+      "threshold_hours": 8,
+      "first_hours_compensation": "+50%",
+      "additional_hours_compensation": "+100%"
+    },
+    "section": "III luku 14 §"
+  },
+  "breaks": {
+    "lunch_break": {
+      "duration": "30 min",
+      "paid": false,
+      "conditions": "If work exceeds 6 hours"
+    },
+    "coffee_breaks": {
+      "number_per_day": 1,
+      "duration_each": "10 min",
+      "paid": true
+    },
+    "section": "III luku 25-26 §"
+  },
+  "shift_work": {
+    "evening_shift": {
+      "start_time": "18:00",
+      "end_time": "22:00",
+      "allowance_percentage": 15
+    },
+    "night_shift": {
+      "start_time": "22:00",
+      "end_time": "07:00",
+      "allowance_percentage": 30
+    },
+    "section": "III luku 19 §"
+  },
+  "weekend_and_holiday_work": {
+    "saturday_allowance": "20% (06:00-18:00)",
+    "sunday_allowance": "+100% or equivalent time off",
+    "section": "III luku 18 §"
+  },
+  "sick_leave": {
+    "pay_percentage": "100%",
+    "section": "II luku 1 §"
+  },
+  "travel": {
+    "mileage_allowance": 0.0,
+    "section": "Allekirjoituspöytäkirja 8 §"
+  },
+  "allowances": {
+    "language_allowance": "Yes, if required by job",
+    "section": "II luku 16 §"
+  },
+  "peace_obligation": {
+    "scope": "Full industrial peace obligation during contract validity",
+    "section": "I luku 3 §"
+  },
+  "_extracted_fields": [
+    "salary_tables",
+    "salary_increases",
+    "working_hours",
+    "overtime",
+    "breaks",
+    "shift_work",
+    "weekend_and_holiday_work",
+    "sick_leave",
+    "allowances",
+    "peace_obligation"
+  ],
+  "_extraction_notes": "Salary tables extracted for Liite 1. Other appendices (2-5) follow similar structure but were summarized for brevity. Working hours vary by role (e.g., Liite 7 specifies 37h 45min for certain roles).",
+  "html_path": "/Users/pasivuorio/lastbot/ai_training/session-3-ai-agents/agents/tes-agent/memory/data/html/sote-sopimus_combined_20260423.html",
+  "indexed_at": "2026-04-23T19:59:46.505833",
+  "_schema_version": 2,
+  "_source_type": "html",
+  "_source_method": "search"
+}

@@ -1,0 +1,101 @@
+{
+  "id": "matkailu-ravintola-vapaa-aika-tyontekijat-2022-2024",
+  "name": "Matkailu-, ravintola- ja vapaa-ajan palveluita koskeva työntekijöiden työehtosopimus",
+  "name_en": "Collective Agreement for the Tourism, Restaurant and Leisure Services Sector (Employees)",
+  "union": "PAM (Palvelualojen ammattiliitto)",
+  "employer_org": "MaRan (Matkailu- ja Ravintolapalvelut MaRa ry)",
+  "industry": "Tourism, Restaurant and Leisure Services",
+  "scope": {
+    "description": "Covers employees in the tourism, restaurant, and leisure services sector.",
+    "section": "1 §"
+  },
+  "validity_start": "2022-04-01",
+  "validity_end": "2024-03-31",
+  "source_url": "https://tes.mara.fi/",
+  "indexed_at": "2026-04-23T19:23:35.471393",
+  "version": "2022-2024",
+  "salary_tables": [
+    {
+      "table_name": "Palkkataulukot 1.6.2023",
+      "role_category": "Työntekijät (Palkkaryhmät A-D)",
+      "classification_system": "Palkkaryhmittely",
+      "effective_date": "2023-06-01",
+      "currency": "EUR",
+      "section": "Liite 1"
+    }
+  ],
+  "working_hours": {
+    "weekly_hours": 37.5,
+    "section": "11 §"
+  },
+  "overtime": {
+    "daily_overtime": {
+      "threshold_hours": 8,
+      "first_hours_compensation": "+50%",
+      "additional_hours_compensation": "+100%"
+    },
+    "section": "12 §"
+  },
+  "shift_work": {
+    "evening_shift": {
+      "allowance_percentage": 15,
+      "section": "16 §"
+    },
+    "night_shift": {
+      "allowance_percentage": 30,
+      "section": "16 §"
+    }
+  },
+  "weekend_and_holiday_work": {
+    "sunday_allowance": "100% (Sunnuntaityökorvaus)",
+    "section": "17 §"
+  },
+  "vacation": {
+    "vacation_bonus": "50% of the holiday pay",
+    "section": "22 §"
+  },
+  "sick_leave": {
+    "pay_percentage": "100% (for the duration of the sick pay period defined by employment length)",
+    "section": "25 §"
+  },
+  "notice_periods": {
+    "section": "30 §"
+  },
+  "trial_period": {
+    "max_duration": "4 months",
+    "section": "29 §"
+  },
+  "other_terms": {
+    "meal_benefit": "Työntekijällä on oikeus ateriaetuun työpäivän aikana",
+    "clothing_allowance": "Työnantaja vastaa työvaatteiden hankinnasta ja huollosta"
+  },
+  "_extracted_fields": [
+    "name",
+    "union",
+    "employer_org",
+    "industry",
+    "validity_start",
+    "validity_end",
+    "salary_tables",
+    "working_hours",
+    "overtime",
+    "shift_work",
+    "weekend_and_holiday_work",
+    "vacation",
+    "sick_leave",
+    "notice_periods",
+    "trial_period",
+    "other_terms"
+  ],
+  "_extraction_notes": "Data extracted based on the standard MaRa TES structure. Salary tables are referenced as appendices. Specific monetary values for salaries are subject to the specific job category and regional classification (Pääkaupunkiseutu vs. muu Suomi).",
+  "_missing_sections": [
+    "family_leave",
+    "remote_work",
+    "travel",
+    "apprenticeship"
+  ],
+  "html_path": "/Users/pasivuorio/lastbot/ai_training/session-3-ai-agents/agents/tes-agent/memory/data/html/matkailu-__ravintola-_ja_vapaa-ajan_palveluita_koskeva_työntekijöiden_työehtosopimus_20260423.html",
+  "_schema_version": 2,
+  "_source_type": "html",
+  "_source_method": "search"
+}

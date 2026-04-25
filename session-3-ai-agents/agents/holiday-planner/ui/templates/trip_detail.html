@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}{{ trip.name }} - Holiday Planner{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-plane text-blue-600 mr-2"></i> {{ trip.name }}
+                </h1>
+                <p class="text-gray-500 mt-1">
+                    Status: <span class="px-2 py-1 text-xs rounded-full
+                        {% if trip.status == 'planning' %}bg-yellow-100 text-yellow-800
+                        {% elif trip.status == 'booked' %}bg-green-100 text-green-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">{{ trip.status }}</span>
+                    {% if family %} | Family: {{ family.name }}{% endif %}
+                </p>
+            </div>
+            <div class="flex gap-2">
+                <a href="/chat{% if trip.family_id %}?family_id={{ trip.family_id }}{% endif %}" 
+                   class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                    <i class="fas fa-comments mr-2"></i> Refine with AI
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Destinations -->
+        <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-map-marker-alt text-red-600 mr-2"></i> Destinations
+            </h2>
+            
+            {% if trip.destinations %}
+            <div class="space-y-3">
+                {% for dest in trip.destinations %}
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-medium text-gray-800">{{ dest.name }}</h4>
+                    <p class="text-sm text-gray-500">
+                        {% if dest.country %}{{ dest.country }} | {% endif %}
+                        {% if dest.duration_days %}{{ dest.duration_days }} days{% endif %}
+                    </p>
+                    {% if dest.highlights %}
+                    <div class="mt-2 flex flex-wrap gap-1">
+                        {% for h in dest.highlights[:3] %}
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">{{ h }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-4">No destinations added yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Budget -->
+        <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-euro-sign text-green-600 mr-2"></i> Budget
+            </h2>
+            
+            {% if trip.budget and trip.budget.total_estimated %}
+            <div class="space-y-3">
+                <div class="flex justify-between text-lg">
+                    <span>Total Estimated:</span>
+                    <span class="font-bold">€{{ trip.budget.total_estimated | int }}</span>
+                </div>
+                {% if trip.budget.breakdown %}
+                <hr>
+                {% for key, value in trip.budget.breakdown.items() %}
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>{{ key | replace('_', ' ') | title }}:</span>
+                    <span>€{{ value | int }}</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-4">Budget not estimated yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Itinerary -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-calendar-alt text-purple-600 mr-2"></i> Itinerary
+        </h2>
+        
+        {% if trip.itinerary and trip.itinerary.daily_itinerary %}
+        <div class="space-y-4">
+            {% for day in trip.itinerary.daily_itinerary %}
+            <div class="p-4 bg-gray-50 rounded-lg">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-bold text-gray-800">Day {{ day.day }}: {{ day.title }}</h4>
+                    <span class="text-sm text-gray-500">{{ day.location }}</span>
+                </div>
+                {% if day.schedule %}
+                <div class="space-y-2 text-sm">
+                    {% for item in day.schedule[:4] %}
+                    <div class="flex gap-3">
+                        <span class="text-gray-500 w-16">{{ item.time }}</span>
+                        <span>{{ item.activity }}</span>
+                    </div>
+                    {% endfor %}
+                    {% if day.schedule | length > 4 %}
+                    <p class="text-gray-400">+ {{ day.schedule | length - 4 }} more activities</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <p class="text-gray-500 mb-4">No itinerary created yet.</p>
+            <a href="/chat{% if trip.family_id %}?family_id={{ trip.family_id }}{% endif %}" 
+               class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition inline-block">
+                <i class="fas fa-magic mr-2"></i> Generate Itinerary with AI
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Update Status -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Update Trip</h2>
+        <form action="/trips/{{ trip.id }}/update" method="POST" class="flex gap-4 items-end">
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select name="status" class="w-full border rounded-lg px-3 py-2">
+                    <option value="planning" {% if trip.status == 'planning' %}selected{% endif %}>Planning</option>
+                    <option value="comparing" {% if trip.status == 'comparing' %}selected{% endif %}>Comparing</option>
+                    <option value="booked" {% if trip.status == 'booked' %}selected{% endif %}>Booked</option>
+                    <option value="completed" {% if trip.status == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="cancelled" {% if trip.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                Update
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

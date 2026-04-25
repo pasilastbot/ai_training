@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}New Trip - Holiday Planner{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-plane text-blue-600 mr-2"></i> Plan New Trip
+        </h1>
+
+        <form action="/trips/new" method="POST" class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Trip Name</label>
+                <input type="text" name="name" required
+                       placeholder="e.g., Summer 2025 Greece, Family Beach Holiday"
+                       class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Family (optional)</label>
+                <select name="family_id" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- No family selected --</option>
+                    {% for f in families %}
+                    <option value="{{ f.id }}" {% if selected_family == f.id %}selected{% endif %}>{{ f.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Destinations</label>
+                <div id="destinations-container" class="space-y-3">
+                    <div class="dest-row flex gap-3 items-center">
+                        <input type="text" name="dest_name[]" placeholder="Destination"
+                               class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" name="dest_country[]" placeholder="Country"
+                               class="w-32 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="number" name="dest_days[]" placeholder="Days" min="1"
+                               class="w-20 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="button" onclick="removeDest(this)" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" onclick="addDest()" class="mt-3 text-blue-600 hover:text-blue-800 text-sm">
+                    <i class="fas fa-plus mr-1"></i> Add Destination
+                </button>
+            </div>
+
+            <div class="flex gap-4 pt-4">
+                <button type="submit" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-save mr-2"></i> Create Trip
+                </button>
+                <a href="/trips" class="px-6 py-3 border rounded-lg hover:bg-gray-50 transition text-center">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function addDest() {
+    const container = document.getElementById('destinations-container');
+    const row = document.createElement('div');
+    row.className = 'dest-row flex gap-3 items-center';
+    row.innerHTML = `
+        <input type="text" name="dest_name[]" placeholder="Destination"
+               class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <input type="text" name="dest_country[]" placeholder="Country"
+               class="w-32 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <input type="number" name="dest_days[]" placeholder="Days" min="1"
+               class="w-20 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="button" onclick="removeDest(this)" class="text-red-500 hover:text-red-700">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    container.appendChild(row);
+}
+
+function removeDest(btn) {
+    const rows = document.querySelectorAll('.dest-row');
+    if (rows.length > 1) {
+        btn.closest('.dest-row').remove();
+    }
+}
+</script>
+{% endblock %}

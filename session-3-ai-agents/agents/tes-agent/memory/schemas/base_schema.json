@@ -1,0 +1,713 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TES Document - Comprehensive Finnish Collective Bargaining Agreement",
+  "description": "Comprehensive schema for Finnish collective bargaining agreement (Työehtosopimus)",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier (generated from name + validity period)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Official TES name in Finnish"
+    },
+    "name_en": {
+      "type": "string",
+      "description": "English name/translation"
+    },
+    "union": {
+      "type": "string",
+      "description": "Employee union/liitto name (e.g., Teollisuusliitto, PAM, Pro)"
+    },
+    "employer_org": {
+      "type": "string",
+      "description": "Employer organization (e.g., Teknologiateollisuus ry, Kaupan liitto)"
+    },
+    "industry": {
+      "type": "string",
+      "description": "Industry/sector (e.g., technology, retail, healthcare, construction)"
+    },
+    "scope": {
+      "type": "object",
+      "description": "Scope of application (soveltamisala)",
+      "properties": {
+        "description": { "type": "string", "description": "General description of who the TES covers" },
+        "included_roles": { "type": "array", "items": { "type": "string" }, "description": "Job roles/categories explicitly included" },
+        "excluded_roles": { "type": "array", "items": { "type": "string" }, "description": "Job roles/categories explicitly excluded" },
+        "geographic_scope": { "type": "string", "description": "Geographic applicability" },
+        "company_size_requirements": { "type": "string", "description": "Any company size limitations" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+    "validity_start": {
+      "type": "string",
+      "format": "date",
+      "description": "Start date of validity period (YYYY-MM-DD)"
+    },
+    "validity_end": {
+      "type": "string",
+      "format": "date",
+      "description": "End date of validity period (YYYY-MM-DD)"
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL where the TES PDF was found"
+    },
+    "pdf_path": {
+      "type": "string",
+      "description": "Local path to downloaded PDF"
+    },
+    "indexed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this TES was indexed"
+    },
+    "version": {
+      "type": "string",
+      "description": "Document version or revision"
+    },
+
+    "salary_tables": {
+      "type": "array",
+      "description": "Salary/wage tables from the TES",
+      "items": {
+        "type": "object",
+        "properties": {
+          "table_name": { "type": "string", "description": "Name/title of this salary table" },
+          "role_category": { "type": "string", "description": "Role or job category this applies to" },
+          "classification_system": { "type": "string", "description": "Job classification system used (e.g., TVL, OPE)" },
+          "experience_levels": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "level": { "type": "string", "description": "Level name or years of experience" },
+                "minimum_salary": { "type": "number", "description": "Minimum monthly salary in EUR" },
+                "hourly_rate": { "type": "number", "description": "Hourly rate in EUR if applicable" },
+                "competence_level": { "type": "string", "description": "Required competence/skill level" }
+              }
+            }
+          },
+          "effective_date": { "type": "string", "format": "date" },
+          "currency": { "type": "string", "default": "EUR" },
+          "pdf_page": { "type": "integer" },
+          "section": { "type": "string" }
+        }
+      }
+    },
+
+    "salary_increases": {
+      "type": "object",
+      "description": "General salary increase provisions (palkankorotukset)",
+      "properties": {
+        "scheduled_increases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": { "type": "string", "format": "date" },
+              "percentage": { "type": "number", "description": "Percentage increase" },
+              "flat_amount": { "type": "number", "description": "Flat EUR amount if applicable" },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "experience_increments": { "type": "string", "description": "Rules for automatic experience-based increases" },
+        "local_bargaining_share": { "type": "string", "description": "Portion allocated to local/company-level bargaining" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "job_classification": {
+      "type": "object",
+      "description": "Job classification and grading system (työn vaativuuden luokittelu)",
+      "properties": {
+        "system_name": { "type": "string", "description": "Name of classification system" },
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "level": { "type": "string" },
+              "description": { "type": "string" },
+              "example_roles": { "type": "array", "items": { "type": "string" } },
+              "minimum_salary": { "type": "number" }
+            }
+          }
+        },
+        "evaluation_criteria": { "type": "array", "items": { "type": "string" } },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "working_hours": {
+      "type": "object",
+      "description": "Working time regulations (työaika)",
+      "properties": {
+        "weekly_hours": { "type": "number", "description": "Standard weekly working hours" },
+        "daily_hours": { "type": "number", "description": "Standard daily working hours" },
+        "annual_hours": { "type": "number", "description": "Annual working hours if working time bank used" },
+        "max_daily_hours": { "type": "number", "description": "Maximum daily working hours" },
+        "max_weekly_hours": { "type": "number", "description": "Maximum weekly working hours including overtime" },
+        "flexible_hours": {
+          "type": "object",
+          "properties": {
+            "allowed": { "type": "boolean" },
+            "core_hours": { "type": "string", "description": "Mandatory core working hours" },
+            "flex_range": { "type": "string", "description": "Flexible start/end time range" },
+            "max_balance": { "type": "string", "description": "Maximum plus/minus balance hours" }
+          }
+        },
+        "working_time_bank": {
+          "type": "object",
+          "properties": {
+            "allowed": { "type": "boolean" },
+            "max_hours": { "type": "number" },
+            "compensation_rules": { "type": "string" }
+          }
+        },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "overtime": {
+      "type": "object",
+      "description": "Overtime work and compensation (ylityö)",
+      "properties": {
+        "daily_overtime": {
+          "type": "object",
+          "properties": {
+            "threshold_hours": { "type": "number", "description": "Daily hours after which overtime begins" },
+            "first_hours_compensation": { "type": "string", "description": "Compensation for first 2 hours (e.g., '+50%')" },
+            "additional_hours_compensation": { "type": "string", "description": "Compensation for hours after first 2 (e.g., '+100%')" }
+          }
+        },
+        "weekly_overtime": {
+          "type": "object",
+          "properties": {
+            "threshold_hours": { "type": "number" },
+            "compensation": { "type": "string" }
+          }
+        },
+        "max_annual_overtime": { "type": "number", "description": "Maximum overtime hours per year" },
+        "overtime_as_time_off": { "type": "string", "description": "Rules for taking overtime as compensatory time" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "breaks": {
+      "type": "object",
+      "description": "Break time provisions (tauot)",
+      "properties": {
+        "lunch_break": {
+          "type": "object",
+          "properties": {
+            "duration": { "type": "string" },
+            "paid": { "type": "boolean" },
+            "conditions": { "type": "string" }
+          }
+        },
+        "coffee_breaks": {
+          "type": "object",
+          "properties": {
+            "number_per_day": { "type": "integer" },
+            "duration_each": { "type": "string" },
+            "paid": { "type": "boolean" }
+          }
+        },
+        "rest_periods": { "type": "string", "description": "Daily/weekly rest period requirements" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "shift_work": {
+      "type": "object",
+      "description": "Shift work provisions (vuorotyö)",
+      "properties": {
+        "shift_types": { "type": "array", "items": { "type": "string" }, "description": "Types of shifts (morning, evening, night)" },
+        "evening_shift": {
+          "type": "object",
+          "properties": {
+            "start_time": { "type": "string" },
+            "end_time": { "type": "string" },
+            "allowance_percentage": { "type": "number" },
+            "allowance_flat": { "type": "number" }
+          }
+        },
+        "night_shift": {
+          "type": "object",
+          "properties": {
+            "start_time": { "type": "string" },
+            "end_time": { "type": "string" },
+            "allowance_percentage": { "type": "number" },
+            "allowance_flat": { "type": "number" }
+          }
+        },
+        "shift_rotation_rules": { "type": "string" },
+        "minimum_rest_between_shifts": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "weekend_and_holiday_work": {
+      "type": "object",
+      "description": "Weekend and holiday work compensation",
+      "properties": {
+        "saturday_allowance": { "type": "string" },
+        "sunday_allowance": { "type": "string" },
+        "public_holiday_allowance": { "type": "string" },
+        "midsummer_eve": { "type": "string" },
+        "christmas_eve": { "type": "string" },
+        "new_years_eve": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "vacation": {
+      "type": "object",
+      "description": "Vacation/annual leave rules (vuosiloma)",
+      "properties": {
+        "days_first_year": { "type": "integer" },
+        "days_standard": { "type": "integer" },
+        "days_senior": { "type": "integer" },
+        "senior_threshold_years": { "type": "integer" },
+        "vacation_bonus": { "type": "string", "description": "Lomaraha/vacation bonus amount" },
+        "vacation_bonus_conditions": { "type": "string" },
+        "vacation_pay_calculation": { "type": "string" },
+        "carry_over_days": { "type": "integer", "description": "Days that can be carried to next year" },
+        "vacation_scheduling": { "type": "string", "description": "Rules for when vacation must be taken" },
+        "summer_vacation_period": { "type": "string" },
+        "winter_vacation_period": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "sick_leave": {
+      "type": "object",
+      "description": "Sick leave and pay rules (sairauspoissaolo)",
+      "properties": {
+        "paid_days_short_employment": { "type": "string", "description": "Sick pay for employment under 1 month" },
+        "paid_days_standard": { "type": "string", "description": "Sick pay for standard employment" },
+        "paid_days_long_employment": { "type": "string", "description": "Sick pay after extended employment" },
+        "pay_percentage": { "type": "string" },
+        "waiting_period": { "type": "string", "description": "Karenssi - waiting day(s) before pay starts" },
+        "doctors_certificate_required": { "type": "string", "description": "When medical certificate is required" },
+        "self_declaration_days": { "type": "integer", "description": "Days allowed with self-declaration" },
+        "chronic_illness_provisions": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "child_sick_leave": {
+      "type": "object",
+      "description": "Leave for sick child care (lapsen sairaus)",
+      "properties": {
+        "max_days": { "type": "integer", "description": "Maximum paid days per illness incident" },
+        "child_age_limit": { "type": "integer", "description": "Maximum age of child (usually 10 or 12)" },
+        "pay_percentage": { "type": "string" },
+        "conditions": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "family_leave": {
+      "type": "object",
+      "description": "Family leave provisions (perhevapaat)",
+      "properties": {
+        "maternity_leave": {
+          "type": "object",
+          "properties": {
+            "paid_days": { "type": "integer" },
+            "pay_percentage": { "type": "string" },
+            "total_duration": { "type": "string" }
+          }
+        },
+        "paternity_leave": {
+          "type": "object",
+          "properties": {
+            "paid_days": { "type": "integer" },
+            "pay_percentage": { "type": "string" }
+          }
+        },
+        "parental_leave": {
+          "type": "object",
+          "properties": {
+            "paid_days": { "type": "integer" },
+            "pay_percentage": { "type": "string" },
+            "conditions": { "type": "string" }
+          }
+        },
+        "adoption_leave": {
+          "type": "object",
+          "properties": {
+            "paid_days": { "type": "integer" },
+            "conditions": { "type": "string" }
+          }
+        },
+        "childcare_leave_unpaid": { "type": "string", "description": "Unpaid childcare leave provisions" },
+        "partial_childcare_leave": { "type": "string", "description": "Reduced hours for childcare" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "other_leaves": {
+      "type": "object",
+      "description": "Other leave types (muut vapaat)",
+      "properties": {
+        "marriage_leave": { "type": "string", "description": "Leave for own wedding" },
+        "bereavement_leave": {
+          "type": "object",
+          "properties": {
+            "close_family": { "type": "string", "description": "Leave for spouse/child/parent death" },
+            "extended_family": { "type": "string", "description": "Leave for other relatives" }
+          }
+        },
+        "moving_leave": { "type": "string" },
+        "military_reserve_training": { "type": "string" },
+        "civil_service": { "type": "string" },
+        "court_summons": { "type": "string" },
+        "medical_appointments": { "type": "string" },
+        "50th_60th_birthday": { "type": "string", "description": "Leave for milestone birthdays" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "study_leave": {
+      "type": "object",
+      "description": "Study and training leave (opintovapaa)",
+      "properties": {
+        "eligibility": { "type": "string" },
+        "max_duration": { "type": "string" },
+        "paid_study_days": { "type": "integer" },
+        "employer_training_obligation": { "type": "string" },
+        "return_to_work_obligation": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "remote_work": {
+      "type": "object",
+      "description": "Remote/telework provisions (etätyö)",
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "agreement_requirements": { "type": "string" },
+        "equipment_provision": { "type": "string" },
+        "cost_compensation": { "type": "string" },
+        "insurance_coverage": { "type": "string" },
+        "working_hours_tracking": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "travel": {
+      "type": "object",
+      "description": "Travel allowances and per diems (matkakorvaukset)",
+      "properties": {
+        "domestic_per_diem_full": { "type": "number", "description": "Full day domestic per diem EUR" },
+        "domestic_per_diem_partial": { "type": "number", "description": "Partial day per diem EUR" },
+        "international_per_diem": { "type": "string", "description": "International per diem rules" },
+        "mileage_allowance": { "type": "number", "description": "Per kilometer rate for own car" },
+        "travel_time_compensation": { "type": "string", "description": "How travel time is compensated" },
+        "accommodation_rules": { "type": "string" },
+        "meal_allowance": { "type": "number" },
+        "commute_compensation": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "allowances": {
+      "type": "object",
+      "description": "Various allowances and supplements (lisät)",
+      "properties": {
+        "shift_allowance": { "type": "string" },
+        "hazard_pay": { "type": "string", "description": "Dangerous work compensation" },
+        "dirty_work_allowance": { "type": "string" },
+        "height_allowance": { "type": "string" },
+        "cold_work_allowance": { "type": "string" },
+        "language_allowance": { "type": "string" },
+        "responsibility_allowance": { "type": "string" },
+        "on_call_allowance": { "type": "string", "description": "Standby/on-call compensation" },
+        "tool_allowance": { "type": "string" },
+        "clothing_allowance": { "type": "string" },
+        "phone_allowance": { "type": "string" },
+        "meal_benefit": { "type": "string" },
+        "other_allowances": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "amount": { "type": "string" },
+              "conditions": { "type": "string" }
+            }
+          }
+        },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "bonuses": {
+      "type": "object",
+      "description": "Performance and other bonuses",
+      "properties": {
+        "performance_bonus": { "type": "string" },
+        "profit_sharing": { "type": "string" },
+        "annual_bonus": { "type": "string" },
+        "christmas_bonus": { "type": "string" },
+        "seniority_bonus": { "type": "string" },
+        "recruitment_bonus": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "notice_periods": {
+      "type": "object",
+      "description": "Notice period requirements (irtisanomisaika)",
+      "properties": {
+        "employee_notice": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "service_years": { "type": "string" },
+              "notice_period": { "type": "string" }
+            }
+          }
+        },
+        "employer_notice": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "service_years": { "type": "string" },
+              "notice_period": { "type": "string" }
+            }
+          }
+        },
+        "notice_during_trial": { "type": "string" },
+        "job_search_leave": { "type": "string", "description": "Paid leave to look for new job during notice" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "trial_period": {
+      "type": "object",
+      "description": "Trial/probation period rules (koeaika)",
+      "properties": {
+        "max_duration": { "type": "string" },
+        "extension_for_absence": { "type": "string" },
+        "notice_during_trial": { "type": "string" },
+        "fixed_term_trial": { "type": "string", "description": "Trial period for fixed-term contracts" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "termination": {
+      "type": "object",
+      "description": "Employment termination rules (työsuhteen päättäminen)",
+      "properties": {
+        "individual_dismissal_grounds": { "type": "string" },
+        "collective_dismissal_procedure": { "type": "string" },
+        "severance_pay": { "type": "string" },
+        "re_employment_obligation": { "type": "string", "description": "Takaisinottovelvollisuus" },
+        "re_employment_period": { "type": "string" },
+        "outplacement_support": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "fixed_term_contracts": {
+      "type": "object",
+      "description": "Fixed-term employment provisions (määräaikaiset työsuhteet)",
+      "properties": {
+        "valid_grounds": { "type": "array", "items": { "type": "string" } },
+        "max_duration": { "type": "string" },
+        "max_renewals": { "type": "string" },
+        "conversion_to_permanent": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "part_time_work": {
+      "type": "object",
+      "description": "Part-time work provisions (osa-aikatyö)",
+      "properties": {
+        "minimum_hours": { "type": "number" },
+        "additional_hours_preference": { "type": "string" },
+        "conversion_rights": { "type": "string" },
+        "pro_rata_benefits": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "temporary_agency_work": {
+      "type": "object",
+      "description": "Agency/temporary worker provisions (vuokratyö)",
+      "properties": {
+        "equal_treatment": { "type": "string" },
+        "max_duration": { "type": "string" },
+        "information_rights": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "apprenticeship": {
+      "type": "object",
+      "description": "Apprenticeship and trainee provisions (oppisopimus)",
+      "properties": {
+        "trainee_wages": { "type": "string" },
+        "progression_rules": { "type": "string" },
+        "training_requirements": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "occupational_health_safety": {
+      "type": "object",
+      "description": "Health and safety provisions (työsuojelu)",
+      "properties": {
+        "safety_representative": { "type": "string" },
+        "health_services": { "type": "string" },
+        "personal_protective_equipment": { "type": "string" },
+        "health_examinations": { "type": "string" },
+        "ergonomics": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "insurance_and_pension": {
+      "type": "object",
+      "description": "Insurance and pension provisions",
+      "properties": {
+        "group_life_insurance": { "type": "string" },
+        "accident_insurance_supplement": { "type": "string" },
+        "supplementary_pension": { "type": "string" },
+        "disability_provisions": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "union_rights": {
+      "type": "object",
+      "description": "Union activity and representation (ay-toiminta)",
+      "properties": {
+        "shop_steward_rights": { "type": "string", "description": "Luottamusmiehen oikeudet" },
+        "shop_steward_time_off": { "type": "string" },
+        "shop_steward_protection": { "type": "string" },
+        "union_meeting_rights": { "type": "string" },
+        "union_notice_board": { "type": "string" },
+        "information_rights": { "type": "string" },
+        "cooperation_procedure": { "type": "string", "description": "YT-menettely" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "local_bargaining": {
+      "type": "object",
+      "description": "Local/company-level bargaining provisions (paikallinen sopiminen)",
+      "properties": {
+        "allowed_topics": { "type": "array", "items": { "type": "string" } },
+        "procedure": { "type": "string" },
+        "default_rules": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "dispute_resolution": {
+      "type": "object",
+      "description": "Dispute resolution procedures (erimielisyyksien ratkaisu)",
+      "properties": {
+        "negotiation_procedure": { "type": "string" },
+        "mediation": { "type": "string" },
+        "arbitration": { "type": "string" },
+        "labor_court": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "peace_obligation": {
+      "type": "object",
+      "description": "Industrial peace obligation (työrauhavelvoite)",
+      "properties": {
+        "scope": { "type": "string" },
+        "exceptions": { "type": "string" },
+        "sympathy_actions": { "type": "string" },
+        "pdf_page": { "type": "integer" },
+        "section": { "type": "string" }
+      }
+    },
+
+    "protocol_agreements": {
+      "type": "array",
+      "description": "Protocol agreements and appendices (pöytäkirjat)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "topic": { "type": "string" },
+          "summary": { "type": "string" },
+          "pdf_page": { "type": "integer" }
+        }
+      }
+    },
+
+    "other_terms": {
+      "type": "object",
+      "description": "Additional terms not covered by standard fields",
+      "additionalProperties": true
+    },
+
+    "_schema_version": {
+      "type": "integer",
+      "description": "Schema version when this TES was extracted",
+      "default": 2
+    },
+    "_extracted_fields": {
+      "type": "array",
+      "description": "List of fields that were extracted from this document",
+      "items": { "type": "string" }
+    },
+    "_extraction_notes": {
+      "type": "string",
+      "description": "Notes from extraction process"
+    },
+    "_missing_sections": {
+      "type": "array",
+      "description": "Sections that could not be found or extracted",
+      "items": { "type": "string" }
+    }
+  },
+  "required": ["id", "name", "source_url", "indexed_at"]
+}

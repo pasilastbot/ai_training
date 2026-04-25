@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Families - Holiday Planner{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-800">
+            <i class="fas fa-users text-purple-600 mr-2"></i> Family Profiles
+        </h1>
+        <a href="/families/new" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+            <i class="fas fa-plus mr-2"></i> New Family
+        </a>
+    </div>
+
+    {% if families %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for family in families %}
+        <a href="/families/{{ family.id }}" class="bg-white rounded-xl shadow p-6 card-hover transition block">
+            <div class="flex items-center mb-4">
+                <div class="bg-purple-100 p-3 rounded-full">
+                    <i class="fas fa-home text-purple-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="font-bold text-gray-800">{{ family.name }}</h3>
+                    <p class="text-sm text-gray-500">ID: {{ family.id }}</p>
+                </div>
+            </div>
+            <p class="text-gray-500 text-sm">
+                <i class="fas fa-calendar mr-1"></i> Created: {{ family.created_at[:10] }}
+            </p>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-xl shadow p-12 text-center">
+        <div class="text-gray-400 text-6xl mb-4">
+            <i class="fas fa-users"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">No families yet</h3>
+        <p class="text-gray-500 mb-6">Create your first family profile to start planning holidays.</p>
+        <a href="/families/new" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition inline-block">
+            <i class="fas fa-plus mr-2"></i> Create Family
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

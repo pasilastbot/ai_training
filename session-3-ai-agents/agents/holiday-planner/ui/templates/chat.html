@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - Holiday Planner{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Header -->
+        <div class="gradient-bg text-white p-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-robot text-2xl mr-3"></i>
+                    <div>
+                        <h1 class="text-xl font-bold">Holiday Planning Assistant</h1>
+                        <p class="text-purple-200 text-sm">
+                            {% if family %}
+                            Planning for {{ family.name }}
+                            {% else %}
+                            Ask me about destinations, activities, budgets, and more!
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <select id="familySelect" onchange="changeFamily(this.value)" 
+                            class="bg-white/20 text-white border-0 rounded px-3 py-1 text-sm">
+                        <option value="">No family selected</option>
+                        {% for f in families %}
+                        <option value="{{ f.id }}" {% if selected_family == f.id %}selected{% endif %}>
+                            {{ f.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chatMessages" class="h-[500px] overflow-y-auto p-4 space-y-4 bg-gray-50">
+            <!-- Welcome Message -->
+            <div class="flex items-start">
+                <div class="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-sm"></i>
+                </div>
+                <div class="ml-3 bg-white rounded-lg p-4 shadow max-w-[80%]">
+                    <p class="text-gray-800">
+                        Hello! I'm your family holiday planning assistant. I can help you:
+                    </p>
+                    <ul class="mt-2 text-gray-600 text-sm list-disc list-inside">
+                        <li>Find destinations that suit your whole family</li>
+                        <li>Compare options and budgets</li>
+                        <li>Plan detailed itineraries</li>
+                        <li>Answer questions about travel</li>
+                    </ul>
+                    <p class="mt-2 text-gray-800">
+                        {% if family %}
+                        I see you're planning for <strong>{{ family.name }}</strong>. 
+                        What would you like to explore?
+                        {% else %}
+                        To get personalized recommendations, select a family profile above, 
+                        or tell me about your family!
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="border-t p-4">
+            <form id="chatForm" onsubmit="sendMessage(event)" class="flex space-x-3">
+                <input type="text" id="messageInput" 
+                       placeholder="Ask about destinations, activities, weather, budgets..."
+                       class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <button type="submit" 
+                        class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">
+                    <i class="fas fa-paper-plane mr-2"></i> Send
+                </button>
+            </form>
+            <div class="mt-3 flex flex-wrap gap-2">
+                <button onclick="quickMessage('Find family-friendly beach destinations in Europe')"
+                        class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-gray-600">
+                    Beach holidays
+                </button>
+                <button onclick="quickMessage('Compare Greece, Spain, and Portugal for a family trip')"
+                        class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-gray-600">
+                    Compare destinations
+                </button>
+                <button onclick="quickMessage('What activities are good for kids in Barcelona?')"
+                        class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-gray-600">
+                    Activities for kids
+                </button>
+                <button onclick="quickMessage('Create a 7-day itinerary for Crete')"
+                        class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-gray-600">
+                    Plan itinerary
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let chatHistory = [];
+    const familyId = '{{ selected_family or "" }}';
+    
+    function changeFamily(id) {
+        window.location.href = '/chat' + (id ? '?family_id=' + id : '');
+    }
+    
+    function addMessage(content, isUser) {
+        const messagesDiv = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex items-start' + (isUser ? ' justify-end' : '');
+        
+        if (isUser) {
+            messageDiv.innerHTML = `
+                <div class="mr-3 bg-blue-600 text-white rounded-lg p-4 max-w-[80%]">
+                    <p>${escapeHtml(content)}</p>
+                </div>
+                <div class="bg-gray-400 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-user text-sm"></i>
+                </div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <div class="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-sm"></i>
+                </div>
+                <div class="ml-3 bg-white rounded-lg p-4 shadow max-w-[80%]">
+                    <div class="prose prose-sm">${formatMessage(content)}</div>
+                </div>
+            `;
+        }
+        
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    function addLoadingMessage() {
+        const messagesDiv = document.getElementById('chatMessages');
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'loadingMessage';
+        loadingDiv.className = 'flex items-start';
+        loadingDiv.innerHTML = `
+            <div class="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-robot text-sm"></i>
+            </div>
+            <div class="ml-3 bg-white rounded-lg p-4 shadow">
+                <div class="flex items-center space-x-2">
+                    <div class="animate-bounce w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div class="animate-bounce w-2 h-2 bg-purple-600 rounded-full" style="animation-delay: 0.1s"></div>
+                    <div class="animate-bounce w-2 h-2 bg-purple-600 rounded-full" style="animation-delay: 0.2s"></div>
+                </div>
+            </div>
+        `;
+        messagesDiv.appendChild(loadingDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    function removeLoadingMessage() {
+        const loading = document.getElementById('loadingMessage');
+        if (loading) loading.remove();
+    }
+    
+    async function sendMessage(event) {
+        event.preventDefault();
+        const input = document.getElementById('messageInput');
+        const message = input.value.trim();
+        
+        if (!message) return;
+        
+        // Add user message
+        addMessage(message, true);
+        chatHistory.push({role: 'user', content: message});
+        input.value = '';
+        
+        // Show loading
+        addLoadingMessage();
+        
+        try {
+            const response = await fetch('/chat/send', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    message: message,
+                    family_id: familyId || null,
+                    history: chatHistory.slice(-10)  // Last 10 messages
+                })
+            });
+            
+            const data = await response.json();
+            removeLoadingMessage();
+            
+            if (data.error) {
+                addMessage('Sorry, something went wrong: ' + data.error, false);
+            } else {
+                addMessage(data.response, false);
+                chatHistory.push({role: 'assistant', content: data.response});
+            }
+        } catch (error) {
+            removeLoadingMessage();
+            addMessage('Sorry, there was an error connecting to the server.', false);
+        }
+    }
+    
+    function quickMessage(msg) {
+        document.getElementById('messageInput').value = msg;
+        document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function formatMessage(text) {
+        // Basic markdown-like formatting
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\n/g, '<br>')
+            .replace(/- (.*?)(?=<br>|$)/g, '<li>$1</li>')
+            .replace(/(<li>.*<\/li>)/g, '<ul class="list-disc list-inside">$1</ul>');
+    }
+</script>
+{% endblock %}

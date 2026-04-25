@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Budget Estimate - {{ destination }} - Holiday Planner{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+            <i class="fas fa-calculator text-green-600 mr-2"></i> Budget Estimate: {{ destination }}
+        </h1>
+        {% if result.travelers %}
+        <p class="text-gray-500 mt-1">
+            {{ result.travelers.adults }} adults, {{ result.travelers.children }} children
+            {% if result.travelers.teens %}, {{ result.travelers.teens }} teens{% endif %}
+            | {{ result.duration_days }} days | {{ result.travel_style }} style
+        </p>
+        {% endif %}
+    </div>
+
+    {% if result.error %}
+    <div class="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-xl">
+        <p>{{ result.error }}</p>
+    </div>
+    {% else %}
+
+    <!-- Summary -->
+    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow p-6 text-white">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="text-center">
+                <p class="text-green-100 text-sm">Total Estimated</p>
+                <p class="text-4xl font-bold">€{{ result.summary.grand_total | int if result.summary else 0 }}</p>
+            </div>
+            <div class="text-center">
+                <p class="text-green-100 text-sm">Per Person</p>
+                <p class="text-2xl font-bold">€{{ result.summary.per_person | int if result.summary else 0 }}</p>
+            </div>
+            <div class="text-center">
+                <p class="text-green-100 text-sm">Per Day</p>
+                <p class="text-2xl font-bold">€{{ result.summary.per_day | int if result.summary else 0 }}</p>
+            </div>
+            <div class="text-center">
+                <p class="text-green-100 text-sm">Per Person/Day</p>
+                <p class="text-2xl font-bold">€{{ result.summary.per_person_per_day | int if result.summary else 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% if result.flights %}
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-3">
+                <i class="fas fa-plane text-blue-500 mr-2"></i> Flights
+            </h3>
+            <p class="text-2xl font-bold text-gray-800">€{{ result.flights.total | int }}</p>
+            <p class="text-sm text-gray-500">{{ result.flights.route }}</p>
+            {% if result.flights.booking_tip %}
+            <p class="text-sm text-blue-600 mt-2"><i class="fas fa-lightbulb mr-1"></i> {{ result.flights.booking_tip }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if result.accommodation %}
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-3">
+                <i class="fas fa-bed text-purple-500 mr-2"></i> Accommodation
+            </h3>
+            <p class="text-2xl font-bold text-gray-800">€{{ result.accommodation.total | int }}</p>
+            <p class="text-sm text-gray-500">
+                €{{ result.accommodation.price_per_night | int }}/night x {{ result.accommodation.nights }} nights
+            </p>
+            {% if result.accommodation.recommended_area %}
+            <p class="text-sm text-purple-600 mt-2"><i class="fas fa-map-marker mr-1"></i> {{ result.accommodation.recommended_area }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if result.food %}
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-3">
+                <i class="fas fa-utensils text-orange-500 mr-2"></i> Food & Dining
+            </h3>
+            <p class="text-2xl font-bold text-gray-800">€{{ result.food.trip_total | int }}</p>
+            <p class="text-sm text-gray-500">€{{ result.food.daily_total | int }}/day for family</p>
+            {% if result.food.tips %}
+            <p class="text-sm text-orange-600 mt-2"><i class="fas fa-lightbulb mr-1"></i> {{ result.food.tips }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if result.activities %}
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-3">
+                <i class="fas fa-ticket-alt text-green-500 mr-2"></i> Activities
+            </h3>
+            <p class="text-2xl font-bold text-gray-800">€{{ result.activities.total | int }}</p>
+            <p class="text-sm text-gray-500">~{{ result.activities.estimated_activities }} activities</p>
+            {% if result.activities.free_options %}
+            <p class="text-sm text-green-600 mt-2"><i class="fas fa-gift mr-1"></i> Free: {{ result.activities.free_options[:2] | join(', ') }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if result.local_transport %}
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-3">
+                <i class="fas fa-car text-yellow-500 mr-2"></i> Local Transport
+            </h3>
+            <p class="text-2xl font-bold text-gray-800">€{{ result.local_transport.total | int }}</p>
+            <p class="text-sm text-gray-500">€{{ result.local_transport.daily_estimate | int }}/day</p>
+            {% if result.local_transport.recommendation %}
+            <p class="text-sm text-yellow-600 mt-2"><i class="fas fa-lightbulb mr-1"></i> {{ result.local_transport.recommendation }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if result.other_costs %}
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-3">
+                <i class="fas fa-ellipsis-h text-gray-500 mr-2"></i> Other Costs
+            </h3>
+            <p class="text-2xl font-bold text-gray-800">€{{ result.other_costs.total | int }}</p>
+            <p class="text-sm text-gray-500">Insurance, tips, shopping buffer</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Money Saving Tips -->
+    {% if result.money_saving_tips %}
+    <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-piggy-bank text-pink-500 mr-2"></i> Money-Saving Tips
+        </h3>
+        <ul class="space-y-2">
+            {% for tip in result.money_saving_tips %}
+            <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                <span class="text-gray-700">{{ tip }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Budget Tiers -->
+    {% if result.budget_tiers %}
+    <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">Compare Budget Levels</h3>
+        <div class="grid grid-cols-4 gap-4">
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <p class="text-sm text-gray-500">Budget</p>
+                <p class="text-xl font-bold text-gray-800">€{{ result.budget_tiers.budget_version | int }}</p>
+            </div>
+            <div class="text-center p-4 bg-blue-50 rounded-lg border-2 border-blue-500">
+                <p class="text-sm text-blue-600">Mid-range</p>
+                <p class="text-xl font-bold text-blue-800">€{{ result.budget_tiers.mid_range_version | int }}</p>
+            </div>
+            <div class="text-center p-4 bg-purple-50 rounded-lg">
+                <p class="text-sm text-purple-500">Comfort</p>
+                <p class="text-xl font-bold text-purple-800">€{{ result.budget_tiers.comfort_version | int }}</p>
+            </div>
+            <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                <p class="text-sm text-yellow-600">Luxury</p>
+                <p class="text-xl font-bold text-yellow-800">€{{ result.budget_tiers.luxury_version | int }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="flex gap-4">
+        <a href="/budget" class="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition text-center">
+            <i class="fas fa-arrow-left mr-2"></i> New Calculation
+        </a>
+        <a href="/compare" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition text-center">
+            <i class="fas fa-balance-scale mr-2"></i> Compare Destinations
+        </a>
+    </div>
+</div>
+{% endblock %}

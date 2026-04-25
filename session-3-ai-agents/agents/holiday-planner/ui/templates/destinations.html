@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Destinations - Holiday Planner{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <h1 class="text-2xl font-bold text-gray-800">
+        <i class="fas fa-map-marker-alt text-red-600 mr-2"></i> Search Destinations
+    </h1>
+
+    <!-- Search Form -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <form class="space-y-4">
+            <div class="flex gap-4">
+                <input type="text" name="q" value="{{ query or '' }}"
+                       placeholder="e.g., family beach holiday Europe, mountain adventure with kids"
+                       class="flex-1 border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <select name="family_id" class="border rounded-lg px-4 py-3">
+                    <option value="">No family filter</option>
+                    {% for f in families %}
+                    <option value="{{ f.id }}" {% if selected_family == f.id %}selected{% endif %}>{{ f.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">
+                    <i class="fas fa-search mr-2"></i> Search
+                </button>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <span class="text-sm text-gray-500">Popular:</span>
+                <a href="?q=family beach Greece" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full">Beach Greece</a>
+                <a href="?q=family adventure Costa Rica" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full">Adventure Costa Rica</a>
+                <a href="?q=city break Barcelona kids" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full">Barcelona with kids</a>
+                <a href="?q=ski resort family Europe" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full">Ski resorts</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results -->
+    {% if results and results.destinations %}
+    <div class="space-y-4">
+        <h2 class="text-xl font-bold text-gray-800">Found {{ results.destinations | length }} destinations</h2>
+        
+        {% for dest in results.destinations %}
+        <div class="bg-white rounded-xl shadow p-6 card-hover transition">
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                        <h3 class="text-xl font-bold text-gray-800">{{ dest.name }}</h3>
+                        {% if dest.rank %}
+                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">#{{ dest.rank }}</span>
+                        {% endif %}
+                    </div>
+                    <p class="text-gray-500 mb-2">{{ dest.country }}{% if dest.region %} - {{ dest.region }}{% endif %}</p>
+                    
+                    {% if dest.overview %}
+                    <p class="text-gray-700 mb-3">{{ dest.overview[:200] }}{% if dest.overview | length > 200 %}...{% endif %}</p>
+                    {% endif %}
+                    
+                    {% if dest.highlights %}
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        {% for h in dest.highlights[:5] %}
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">{{ h.name if h.name else h }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="flex gap-6 text-sm text-gray-600">
+                        {% if dest.family_fit and dest.family_fit.overall_score %}
+                        <span><i class="fas fa-heart text-red-500 mr-1"></i> Family Fit: {{ dest.family_fit.overall_score }}%</span>
+                        {% endif %}
+                        {% if dest.budget_estimate and dest.budget_estimate.daily_per_person_eur %}
+                        <span><i class="fas fa-euro-sign text-green-500 mr-1"></i> ~€{{ dest.budget_estimate.daily_per_person_eur }}/person/day</span>
+                        {% endif %}
+                        {% if dest.logistics and dest.logistics.flight_time_hours %}
+                        <span><i class="fas fa-plane text-blue-500 mr-1"></i> {{ dest.logistics.flight_time_hours }}h flight</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="ml-4 flex flex-col gap-2">
+                    <a href="/destinations/{{ dest.name }}{% if dest.country %}?country={{ dest.country }}{% endif %}"
+                       class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-center text-sm">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif query %}
+    <div class="bg-white rounded-xl shadow p-12 text-center">
+        <div class="text-gray-400 text-6xl mb-4">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">No results found</h3>
+        <p class="text-gray-500">Try a different search term.</p>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-xl shadow p-12 text-center">
+        <div class="text-gray-400 text-6xl mb-4">
+            <i class="fas fa-globe-europe"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">Find Your Perfect Destination</h3>
+        <p class="text-gray-500">Search for family-friendly destinations above.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

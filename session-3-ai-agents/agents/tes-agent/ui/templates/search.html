@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Semantic Search - TES Agent{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="bi bi-search"></i> Semantic Search</h2>
+    <p class="text-muted">AI-powered search across TES content using embeddings</p>
+
+    <!-- Search Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label">Search Query (Finnish or English)</label>
+                    <input type="text" class="form-control form-control-lg" id="searchQuery" 
+                           placeholder="e.g., iltatyölisä, sairausloma, irtisanomisaika...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Filter by TES (optional)</label>
+                    <select class="form-select" id="tesFilter">
+                        <option value="">All TES documents</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Results</label>
+                    <select class="form-select" id="numResults">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-primary w-100" onclick="doSearch()">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Examples -->
+    <div class="mb-4">
+        <span class="text-muted me-2">Try:</span>
+        <button class="btn btn-outline-secondary btn-sm me-1" onclick="setQuery('iltatyölisä')">iltatyölisä</button>
+        <button class="btn btn-outline-secondary btn-sm me-1" onclick="setQuery('sairausloma')">sairausloma</button>
+        <button class="btn btn-outline-secondary btn-sm me-1" onclick="setQuery('ylityökorvaus')">ylityökorvaus</button>
+        <button class="btn btn-outline-secondary btn-sm me-1" onclick="setQuery('irtisanomisaika')">irtisanomisaika</button>
+        <button class="btn btn-outline-secondary btn-sm me-1" onclick="setQuery('vuosiloma')">vuosiloma</button>
+        <button class="btn btn-outline-secondary btn-sm me-1" onclick="setQuery('lomaraha')">lomaraha</button>
+    </div>
+
+    <!-- Search Results -->
+    <div id="searchResults"></div>
+
+    <!-- Vector DB Stats -->
+    <div class="card mt-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Vector Database Stats</h5>
+            <button class="btn btn-sm btn-outline-primary" onclick="reindexAll()">
+                <i class="bi bi-arrow-clockwise"></i> Reindex All
+            </button>
+        </div>
+        <div class="card-body" id="vectorStats">
+            <div class="text-center"><div class="spinner-border spinner-border-sm" role="status"></div></div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadTESList();
+    loadVectorStats();
+    
+    document.getElementById('searchQuery').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') doSearch();
+    });
+});
+
+function setQuery(query) {
+    document.getElementById('searchQuery').value = query;
+    doSearch();
+}
+
+async function loadTESList() {
+    try {
+        const response = await fetch('/api/tes');
+        const data = await response.json();
+        
+        const select = document.getElementById('tesFilter');
+        
+        if (data.tes && data.tes.length > 0) {
+            for (const tes of data.tes) {
+                select.innerHTML += `<option value="${tes.name}">${tes.name}</option>`;
+            }
+        }
+    } catch (error) {
+        console.error('Failed to load TES list:', error);
+    }
+}
+
+async function loadVectorStats() {
+    try {
+        const response = await fetch('/api/vector/stats');
+        const stats = await response.json();
+        
+        if (stats.error) {
+            document.getElementById('vectorStats').innerHTML = 
+                `<div class="alert alert-warning">${stats.error}</div>`;
+            return;
+        }
+        
+        let html = '<div class="row">';
+        html += `<div class="col-md-3"><strong>Total Chunks:</strong> ${stats.total_chunks}</div>`;
+        html += `<div class="col-md-3"><strong>Indexed TES:</strong> ${stats.num_tes}</div>`;
+        html += '</div>';
+        
+        if (stats.indexed_tes && stats.indexed_tes.length > 0) {
+            html += '<div class="mt-2"><strong>Documents:</strong> ';
+            html += stats.indexed_tes.map(t => `<span class="badge bg-secondary me-1">${t}</span>`).join('');
+            html += '</div>';
+        }
+        
+        document.getElementById('vectorStats').innerHTML = html;
+    } catch (error) {
+        document.getElementById('vectorStats').innerHTML = 
+            `<div class="alert alert-danger">Vector search not available: ${error.message}</div>`;
+    }
+}
+
+async function doSearch() {
+    const query = document.getElementById('searchQuery').value.trim();
+    if (!query) {
+        alert('Please enter a search query');
+        return;
+    }
+    
+    const tesFilter = document.getElementById('tesFilter').value;
+    const numResults = parseInt(document.getElementById('numResults').value);
+    
+    document.getElementById('searchResults').innerHTML = 
+        '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+    
+    try {
+        const response = await fetch('/api/vector/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                query: query,
+                num_results: numResults,
+                tes_filter: tesFilter || null
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (!data.results || data.results.length === 0) {
+            document.getElementById('searchResults').innerHTML = 
+                '<div class="alert alert-info">No results found. Try a different query or reindex the TES documents.</div>';
+            return;
+        }
+        
+        let html = `<h5>Found ${data.results.length} results for "${data.query}"</h5>`;
+        
+        for (const result of data.results) {
+            const scorePercent = (result.score * 100).toFixed(1);
+            const scoreClass = result.score > 0.7 ? 'success' : (result.score > 0.5 ? 'warning' : 'secondary');
+            
+            html += `
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center py-2">
+                        <span>
+                            <strong>${result.tes_name}</strong>
+                            <span class="badge bg-primary ms-2">${result.section}</span>
+                        </span>
+                        <span class="badge bg-${scoreClass}">${scorePercent}% match</span>
+                    </div>
+                    <div class="card-body">
+                        <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit;">${result.content}</pre>
+                    </div>
+                </div>
+            `;
+        }
+        
+        document.getElementById('searchResults').innerHTML = html;
+        
+    } catch (error) {
+        document.getElementById('searchResults').innerHTML = 
+            `<div class="alert alert-danger">Search failed: ${error.message}</div>`;
+    }
+}
+
+async function reindexAll() {
+    if (!confirm('This will reindex all TES documents for vector search. Continue?')) return;
+    
+    document.getElementById('vectorStats').innerHTML = 
+        '<div class="text-center"><div class="spinner-border" role="status"></div> Reindexing...</div>';
+    
+    try {
+        const response = await fetch('/api/vector/reindex', { method: 'POST' });
+        const result = await response.json();
+        
+        let html = '<div class="alert alert-success">';
+        html += `<strong>Reindexed ${result.indexed?.length || 0} TES documents</strong>`;
+        
+        if (result.indexed && result.indexed.length > 0) {
+            html += '<ul class="mb-0 mt-2">';
+            for (const doc of result.indexed) {
+                html += `<li>${doc.name}: ${doc.chunks} chunks</li>`;
+            }
+            html += '</ul>';
+        }
+        
+        if (result.errors && result.errors.length > 0) {
+            html += '<hr><strong class="text-danger">Errors:</strong><ul>';
+            for (const err of result.errors) {
+                html += `<li class="text-danger">${err.file}: ${err.error}</li>`;
+            }
+            html += '</ul>';
+        }
+        
+        html += '</div>';
+        document.getElementById('vectorStats').innerHTML = html;
+        
+        // Reload stats after a moment
+        setTimeout(loadVectorStats, 2000);
+        
+    } catch (error) {
+        document.getElementById('vectorStats').innerHTML = 
+            `<div class="alert alert-danger">Reindex failed: ${error.message}</div>`;
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,216 @@
+{
+  "id": "ict-alan-toimihenkilot-2023-2025",
+  "name": "ICT-alan työehtosopimus toimihenkilöille",
+  "name_en": "Collective Agreement for ICT Sector Salaried Employees",
+  "union": "Ammattiliitto Pro ry",
+  "employer_org": "Palvelualojen työnantajat Palta ry",
+  "industry": "ICT (Information and Communication Technology)",
+  "scope": {
+    "description": "Applies to salaried employees in member companies of Palta ry working in the ICT sector (IT, telecommunications, call/contact centers) and radio/TV network maintenance/operations, excluding Yleisradio Oy, Digita Oy, and MTV Oy.",
+    "pdf_page": 10,
+    "section": "1 §"
+  },
+  "validity_start": "2023-03-03",
+  "validity_end": "2025-03-31",
+  "salary_tables": [
+    {
+      "table_name": "Vähimmäispalkka 1.7.2023 lähtien",
+      "classification_system": "ICT-alan palkkausjärjestelmä",
+      "effective_date": "2023-07-01",
+      "pdf_page": 38,
+      "section": "Palkkausjärjestelmä"
+    },
+    {
+      "table_name": "Vähimmäispalkka 1.5.2024 lähtien",
+      "classification_system": "ICT-alan palkkausjärjestelmä",
+      "effective_date": "2024-05-01",
+      "pdf_page": 38,
+      "section": "Palkkausjärjestelmä"
+    },
+    {
+      "table_name": "Peruspalkka 1.7.2023 alkaen",
+      "classification_system": "Tietoalan palkkausjärjestelmä",
+      "effective_date": "2023-07-01",
+      "pdf_page": 46,
+      "section": "3 §"
+    },
+    {
+      "table_name": "Peruspalkka 1.5.2024 alkaen",
+      "classification_system": "Tietoalan palkkausjärjestelmä",
+      "effective_date": "2024-05-01",
+      "pdf_page": 46,
+      "section": "3 §"
+    }
+  ],
+  "salary_increases": {
+    "scheduled_increases": [
+      {
+        "date": "2023-07-01",
+        "percentage": 3.5,
+        "description": "General increase"
+      },
+      {
+        "date": "2024-05-01",
+        "percentage": 2.5,
+        "description": "2.0% general, 0.5% company-specific"
+      }
+    ],
+    "pdf_page": 3,
+    "section": "3.1"
+  },
+  "working_hours": {
+    "weekly_hours": 37.5,
+    "max_daily_hours": 8,
+    "pdf_page": 15,
+    "section": "5 §"
+  },
+  "overtime": {
+    "daily_overtime": {
+      "threshold_hours": 8,
+      "first_hours_compensation": "+50%",
+      "additional_hours_compensation": "+100%"
+    },
+    "pdf_page": 21,
+    "section": "13 §"
+  },
+  "breaks": {
+    "lunch_break": {
+      "duration": "30 min",
+      "paid": false,
+      "conditions": "If daily work exceeds 6 hours"
+    },
+    "pdf_page": 20,
+    "section": "9 §"
+  },
+  "shift_work": {
+    "evening_shift": {
+      "allowance_percentage": 15
+    },
+    "night_shift": {
+      "allowance_percentage": 30
+    },
+    "pdf_page": 22,
+    "section": "15 §"
+  },
+  "vacation": {
+    "vacation_bonus": "50% of monthly salary divided by 25 and multiplied by vacation days",
+    "pdf_page": 26,
+    "section": "19 §"
+  },
+  "sick_leave": {
+    "pay_percentage": "100%",
+    "waiting_period": "None (if criteria met)",
+    "pdf_page": 28,
+    "section": "21 §"
+  },
+  "family_leave": {
+    "maternity_leave": {
+      "paid_days": 72
+    },
+    "parental_leave": {
+      "paid_days": 32
+    },
+    "pdf_page": 8,
+    "section": "22 §"
+  },
+  "other_leaves": {
+    "bereavement_leave": {
+      "close_family": "Short temporary leave for sudden illness or death of close relative"
+    },
+    "50th_60th_birthday": "One day off with pay",
+    "pdf_page": 30,
+    "section": "24 §"
+  },
+  "travel": {
+    "domestic_per_diem_full": 48,
+    "domestic_per_diem_partial": 22,
+    "mileage_allowance": 0.53,
+    "pdf_page": 25,
+    "section": "18 §"
+  },
+  "allowances": {
+    "language_allowance": "19.65 EUR/month (as of 1.7.2023)",
+    "pdf_page": 15,
+    "section": "4 §"
+  },
+  "notice_periods": {
+    "employer_notice": [
+      {
+        "service_years": "0-1",
+        "notice_period": "14 days"
+      },
+      {
+        "service_years": "1-4",
+        "notice_period": "1 month"
+      },
+      {
+        "service_years": "4-8",
+        "notice_period": "2 months"
+      },
+      {
+        "service_years": "8-12",
+        "notice_period": "4 months"
+      },
+      {
+        "service_years": "12+",
+        "notice_period": "6 months"
+      }
+    ],
+    "pdf_page": 55,
+    "section": "2 §"
+  },
+  "termination": {
+    "re_employment_obligation": "Yes, as per Employment Contracts Act",
+    "pdf_page": 57,
+    "section": "9 §"
+  },
+  "union_rights": {
+    "shop_steward_rights": "Right to represent employees and negotiate",
+    "pdf_page": 47,
+    "section": "II"
+  },
+  "dispute_resolution": {
+    "negotiation_procedure": "Primary negotiation between employee and supervisor, then shop steward and employer representative",
+    "pdf_page": 31,
+    "section": "26 §"
+  },
+  "peace_obligation": {
+    "scope": "Full industrial peace obligation",
+    "pdf_page": 32,
+    "section": "27 §"
+  },
+  "other_terms": {
+    "kertaera": "462 EUR one-time payment in June 2023",
+    "mastotyot": "100% or 150% hourly rate supplement for mast work",
+    "tunnelilisa": "117.47 EUR/month (as of 1.7.2023) or one paid day off"
+  },
+  "_extracted_fields": [
+    "name",
+    "union",
+    "employer_org",
+    "validity_start",
+    "validity_end",
+    "salary_tables",
+    "salary_increases",
+    "working_hours",
+    "overtime",
+    "vacation",
+    "sick_leave",
+    "family_leave",
+    "travel",
+    "notice_periods",
+    "union_rights",
+    "dispute_resolution",
+    "peace_obligation"
+  ],
+  "_extraction_notes": "The document contains two different salary systems: 'ICT-alan palkkausjärjestelmä' and 'Tietoalan toimihenkilöpalkkajärjestelmä'. Both were extracted.",
+  "_suggested_fields": [
+    "one_time_payments",
+    "specific_job_supplements"
+  ],
+  "source_url": "https://proliitto.fi/sites/default/files/2023-05/ICT-alan%20toimihenkil%C3%B6%20tes%202023-2025.pdf",
+  "pdf_path": "/Users/pasivuorio/lastbot/ai_training/session-3-ai-agents/agents/tes-agent/memory/data/pdfs/ict-alan_työehtosopimus_toimihenkilöille_20260423.pdf",
+  "indexed_at": "2026-04-23T18:28:49.969392",
+  "_schema_version": 1,
+  "_source_method": "search"
+}

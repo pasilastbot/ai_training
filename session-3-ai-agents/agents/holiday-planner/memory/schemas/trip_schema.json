@@ -1,0 +1,229 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Trip Plan",
+  "description": "Schema for storing holiday trip plans and comparisons",
+  "type": "object",
+  "required": ["id", "name", "destinations", "status"],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "family_id": {
+      "type": "string",
+      "description": "Reference to family profile"
+    },
+    "name": {
+      "type": "string",
+      "description": "Trip name (e.g., 'Summer 2025 Greece')"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planning", "comparing", "booked", "completed", "cancelled"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "travel_dates": {
+      "type": "object",
+      "properties": {
+        "start": {"type": "string", "format": "date"},
+        "end": {"type": "string", "format": "date"},
+        "duration_days": {"type": "integer"}
+      }
+    },
+    "destinations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/destination"
+      }
+    },
+    "itinerary": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/itineraryDay"
+      }
+    },
+    "budget": {
+      "$ref": "#/definitions/budget"
+    },
+    "accommodation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/accommodation"
+      }
+    },
+    "transportation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/transportation"
+      }
+    },
+    "family_fit_score": {
+      "type": "object",
+      "properties": {
+        "overall": {"type": "number", "minimum": 0, "maximum": 100},
+        "by_member": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "explanation": {"type": "string"}
+      }
+    },
+    "weather_info": {
+      "type": "object",
+      "properties": {
+        "expected_temp_high": {"type": "number"},
+        "expected_temp_low": {"type": "number"},
+        "rain_chance": {"type": "number"},
+        "best_for": {"type": "string"}
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "comparison_notes": {
+      "type": "string",
+      "description": "Notes from comparing with other options"
+    }
+  },
+  "definitions": {
+    "destination": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "country": {"type": "string"},
+        "region": {"type": "string"},
+        "type": {
+          "type": "string",
+          "enum": ["city", "beach", "mountain", "island", "countryside", "national_park"]
+        },
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "lat": {"type": "number"},
+            "lng": {"type": "number"}
+          }
+        },
+        "duration_days": {"type": "integer"},
+        "highlights": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "activities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/activity"
+          }
+        },
+        "kid_friendly_score": {"type": "integer", "minimum": 1, "maximum": 5},
+        "adventure_level": {"type": "integer", "minimum": 1, "maximum": 5},
+        "relaxation_level": {"type": "integer", "minimum": 1, "maximum": 5}
+      }
+    },
+    "activity": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "type": {"type": "string"},
+        "duration_hours": {"type": "number"},
+        "estimated_cost": {"type": "number"},
+        "suitable_for": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Member roles this is suitable for"
+        },
+        "booking_required": {"type": "boolean"},
+        "description": {"type": "string"}
+      }
+    },
+    "itineraryDay": {
+      "type": "object",
+      "properties": {
+        "day": {"type": "integer"},
+        "date": {"type": "string", "format": "date"},
+        "location": {"type": "string"},
+        "morning": {"type": "string"},
+        "afternoon": {"type": "string"},
+        "evening": {"type": "string"},
+        "meals": {
+          "type": "object",
+          "properties": {
+            "breakfast": {"type": "string"},
+            "lunch": {"type": "string"},
+            "dinner": {"type": "string"}
+          }
+        },
+        "notes": {"type": "string"}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "currency": {"type": "string", "default": "EUR"},
+        "total_estimated": {"type": "number"},
+        "breakdown": {
+          "type": "object",
+          "properties": {
+            "flights": {"type": "number"},
+            "accommodation": {"type": "number"},
+            "local_transport": {"type": "number"},
+            "activities": {"type": "number"},
+            "food": {"type": "number"},
+            "shopping": {"type": "number"},
+            "insurance": {"type": "number"},
+            "miscellaneous": {"type": "number"}
+          }
+        },
+        "per_person": {"type": "number"},
+        "per_day": {"type": "number"}
+      }
+    },
+    "accommodation": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "type": {"type": "string"},
+        "location": {"type": "string"},
+        "check_in": {"type": "string", "format": "date"},
+        "check_out": {"type": "string", "format": "date"},
+        "nights": {"type": "integer"},
+        "price_per_night": {"type": "number"},
+        "total_price": {"type": "number"},
+        "amenities": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "rating": {"type": "number"},
+        "family_friendly": {"type": "boolean"},
+        "booking_url": {"type": "string"}
+      }
+    },
+    "transportation": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["flight", "train", "bus", "ferry", "rental_car", "taxi", "other"]
+        },
+        "from": {"type": "string"},
+        "to": {"type": "string"},
+        "date": {"type": "string", "format": "date"},
+        "departure_time": {"type": "string"},
+        "arrival_time": {"type": "string"},
+        "duration_hours": {"type": "number"},
+        "price": {"type": "number"},
+        "booking_reference": {"type": "string"},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

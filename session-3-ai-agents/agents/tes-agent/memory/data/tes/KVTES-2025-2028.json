@@ -1,0 +1,202 @@
+{
+  "id": "KVTES-2025-2028",
+  "name": "Kunta-alan yleinen virka- ja työehtosopimus (KVTES) 2025–2028",
+  "name_en": "General Collective Agreement for the Municipal Sector (KVTES) 2025–2028",
+  "union": "JUKO ry, JAU ry, SOTE ry",
+  "employer_org": "Kunta- ja hyvinvointialuetyönantajat KT",
+  "industry": "Municipal sector",
+  "scope": {
+    "description": "Applies to municipal and joint municipal authority officials and monthly-paid employees, unless otherwise specified in other agreements (SOTE, OVTES, TS, LS).",
+    "included_roles": [
+      "Early childhood education nurses",
+      "School assistants",
+      "Office secretaries",
+      "Family day care providers",
+      "Food service workers",
+      "Cleaners",
+      "Agricultural relief workers",
+      "Library clerks",
+      "Youth workers"
+    ],
+    "excluded_roles": [
+      "Persons in work trials or work coaching",
+      "Personnel covered by other specific agreements (e.g., OVTES, SOTE, TS, LS)"
+    ],
+    "geographic_scope": "Finland (municipal sector)",
+    "section": "I luku 1 §"
+  },
+  "validity_start": "2025-05-01",
+  "validity_end": "2028-02-29",
+  "source_url": "https://www.kt.fi/sopimukset/kvtes/2025-2028/kokoteksti",
+  "salary_tables": [
+    {
+      "table_name": "Eräät hallinnon johtavat asiantuntijatehtävät (1ASI42)",
+      "classification_system": "KVTES 2025-2028",
+      "experience_levels": [
+        {
+          "level": "C1",
+          "minimum_salary": 3098.24
+        },
+        {
+          "level": "B1",
+          "minimum_salary": 3038.24
+        },
+        {
+          "level": "A1",
+          "minimum_salary": 2988.24
+        }
+      ],
+      "effective_date": "2025-02-01",
+      "section": "Liite 1, 2 §"
+    },
+    {
+      "table_name": "Varhaiskasvatuksen lastenhoitaja (5VKA54)",
+      "classification_system": "KVTES 2025-2028",
+      "experience_levels": [
+        {
+          "level": "C1",
+          "minimum_salary": 2437.56
+        },
+        {
+          "level": "B1",
+          "minimum_salary": 2377.56
+        },
+        {
+          "level": "A1",
+          "minimum_salary": 2327.56
+        }
+      ],
+      "effective_date": "2025-02-01",
+      "section": "Liite 5, 2 §"
+    }
+  ],
+  "salary_increases": {
+    "scheduled_increases": [
+      {
+        "date": "2025-10-01",
+        "percentage": 2.5,
+        "flat_amount": 53,
+        "description": "General increase: 53 EUR, min 2.5%"
+      },
+      {
+        "date": "2026-08-01",
+        "percentage": 2.27,
+        "description": "General increase"
+      },
+      {
+        "date": "2027-04-01",
+        "percentage": 2.0,
+        "description": "General increase"
+      }
+    ],
+    "local_bargaining_share": "0.2% (2026-10-01), 0.4% (2027-04-01)",
+    "section": "Allekirjoituspöytäkirja 2-4 §"
+  },
+  "working_hours": {
+    "weekly_hours": 38.25,
+    "section": "III luku 7 §"
+  },
+  "overtime": {
+    "daily_overtime": {
+      "threshold_hours": 8,
+      "first_hours_compensation": "+50%",
+      "additional_hours_compensation": "+100%"
+    },
+    "section": "III luku 14 §, 16 §"
+  },
+  "breaks": {
+    "lunch_break": {
+      "duration": "30 min",
+      "paid": false
+    },
+    "coffee_breaks": {
+      "number_per_day": 1,
+      "duration_each": "10 min",
+      "paid": true
+    },
+    "section": "III luku 25-26 §"
+  },
+  "shift_work": {
+    "evening_shift": {
+      "allowance_percentage": 15
+    },
+    "night_shift": {
+      "allowance_percentage": 30
+    },
+    "section": "III luku 19 §"
+  },
+  "weekend_and_holiday_work": {
+    "sunday_allowance": "100% (or equivalent time off)",
+    "section": "III luku 18 §"
+  },
+  "vacation": {
+    "vacation_bonus": "4-6% of July salary depending on service years",
+    "section": "IV luku 18 §"
+  },
+  "sick_leave": {
+    "pay_percentage": "100% for 60 days, then 66% for 120 days",
+    "section": "V luku 2 §"
+  },
+  "child_sick_leave": {
+    "max_days": 4,
+    "child_age_limit": 12,
+    "pay_percentage": "100%",
+    "section": "V luku 9 §"
+  },
+  "travel": {
+    "domestic_per_diem_full": 54,
+    "domestic_per_diem_partial": 25,
+    "mileage_allowance": 0.55,
+    "section": "VI luku 5-9 §"
+  },
+  "notice_periods": {
+    "employer_notice": [
+      {
+        "service_years": "0-1",
+        "notice_period": "14 days"
+      },
+      {
+        "service_years": "1-4",
+        "notice_period": "1 month"
+      },
+      {
+        "service_years": "4-8",
+        "notice_period": "2 months"
+      },
+      {
+        "service_years": "8-12",
+        "notice_period": "4 months"
+      },
+      {
+        "service_years": "12+",
+        "notice_period": "6 months"
+      }
+    ],
+    "section": "VIII luku 5 §"
+  },
+  "union_rights": {
+    "shop_steward_rights": "Right to represent members in contract matters",
+    "section": "VII luku 5 §"
+  },
+  "_extracted_fields": [
+    "salary_tables",
+    "salary_increases",
+    "working_hours",
+    "overtime",
+    "breaks",
+    "shift_work",
+    "weekend_and_holiday_work",
+    "vacation",
+    "sick_leave",
+    "child_sick_leave",
+    "travel",
+    "notice_periods",
+    "union_rights"
+  ],
+  "_extraction_notes": "Extracted from KVTES 2025-2028 text. Salary tables are examples; full tables are in linked Excel files. Working hours and overtime rules vary by job category (general, office, shift work).",
+  "html_path": "/Users/pasivuorio/lastbot/ai_training/session-3-ai-agents/agents/tes-agent/memory/data/html/kvtes_2025-2028_20260423.html",
+  "indexed_at": "2026-04-23T18:00:55.539465",
+  "_schema_version": 2,
+  "_source_type": "html",
+  "_source_method": "url"
+}

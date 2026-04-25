@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}{{ family.name }} - Holiday Planner{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-home text-purple-600 mr-2"></i> {{ family.name }}
+                </h1>
+                <p class="text-gray-500 mt-1">ID: {{ family.id }} | Created: {{ family.created_at[:10] }}</p>
+            </div>
+            <div class="flex gap-2">
+                <a href="/trips/new?family_id={{ family.id }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-plane mr-2"></i> Plan Trip
+                </a>
+                <a href="/chat?family_id={{ family.id }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                    <i class="fas fa-comments mr-2"></i> Chat
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Members -->
+        <div class="bg-white rounded-xl shadow p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">
+                    <i class="fas fa-user-friends text-blue-600 mr-2"></i> Members
+                </h2>
+                <button onclick="document.getElementById('add-member-modal').classList.remove('hidden')"
+                        class="text-purple-600 hover:text-purple-800 text-sm">
+                    <i class="fas fa-plus mr-1"></i> Add
+                </button>
+            </div>
+            
+            {% if family.members %}
+            <div class="space-y-3">
+                {% for member in family.members %}
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-medium text-gray-800">{{ member.name or member.role }}</h4>
+                            <p class="text-sm text-gray-500">
+                                {{ member.role | capitalize }}
+                                {% if member.age %} | Age: {{ member.age }}{% endif %}
+                            </p>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded-full
+                            {% if member.role == 'adult' %}bg-blue-100 text-blue-800
+                            {% elif member.role == 'teen' %}bg-purple-100 text-purple-800
+                            {% elif member.role == 'child' %}bg-green-100 text-green-800
+                            {% elif member.role == 'senior' %}bg-yellow-100 text-yellow-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ member.role }}
+                        </span>
+                    </div>
+                    {% if member.preferences %}
+                    <div class="mt-2 text-sm text-gray-600">
+                        {% if member.preferences.activity_types %}
+                        <p><i class="fas fa-heart text-red-400 mr-1"></i> {{ member.preferences.activity_types | join(', ') }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-4">No members added yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Constraints -->
+        <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-sliders-h text-green-600 mr-2"></i> Travel Constraints
+            </h2>
+            
+            <form action="/families/{{ family.id }}/constraints" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Budget (EUR)</label>
+                    <input type="number" name="budget_max" 
+                           value="{{ family.constraints.budget.max if family.constraints.budget else '' }}"
+                           placeholder="e.g., 5000"
+                           class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Duration (days)</label>
+                    <input type="number" name="preferred_duration"
+                           value="{{ family.constraints.duration.preferred_days if family.constraints.duration else '' }}"
+                           placeholder="e.g., 10"
+                           class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Departure City</label>
+                    <input type="text" name="departure_location"
+                           value="{{ family.constraints.departure_location or '' }}"
+                           placeholder="e.g., Helsinki"
+                           class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Max Flight Time (hours)</label>
+                    <input type="number" name="max_flight_hours" step="0.5"
+                           value="{{ family.constraints.max_flight_hours or '' }}"
+                           placeholder="e.g., 5"
+                           class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                
+                <button type="submit" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                    <i class="fas fa-save mr-2"></i> Save Constraints
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Trips -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-800">
+                <i class="fas fa-suitcase text-yellow-600 mr-2"></i> Family Trips
+            </h2>
+            <a href="/trips/new?family_id={{ family.id }}" class="text-blue-600 hover:text-blue-800 text-sm">
+                <i class="fas fa-plus mr-1"></i> New Trip
+            </a>
+        </div>
+        
+        {% if trips %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for trip in trips %}
+            <a href="/trips/{{ trip.id }}" class="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition block">
+                <h4 class="font-medium text-gray-800">{{ trip.name }}</h4>
+                <span class="px-2 py-1 text-xs rounded-full 
+                    {% if trip.status == 'planning' %}bg-yellow-100 text-yellow-800
+                    {% elif trip.status == 'booked' %}bg-green-100 text-green-800
+                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                    {{ trip.status }}
+                </span>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-center py-4">No trips planned yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Member Modal -->
+<div id="add-member-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Add Family Member</h3>
+        <form action="/families/{{ family.id }}/member" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input type="text" name="name" required class="w-full border rounded-lg px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                <select name="role" class="w-full border rounded-lg px-3 py-2">
+                    <option value="adult">Adult</option>
+                    <option value="teen">Teen (12-17)</option>
+                    <option value="child">Child (3-11)</option>
+                    <option value="toddler">Toddler (1-2)</option>
+                    <option value="senior">Senior (65+)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                <input type="number" name="age" class="w-full border rounded-lg px-3 py-2">
+            </div>
+            <div class="flex gap-3">
+                <button type="submit" class="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg">Add</button>
+                <button type="button" onclick="document.getElementById('add-member-modal').classList.add('hidden')"
+                        class="px-4 py-2 border rounded-lg">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

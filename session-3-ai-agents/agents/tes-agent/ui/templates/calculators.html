@@ -1,0 +1,790 @@
+{% extends "base.html" %}
+
+{% block title %}Salary Calculators - TES Agent{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="bi bi-calculator"></i> Salary Calculators</h2>
+    <p class="text-muted">Comprehensive salary calculation tools based on TES terms</p>
+
+    <!-- TES Selection -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row align-items-end">
+                <div class="col-md-6">
+                    <label for="tesSelect" class="form-label">Select TES</label>
+                    <select class="form-select" id="tesSelect">
+                        <option value="">Loading TES documents...</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="baseSalary" class="form-label">Base Monthly Salary (€)</label>
+                    <input type="number" class="form-control" id="baseSalary" value="3000" min="0" step="100">
+                </div>
+                <div class="col-md-3">
+                    <label for="experienceYears" class="form-label">Experience (years)</label>
+                    <input type="number" class="form-control" id="experienceYears" value="5" min="0" max="40">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculator Tabs -->
+    <ul class="nav nav-tabs" id="calcTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="total-tab" data-bs-toggle="tab" data-bs-target="#total" type="button">
+                <i class="bi bi-cash-stack"></i> Total Compensation
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="shift-tab" data-bs-toggle="tab" data-bs-target="#shift" type="button">
+                <i class="bi bi-moon-stars"></i> Shift Work
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="overtime-tab" data-bs-toggle="tab" data-bs-target="#overtime" type="button">
+                <i class="bi bi-clock-history"></i> Overtime
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="vacation-tab" data-bs-toggle="tab" data-bs-target="#vacation" type="button">
+                <i class="bi bi-sun"></i> Vacation Pay
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="parttime-tab" data-bs-toggle="tab" data-bs-target="#parttime" type="button">
+                <i class="bi bi-hourglass-split"></i> Part-time
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="employer-tab" data-bs-toggle="tab" data-bs-target="#employer" type="button">
+                <i class="bi bi-building"></i> Employer Cost
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="compare-tab" data-bs-toggle="tab" data-bs-target="#compare" type="button">
+                <i class="bi bi-bar-chart"></i> Compare
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="progression-tab" data-bs-toggle="tab" data-bs-target="#progression" type="button">
+                <i class="bi bi-graph-up"></i> Progression
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 rounded-bottom p-4" id="calcTabContent">
+        <!-- Total Compensation Calculator -->
+        <div class="tab-pane fade show active" id="total" role="tabpanel">
+            <h5>Total Compensation Calculator</h5>
+            <p class="text-muted">Calculate complete compensation including base salary, shift work, and overtime</p>
+            
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <h6>Shift Work Hours (monthly)</h6>
+                    <label class="form-label">Evening hours</label>
+                    <input type="number" class="form-control" id="totalEveningHours" value="0" min="0">
+                    <label class="form-label mt-2">Night hours</label>
+                    <input type="number" class="form-control" id="totalNightHours" value="0" min="0">
+                </div>
+                <div class="col-md-4">
+                    <h6>Weekend Hours (monthly)</h6>
+                    <label class="form-label">Saturday hours</label>
+                    <input type="number" class="form-control" id="totalSaturdayHours" value="0" min="0">
+                    <label class="form-label mt-2">Sunday hours</label>
+                    <input type="number" class="form-control" id="totalSundayHours" value="0" min="0">
+                </div>
+                <div class="col-md-4">
+                    <h6>Overtime (monthly)</h6>
+                    <label class="form-label">Daily overtime hours</label>
+                    <input type="number" class="form-control" id="totalDailyOvertime" value="0" min="0" step="0.5">
+                    <label class="form-label mt-2">Weekly overtime hours</label>
+                    <input type="number" class="form-control" id="totalWeeklyOvertime" value="0" min="0" step="0.5">
+                </div>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="includeVacationBonus" checked>
+                <label class="form-check-label" for="includeVacationBonus">Include vacation bonus in annual total</label>
+            </div>
+            
+            <button class="btn btn-primary" onclick="calculateTotal()">
+                <i class="bi bi-calculator"></i> Calculate
+            </button>
+            
+            <div id="totalResult" class="mt-4"></div>
+        </div>
+
+        <!-- Shift Work Calculator -->
+        <div class="tab-pane fade" id="shift" role="tabpanel">
+            <h5>Shift Work Calculator</h5>
+            <p class="text-muted">Calculate compensation for evening, night, and weekend shifts</p>
+            
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Hourly Rate (€)</label>
+                    <input type="number" class="form-control" id="shiftHourlyRate" value="18.75" min="0" step="0.01">
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label class="form-label">Evening hours</label>
+                    <input type="number" class="form-control" id="shiftEveningHours" value="20" min="0">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Night hours</label>
+                    <input type="number" class="form-control" id="shiftNightHours" value="10" min="0">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Saturday hours</label>
+                    <input type="number" class="form-control" id="shiftSaturdayHours" value="8" min="0">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Sunday hours</label>
+                    <input type="number" class="form-control" id="shiftSundayHours" value="8" min="0">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Holiday hours</label>
+                    <input type="number" class="form-control" id="shiftHolidayHours" value="0" min="0">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="calculateShift()">
+                <i class="bi bi-calculator"></i> Calculate
+            </button>
+            
+            <div id="shiftResult" class="mt-4"></div>
+        </div>
+
+        <!-- Overtime Calculator -->
+        <div class="tab-pane fade" id="overtime" role="tabpanel">
+            <h5>Overtime Calculator</h5>
+            <p class="text-muted">Calculate overtime compensation based on Finnish law and TES rules</p>
+            
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Hourly Rate (€)</label>
+                    <input type="number" class="form-control" id="overtimeHourlyRate" value="18.75" min="0" step="0.01">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Daily Overtime Hours</label>
+                    <input type="number" class="form-control" id="overtimeDailyHours" value="3" min="0" step="0.5">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Weekly Overtime Hours</label>
+                    <input type="number" class="form-control" id="overtimeWeeklyHours" value="10" min="0" step="0.5">
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <strong>Finnish Law (TAL 18§):</strong> First 2 hours of daily overtime +50%, thereafter +100%. First 8 hours of weekly overtime +50%, thereafter +100%.
+            </div>
+            
+            <button class="btn btn-primary" onclick="calculateOvertime()">
+                <i class="bi bi-calculator"></i> Calculate
+            </button>
+            
+            <div id="overtimeResult" class="mt-4"></div>
+        </div>
+
+        <!-- Vacation Pay Calculator -->
+        <div class="tab-pane fade" id="vacation" role="tabpanel">
+            <h5>Vacation Pay Calculator</h5>
+            <p class="text-muted">Calculate vacation pay and vacation bonus (lomaraha)</p>
+            
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Monthly Salary (€)</label>
+                    <input type="number" class="form-control" id="vacationSalary" value="3000" min="0">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Employment Years</label>
+                    <input type="number" class="form-control" id="vacationYears" value="5" min="0" max="40">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Vacation Days (optional)</label>
+                    <input type="number" class="form-control" id="vacationDays" placeholder="Auto from TES" min="0">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="calculateVacation()">
+                <i class="bi bi-calculator"></i> Calculate
+            </button>
+            
+            <div id="vacationResult" class="mt-4"></div>
+        </div>
+
+        <!-- Part-time Calculator -->
+        <div class="tab-pane fade" id="parttime" role="tabpanel">
+            <h5>Part-time Pro-rata Calculator</h5>
+            <p class="text-muted">Calculate part-time salary based on reduced hours</p>
+            
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Full-time Salary (€)</label>
+                    <input type="number" class="form-control" id="parttimeSalary" value="3000" min="0">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Part-time Hours/Week</label>
+                    <input type="number" class="form-control" id="parttimeHours" value="20" min="1" max="40" step="0.5">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="calculateParttime()">
+                <i class="bi bi-calculator"></i> Calculate
+            </button>
+            
+            <div id="parttimeResult" class="mt-4"></div>
+        </div>
+
+        <!-- Employer Cost Calculator -->
+        <div class="tab-pane fade" id="employer" role="tabpanel">
+            <h5>Annual Employer Cost Calculator</h5>
+            <p class="text-muted">Calculate total employer cost including all mandatory contributions</p>
+            
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Monthly Salary (€)</label>
+                    <input type="number" class="form-control" id="employerSalary" value="3000" min="0">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Est. Overtime Hours/Year</label>
+                    <input type="number" class="form-control" id="employerOvertime" value="50" min="0">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Est. Sick Days/Year</label>
+                    <input type="number" class="form-control" id="employerSickDays" value="10" min="0">
+                </div>
+            </div>
+            
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="employerShiftWork">
+                <label class="form-check-label" for="employerShiftWork">Include shift work premium estimate</label>
+            </div>
+            
+            <button class="btn btn-primary" onclick="calculateEmployerCost()">
+                <i class="bi bi-calculator"></i> Calculate
+            </button>
+            
+            <div id="employerResult" class="mt-4"></div>
+        </div>
+
+        <!-- Salary Comparison -->
+        <div class="tab-pane fade" id="compare" role="tabpanel">
+            <h5>Salary Comparison</h5>
+            <p class="text-muted">Compare salaries across multiple TES agreements</p>
+            
+            <div class="mb-3">
+                <label class="form-label">Select TES documents to compare</label>
+                <select class="form-select" id="compareTes" multiple size="6">
+                    <option value="">Loading...</option>
+                </select>
+                <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Job Group (optional)</label>
+                    <input type="text" class="form-control" id="compareJobGroup" placeholder="e.g., Developer, Engineer">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Experience Years</label>
+                    <input type="number" class="form-control" id="compareExperience" value="5" min="0">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="compareSalaries()">
+                <i class="bi bi-bar-chart"></i> Compare
+            </button>
+            
+            <div id="compareResult" class="mt-4"></div>
+        </div>
+
+        <!-- Experience Progression -->
+        <div class="tab-pane fade" id="progression" role="tabpanel">
+            <h5>Experience Salary Progression</h5>
+            <p class="text-muted">View how salary grows with experience</p>
+            
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Job Group (optional)</label>
+                    <input type="text" class="form-control" id="progressionJobGroup" placeholder="e.g., Developer">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Max Years to Project</label>
+                    <input type="number" class="form-control" id="progressionMaxYears" value="15" min="5" max="30">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="calculateProgression()">
+                <i class="bi bi-graph-up"></i> Calculate
+            </button>
+            
+            <div id="progressionResult" class="mt-4"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+let tesList = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadTESList();
+});
+
+async function loadTESList() {
+    try {
+        const response = await fetch('/api/tes');
+        const data = await response.json();
+        tesList = data.tes || [];
+        
+        const tesSelect = document.getElementById('tesSelect');
+        const compareTes = document.getElementById('compareTes');
+        
+        if (tesList.length === 0) {
+            tesSelect.innerHTML = '<option value="">No TES documents indexed</option>';
+            compareTes.innerHTML = '<option value="">No TES documents indexed</option>';
+            return;
+        }
+        
+        tesSelect.innerHTML = tesList.map(t => 
+            `<option value="${t.name}">${t.name}</option>`
+        ).join('');
+        
+        compareTes.innerHTML = tesList.map(t => 
+            `<option value="${t.name}">${t.name}</option>`
+        ).join('');
+        
+    } catch (error) {
+        console.error('Failed to load TES list:', error);
+    }
+}
+
+function getSelectedTes() {
+    return document.getElementById('tesSelect').value;
+}
+
+function showResult(elementId, data, title) {
+    const el = document.getElementById(elementId);
+    
+    if (data.error) {
+        el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+        return;
+    }
+    
+    let html = `<div class="card"><div class="card-header"><strong>${title}</strong></div><div class="card-body">`;
+    html += '<pre class="mb-0" style="white-space: pre-wrap;">' + JSON.stringify(data, null, 2) + '</pre>';
+    html += '</div></div>';
+    
+    el.innerHTML = html;
+}
+
+async function calculateTotal() {
+    const tes = getSelectedTes();
+    if (!tes) { alert('Please select a TES'); return; }
+    
+    const data = {
+        tes_id: tes,
+        base_salary: parseFloat(document.getElementById('baseSalary').value),
+        evening_hours: parseInt(document.getElementById('totalEveningHours').value) || 0,
+        night_hours: parseInt(document.getElementById('totalNightHours').value) || 0,
+        saturday_hours: parseInt(document.getElementById('totalSaturdayHours').value) || 0,
+        sunday_hours: parseInt(document.getElementById('totalSundayHours').value) || 0,
+        daily_overtime: parseFloat(document.getElementById('totalDailyOvertime').value) || 0,
+        weekly_overtime: parseFloat(document.getElementById('totalWeeklyOvertime').value) || 0,
+        include_vacation_bonus: document.getElementById('includeVacationBonus').checked
+    };
+    
+    try {
+        const response = await fetch('/api/calc/total-compensation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        
+        let html = '<div class="row">';
+        html += '<div class="col-md-6"><div class="card bg-primary text-white mb-3">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Monthly Total</h6>';
+        html += `<h2>${result.monthly_total?.toLocaleString('fi-FI')} €</h2>`;
+        html += '</div></div></div>';
+        
+        html += '<div class="col-md-6"><div class="card bg-success text-white mb-3">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Annual Total</h6>';
+        html += `<h2>${result.annual_total?.toLocaleString('fi-FI')} €</h2>`;
+        html += '</div></div></div></div>';
+        
+        if (result.components) {
+            html += '<h6>Components</h6><ul class="list-group">';
+            html += `<li class="list-group-item d-flex justify-content-between">Base Salary <span>${result.base_salary_monthly?.toLocaleString('fi-FI')} €/month</span></li>`;
+            
+            for (const [key, value] of Object.entries(result.components)) {
+                if (typeof value === 'object') {
+                    html += `<li class="list-group-item d-flex justify-content-between">${key} <span>${value.total_shift_compensation || value.total_overtime_compensation || JSON.stringify(value)} €</span></li>`;
+                } else {
+                    html += `<li class="list-group-item d-flex justify-content-between">${key} <span>${value?.toLocaleString('fi-FI')} €</span></li>`;
+                }
+            }
+            html += '</ul>';
+        }
+        
+        document.getElementById('totalResult').innerHTML = html;
+        
+    } catch (error) {
+        document.getElementById('totalResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+
+async function calculateShift() {
+    const tes = getSelectedTes();
+    if (!tes) { alert('Please select a TES'); return; }
+    
+    const data = {
+        tes_id: tes,
+        hourly_rate: parseFloat(document.getElementById('shiftHourlyRate').value),
+        evening_hours: parseInt(document.getElementById('shiftEveningHours').value) || 0,
+        night_hours: parseInt(document.getElementById('shiftNightHours').value) || 0,
+        saturday_hours: parseInt(document.getElementById('shiftSaturdayHours').value) || 0,
+        sunday_hours: parseInt(document.getElementById('shiftSundayHours').value) || 0,
+        holiday_hours: parseInt(document.getElementById('shiftHolidayHours').value) || 0
+    };
+    
+    try {
+        const response = await fetch('/api/calc/shift-work', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        
+        let html = '<div class="card bg-info text-white mb-3">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Total Shift Compensation</h6>';
+        html += `<h2>${result.total_shift_compensation?.toLocaleString('fi-FI')} €</h2>`;
+        html += '</div></div>';
+        
+        if (result.compensation_breakdown) {
+            html += '<table class="table table-striped">';
+            html += '<thead><tr><th>Shift Type</th><th>Hours</th><th>Rate (€/h)</th><th>Total</th></tr></thead><tbody>';
+            
+            for (const [shift, details] of Object.entries(result.compensation_breakdown)) {
+                html += `<tr><td>${shift}</td><td>${details.hours}</td><td>${details.rate}</td><td>${details.total} €</td></tr>`;
+            }
+            
+            html += '</tbody></table>';
+        }
+        
+        document.getElementById('shiftResult').innerHTML = html;
+        
+    } catch (error) {
+        document.getElementById('shiftResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+
+async function calculateOvertime() {
+    const tes = getSelectedTes();
+    if (!tes) { alert('Please select a TES'); return; }
+    
+    const data = {
+        tes_id: tes,
+        hourly_rate: parseFloat(document.getElementById('overtimeHourlyRate').value),
+        daily_overtime_hours: parseFloat(document.getElementById('overtimeDailyHours').value) || 0,
+        weekly_overtime_hours: parseFloat(document.getElementById('overtimeWeeklyHours').value) || 0
+    };
+    
+    try {
+        const response = await fetch('/api/calc/overtime', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        showResult('overtimeResult', result, 'Overtime Calculation');
+        
+    } catch (error) {
+        document.getElementById('overtimeResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+
+async function calculateVacation() {
+    const tes = getSelectedTes();
+    if (!tes) { alert('Please select a TES'); return; }
+    
+    const vacationDays = document.getElementById('vacationDays').value;
+    
+    const data = {
+        tes_id: tes,
+        monthly_salary: parseFloat(document.getElementById('vacationSalary').value),
+        employment_years: parseInt(document.getElementById('vacationYears').value),
+        vacation_days: vacationDays ? parseInt(vacationDays) : null
+    };
+    
+    try {
+        const response = await fetch('/api/calc/vacation-pay', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        
+        let html = '<div class="row">';
+        html += '<div class="col-md-4"><div class="card bg-warning text-dark mb-3">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Vacation Pay</h6>';
+        html += `<h3>${result.calculation?.vacation_pay?.toLocaleString('fi-FI')} €</h3>`;
+        html += '</div></div></div>';
+        
+        html += '<div class="col-md-4"><div class="card bg-success text-white mb-3">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Vacation Bonus (Lomaraha)</h6>';
+        html += `<h3>${result.calculation?.vacation_bonus?.toLocaleString('fi-FI')} €</h3>`;
+        html += '</div></div></div>';
+        
+        html += '<div class="col-md-4"><div class="card bg-primary text-white mb-3">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Total</h6>';
+        html += `<h3>${result.calculation?.total_vacation_payment?.toLocaleString('fi-FI')} €</h3>`;
+        html += '</div></div></div></div>';
+        
+        html += '<div class="alert alert-info mt-3">';
+        html += `<strong>Days:</strong> ${result.calculation?.days_taken} vacation days (${result.calculation?.days_earned} earned)<br>`;
+        html += `<strong>Daily Rate:</strong> ${result.calculation?.daily_rate?.toLocaleString('fi-FI')} €`;
+        html += '</div>';
+        
+        document.getElementById('vacationResult').innerHTML = html;
+        
+    } catch (error) {
+        document.getElementById('vacationResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+
+async function calculateParttime() {
+    const tes = getSelectedTes();
+    if (!tes) { alert('Please select a TES'); return; }
+    
+    const data = {
+        tes_id: tes,
+        full_time_salary: parseFloat(document.getElementById('parttimeSalary').value),
+        weekly_hours: parseFloat(document.getElementById('parttimeHours').value)
+    };
+    
+    try {
+        const response = await fetch('/api/calc/part-time', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        
+        let html = '<div class="row">';
+        html += '<div class="col-md-6"><div class="card mb-3">';
+        html += '<div class="card-header">Full-time</div>';
+        html += '<div class="card-body">';
+        html += `<p><strong>Hours:</strong> ${result.full_time?.weekly_hours}h/week</p>`;
+        html += `<p><strong>Monthly:</strong> ${result.full_time?.monthly_salary?.toLocaleString('fi-FI')} €</p>`;
+        html += `<p><strong>Annual:</strong> ${result.full_time?.annual_salary?.toLocaleString('fi-FI')} €</p>`;
+        html += '</div></div></div>';
+        
+        html += '<div class="col-md-6"><div class="card bg-primary text-white mb-3">';
+        html += '<div class="card-header">Part-time</div>';
+        html += '<div class="card-body">';
+        html += `<p><strong>Hours:</strong> ${result.part_time?.weekly_hours}h/week (${result.part_time?.ratio}%)</p>`;
+        html += `<p><strong>Monthly:</strong> ${result.part_time?.monthly_salary?.toLocaleString('fi-FI')} €</p>`;
+        html += `<p><strong>Annual:</strong> ${result.part_time?.annual_salary?.toLocaleString('fi-FI')} €</p>`;
+        html += `<p><strong>Hourly:</strong> ${result.part_time?.hourly_rate?.toLocaleString('fi-FI')} €</p>`;
+        html += '</div></div></div></div>';
+        
+        if (result.vacation_days_pro_rata) {
+            html += `<div class="alert alert-info">Pro-rata vacation days: ${result.vacation_days_pro_rata}</div>`;
+        }
+        
+        document.getElementById('parttimeResult').innerHTML = html;
+        
+    } catch (error) {
+        document.getElementById('parttimeResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+
+async function calculateEmployerCost() {
+    const tes = getSelectedTes();
+    if (!tes) { alert('Please select a TES'); return; }
+    
+    const data = {
+        tes_id: tes,
+        monthly_salary: parseFloat(document.getElementById('employerSalary').value),
+        overtime_hours: parseInt(document.getElementById('employerOvertime').value) || 0,
+        sick_days: parseInt(document.getElementById('employerSickDays').value) || 10,
+        include_shift_work: document.getElementById('employerShiftWork').checked
+    };
+    
+    try {
+        const response = await fetch('/api/calc/employer-cost', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        
+        let html = '<div class="row mb-4">';
+        html += '<div class="col-md-4"><div class="card bg-primary text-white">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Annual Employer Cost</h6>';
+        html += `<h2>${result.total_annual_cost?.toLocaleString('fi-FI')} €</h2>`;
+        html += '</div></div></div>';
+        
+        html += '<div class="col-md-4"><div class="card bg-info text-white">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Monthly Cost</h6>';
+        html += `<h2>${result.cost_per_month?.toLocaleString('fi-FI')} €</h2>`;
+        html += '</div></div></div>';
+        
+        html += '<div class="col-md-4"><div class="card bg-warning text-dark">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Cost Multiplier</h6>';
+        html += `<h2>${result.cost_multiplier}x</h2>`;
+        html += '</div></div></div></div>';
+        
+        html += '<h6>Employer Contributions</h6>';
+        html += '<table class="table table-sm"><tbody>';
+        for (const [key, details] of Object.entries(result.employer_contributions || {})) {
+            html += `<tr><td>${key}</td><td>${details.rate}</td><td class="text-end">${details.annual_cost?.toLocaleString('fi-FI')} €</td></tr>`;
+        }
+        html += `<tr class="table-secondary"><td colspan="2"><strong>Total Contributions</strong></td><td class="text-end"><strong>${result.total_contributions?.toLocaleString('fi-FI')} €</strong></td></tr>`;
+        html += '</tbody></table>';
+        
+        html += '<h6>Additional Costs</h6>';
+        html += '<table class="table table-sm"><tbody>';
+        for (const [key, value] of Object.entries(result.additional_costs || {})) {
+            html += `<tr><td>${key.replace(/_/g, ' ')}</td><td class="text-end">${value?.toLocaleString('fi-FI')} €</td></tr>`;
+        }
+        html += '</tbody></table>';
+        
+        if (result.notes) {
+            html += '<div class="alert alert-secondary mt-3"><small>';
+            result.notes.forEach(note => { html += `<li>${note}</li>`; });
+            html += '</small></div>';
+        }
+        
+        document.getElementById('employerResult').innerHTML = html;
+        
+    } catch (error) {
+        document.getElementById('employerResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+
+async function compareSalaries() {
+    const selected = Array.from(document.getElementById('compareTes').selectedOptions).map(o => o.value);
+    if (selected.length < 2) { alert('Please select at least 2 TES documents'); return; }
+    
+    const data = {
+        tes_names: selected,
+        job_group: document.getElementById('compareJobGroup').value || null,
+        experience_years: parseInt(document.getElementById('compareExperience').value) || 0
+    };
+    
+    try {
+        const response = await fetch('/api/calc/compare-salaries', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        
+        let html = '<table class="table table-striped">';
+        html += '<thead><tr><th>TES</th><th>Monthly</th><th>Annual</th><th>Hourly</th><th>Vacation Days</th></tr></thead><tbody>';
+        
+        for (const comp of result.comparisons || []) {
+            if (comp.error) {
+                html += `<tr><td>${comp.tes_name}</td><td colspan="4" class="text-danger">${comp.error}</td></tr>`;
+            } else {
+                html += `<tr>
+                    <td>${comp.tes_name}</td>
+                    <td>${comp.monthly_salary?.toLocaleString('fi-FI') || '-'} €</td>
+                    <td>${comp.annual_salary?.toLocaleString('fi-FI') || '-'} €</td>
+                    <td>${comp.hourly_rate?.toLocaleString('fi-FI') || '-'} €</td>
+                    <td>${comp.vacation_days || '-'}</td>
+                </tr>`;
+            }
+        }
+        html += '</tbody></table>';
+        
+        if (result.statistics) {
+            html += '<div class="alert alert-info">';
+            html += `<strong>Statistics:</strong> Highest: ${result.statistics.highest?.toLocaleString('fi-FI')} €, `;
+            html += `Lowest: ${result.statistics.lowest?.toLocaleString('fi-FI')} €, `;
+            html += `Average: ${result.statistics.average?.toLocaleString('fi-FI')} €, `;
+            html += `Difference: ${result.statistics.difference_percentage?.toFixed(1)}%`;
+            html += '</div>';
+        }
+        
+        document.getElementById('compareResult').innerHTML = html;
+        
+    } catch (error) {
+        document.getElementById('compareResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+
+async function calculateProgression() {
+    const tes = getSelectedTes();
+    if (!tes) { alert('Please select a TES'); return; }
+    
+    const jobGroup = document.getElementById('progressionJobGroup').value;
+    const maxYears = parseInt(document.getElementById('progressionMaxYears').value) || 15;
+    
+    try {
+        let url = `/api/calc/progression/${encodeURIComponent(tes)}?max_years=${maxYears}`;
+        if (jobGroup) url += `&job_group=${encodeURIComponent(jobGroup)}`;
+        
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        if (result.error) {
+            document.getElementById('progressionResult').innerHTML = `<div class="alert alert-danger">${result.error}</div>`;
+            return;
+        }
+        
+        let html = '<div class="row mb-4">';
+        html += '<div class="col-md-4"><div class="card">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Starting Salary</h6>';
+        html += `<h4>${result.salary_growth?.start?.toLocaleString('fi-FI')} €</h4>`;
+        html += '</div></div></div>';
+        
+        html += '<div class="col-md-4"><div class="card bg-success text-white">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>After ' + maxYears + ' Years</h6>';
+        html += `<h4>${result.salary_growth?.end?.toLocaleString('fi-FI')} €</h4>`;
+        html += '</div></div></div>';
+        
+        html += '<div class="col-md-4"><div class="card bg-info text-white">';
+        html += '<div class="card-body text-center">';
+        html += '<h6>Growth</h6>';
+        html += `<h4>+${result.salary_growth?.growth_percentage?.toFixed(1)}%</h4>`;
+        html += '</div></div></div></div>';
+        
+        html += '<table class="table table-sm">';
+        html += '<thead><tr><th>Years</th><th>Monthly</th><th>Annual</th><th>Hourly</th></tr></thead><tbody>';
+        
+        for (const p of result.progression || []) {
+            html += `<tr>
+                <td>${p.years}</td>
+                <td>${p.monthly_salary?.toLocaleString('fi-FI')} €</td>
+                <td>${p.annual_salary?.toLocaleString('fi-FI')} €</td>
+                <td>${p.hourly_rate?.toLocaleString('fi-FI')} €</td>
+            </tr>`;
+        }
+        html += '</tbody></table>';
+        
+        html += `<div class="alert alert-secondary">Total career earnings over ${maxYears} years: <strong>${result.total_career_earnings_15y?.toLocaleString('fi-FI')} €</strong></div>`;
+        
+        document.getElementById('progressionResult').innerHTML = html;
+        
+    } catch (error) {
+        document.getElementById('progressionResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+    }
+}
+</script>
+{% endblock %}

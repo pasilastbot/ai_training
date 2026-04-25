@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Holiday Planner{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <a href="/" class="flex items-center space-x-2">
+                    <i class="fas fa-plane-departure text-2xl"></i>
+                    <span class="text-xl font-bold">Holiday Planner</span>
+                </a>
+                <div class="hidden md:flex space-x-6">
+                    <a href="/" class="hover:text-purple-200 transition">
+                        <i class="fas fa-home mr-1"></i> Dashboard
+                    </a>
+                    <a href="/families" class="hover:text-purple-200 transition">
+                        <i class="fas fa-users mr-1"></i> Families
+                    </a>
+                    <a href="/trips" class="hover:text-purple-200 transition">
+                        <i class="fas fa-suitcase mr-1"></i> Trips
+                    </a>
+                    <a href="/destinations" class="hover:text-purple-200 transition">
+                        <i class="fas fa-map-marker-alt mr-1"></i> Destinations
+                    </a>
+                    <a href="/chat" class="hover:text-purple-200 transition">
+                        <i class="fas fa-comments mr-1"></i> Chat
+                    </a>
+                </div>
+                <button class="md:hidden">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p>Holiday Planner Agent - AI-Powered Family Travel Planning</p>
+        </div>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

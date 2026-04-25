@@ -1,0 +1,35 @@
+{
+  "name": "Updated TES Agreement",
+  "name_en": "Test Collective Agreement",
+  "union_name": "Test Union",
+  "industry": "Testing",
+  "validity_start": "2024-01-01",
+  "validity_end": "2025-12-31",
+  "source_url": "https://example.com/tes.pdf",
+  "working_hours": {
+    "regular_weekly": 37.5,
+    "regular_daily": 7.5
+  },
+  "salary_tables": [
+    {
+      "role": "Developer",
+      "level": "Senior",
+      "base_salary": 4500.0
+    },
+    {
+      "role": "Developer",
+      "level": "Junior",
+      "base_salary": 3000.0
+    }
+  ],
+  "vacation": {
+    "annual_days": 30,
+    "rules": "Based on years of service"
+  },
+  "sick_leave": {
+    "paid_days": 10,
+    "rules": "Full pay for first 10 days"
+  },
+  "id": "test-tes-1",
+  "indexed_at": "2026-04-24T11:44:11.547771"
+}

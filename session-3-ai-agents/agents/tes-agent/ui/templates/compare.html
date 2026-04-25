@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Compare TES - TES Agent{% endblock %}
+{% block content %}
+<h2 class="mb-4">Compare TES Documents</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="compare-form">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label">Select TES Documents to Compare (2-4)</label>
+                    <select id="tes-select" class="form-select" multiple size="6">
+                        {% for tes in tes_docs %}
+                        <option value="{{ tes.id }}">{{ tes.name }} ({{ tes.validity_start or '?' }} - {{ tes.validity_end or '?' }})</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label">Fields to Compare</label>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="fields" value="salary_tables" checked>
+                                <label class="form-check-label">Salary Tables</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="fields" value="working_hours" checked>
+                                <label class="form-check-label">Working Hours</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="fields" value="vacation" checked>
+                                <label class="form-check-label">Vacation</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="fields" value="notice_periods">
+                                <label class="form-check-label">Notice Periods</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="compare-btn">Compare</button>
+        </form>
+    </div>
+</div>
+
+<div id="comparison-result"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+marked.setOptions({ breaks: true, gfm: true });
+
+document.getElementById('compare-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const select = document.getElementById('tes-select');
+    const selectedIds = Array.from(select.selectedOptions).map(o => o.value);
+    
+    if (selectedIds.length < 2) {
+        alert('Please select at least 2 TES documents');
+        return;
+    }
+    
+    const fields = Array.from(document.querySelectorAll('input[name="fields"]:checked')).map(c => c.value);
+    
+    const btn = document.getElementById('compare-btn');
+    const result = document.getElementById('comparison-result');
+    
+    btn.disabled = true;
+    btn.textContent = 'Comparing...';
+    result.innerHTML = '<div class="alert alert-info">Analyzing TES documents...</div>';
+    
+    try {
+        const response = await fetch('/api/compare', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tes_ids: selectedIds, fields })
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            result.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+        } else {
+            let html = '<div class="card"><div class="card-body">';
+            
+            if (data.markdown) {
+                html += marked.parse(data.markdown);
+            }
+            
+            if (data.ai_summary) {
+                html += '<hr><h5>AI Summary</h5>';
+                html += marked.parse(data.ai_summary);
+            }
+            
+            html += '</div></div>';
+            result.innerHTML = html;
+        }
+    } catch (error) {
+        result.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Compare';
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+{% block title %}{{ tes.name }} - TES Agent{% endblock %}
+
+{% macro render_dict(data, exclude=[]) %}
+<table class="table table-sm mb-0">
+{% for key, value in data.items() %}
+{% if key not in exclude and key not in ['pdf_page', 'section'] and value is not none %}
+<tr>
+    <th style="width:40%">{{ key.replace('_', ' ').title() }}</th>
+    <td>
+    {% if value is mapping %}
+        {{ render_dict(value) }}
+    {% elif value is iterable and value is not string %}
+        <ul class="mb-0 ps-3">
+        {% for item in value %}
+            {% if item is mapping %}
+            <li>{{ item | tojson }}</li>
+            {% else %}
+            <li>{{ item }}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% else %}
+        {{ value }}
+    {% endif %}
+    </td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+{% if data.section %}<small class="text-muted">Section: {{ data.section }}</small>{% endif %}
+{% if data.pdf_page %}<small class="text-muted ms-2">Page: {{ data.pdf_page }}</small>{% endif %}
+{% endmacro %}
+
+{% macro section_card(title, data, icon="") %}
+{% if data %}
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h6 class="mb-0">{{ icon }} {{ title }}</h6>
+    </div>
+    <div class="card-body py-2">
+        {{ render_dict(data) }}
+    </div>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/tes">TES Documents</a></li>
+        <li class="breadcrumb-item active">{{ tes.name }}</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h2>{{ tes.name }}</h2>
+        {% if tes.name_en %}
+        <p class="text-muted mb-0">{{ tes.name_en }}</p>
+        {% endif %}
+    </div>
+    {% if tes.source_url %}
+    <a href="{{ tes.source_url }}" target="_blank" class="btn btn-outline-primary">
+        View Source
+    </a>
+    {% endif %}
+</div>
+
+<div class="row">
+<div class="col-lg-6">
+
+<div class="card mb-3">
+    <div class="card-header py-2 bg-primary text-white">
+        <h6 class="mb-0">General Information</h6>
+    </div>
+    <div class="card-body py-2">
+        <table class="table table-sm mb-0">
+            <tr><th>Union</th><td>{{ tes.union or '-' }}</td></tr>
+            <tr><th>Employer Org</th><td>{{ tes.employer_org or '-' }}</td></tr>
+            <tr><th>Industry</th><td>{{ tes.industry or '-' }}</td></tr>
+            <tr><th>Validity</th><td><strong>{{ tes.validity_start or '?' }}</strong> to <strong>{{ tes.validity_end or '?' }}</strong></td></tr>
+            <tr><th>Version</th><td>{{ tes.version or '-' }}</td></tr>
+            <tr><th>Indexed</th><td>{{ tes.indexed_at[:10] if tes.indexed_at else '-' }}</td></tr>
+        </table>
+    </div>
+</div>
+
+{{ section_card("Scope", tes.scope) }}
+{{ section_card("Working Hours", tes.working_hours) }}
+{{ section_card("Overtime", tes.overtime) }}
+{{ section_card("Breaks", tes.breaks) }}
+{{ section_card("Shift Work", tes.shift_work) }}
+{{ section_card("Weekend & Holiday Work", tes.weekend_and_holiday_work) }}
+
+</div>
+<div class="col-lg-6">
+
+{{ section_card("Vacation", tes.vacation) }}
+{{ section_card("Sick Leave", tes.sick_leave) }}
+{{ section_card("Child Sick Leave", tes.child_sick_leave) }}
+{{ section_card("Family Leave", tes.family_leave) }}
+{{ section_card("Other Leaves", tes.other_leaves) }}
+{{ section_card("Study Leave", tes.study_leave) }}
+{{ section_card("Remote Work", tes.remote_work) }}
+
+</div>
+</div>
+
+<div class="row">
+<div class="col-lg-6">
+
+{{ section_card("Notice Periods", tes.notice_periods) }}
+{{ section_card("Trial Period", tes.trial_period) }}
+{{ section_card("Termination", tes.termination) }}
+{{ section_card("Fixed-Term Contracts", tes.fixed_term_contracts) }}
+{{ section_card("Part-Time Work", tes.part_time_work) }}
+{{ section_card("Temporary Agency Work", tes.temporary_agency_work) }}
+{{ section_card("Apprenticeship", tes.apprenticeship) }}
+
+</div>
+<div class="col-lg-6">
+
+{{ section_card("Travel & Per Diems", tes.travel) }}
+{{ section_card("Allowances", tes.allowances) }}
+{{ section_card("Bonuses", tes.bonuses) }}
+{{ section_card("Occupational Health & Safety", tes.occupational_health_safety) }}
+{{ section_card("Insurance & Pension", tes.insurance_and_pension) }}
+{{ section_card("Union Rights", tes.union_rights) }}
+{{ section_card("Local Bargaining", tes.local_bargaining) }}
+{{ section_card("Dispute Resolution", tes.dispute_resolution) }}
+{{ section_card("Peace Obligation", tes.peace_obligation) }}
+
+</div>
+</div>
+
+{% if tes.salary_increases %}
+<div class="card mb-3">
+    <div class="card-header py-2 bg-success text-white">
+        <h6 class="mb-0">Salary Increases</h6>
+    </div>
+    <div class="card-body">
+        {% if tes.salary_increases.scheduled_increases %}
+        <h6>Scheduled Increases</h6>
+        <table class="table table-sm">
+            <thead><tr><th>Date</th><th>Percentage</th><th>Flat Amount</th><th>Description</th></tr></thead>
+            <tbody>
+            {% for inc in tes.salary_increases.scheduled_increases %}
+            <tr>
+                <td>{{ inc.date or '-' }}</td>
+                <td>{% if inc.percentage %}{{ inc.percentage }}%{% else %}-{% endif %}</td>
+                <td>{% if inc.flat_amount %}{{ inc.flat_amount }} EUR{% else %}-{% endif %}</td>
+                <td>{{ inc.description or '-' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        {% if tes.salary_increases.experience_increments %}
+        <p><strong>Experience Increments:</strong> {{ tes.salary_increases.experience_increments }}</p>
+        {% endif %}
+        {% if tes.salary_increases.local_bargaining_share %}
+        <p><strong>Local Bargaining Share:</strong> {{ tes.salary_increases.local_bargaining_share }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if tes.salary_tables %}
+<div class="card mb-3">
+    <div class="card-header py-2 bg-info text-white">
+        <h6 class="mb-0">Salary Tables ({{ tes.salary_tables | length }} tables)</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+        {% for table in tes.salary_tables %}
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-header py-1">
+                    <strong>{{ table.table_name or table.role_category or 'Salary Table' }}</strong>
+                    {% if table.effective_date %}<br><small class="text-muted">Effective: {{ table.effective_date }}</small>{% endif %}
+                    {% if table.section %}<small class="text-muted ms-2">{{ table.section }}</small>{% endif %}
+                </div>
+                <div class="card-body py-2">
+                    {% if table.experience_levels %}
+                    <table class="table table-sm table-striped mb-0">
+                        <thead><tr><th>Level</th><th>Monthly</th><th>Hourly</th></tr></thead>
+                        <tbody>
+                        {% for level in table.experience_levels %}
+                        <tr>
+                            <td>{{ level.level }}{% if level.competence_level %} ({{ level.competence_level }}){% endif %}</td>
+                            <td>{% if level.minimum_salary %}<strong>{{ "%.2f"|format(level.minimum_salary) }}</strong> EUR{% else %}-{% endif %}</td>
+                            <td>{% if level.hourly_rate %}{{ "%.2f"|format(level.hourly_rate) }} EUR{% else %}-{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if tes.job_classification %}
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h6 class="mb-0">Job Classification System</h6>
+    </div>
+    <div class="card-body">
+        {% if tes.job_classification.system_name %}
+        <p><strong>System:</strong> {{ tes.job_classification.system_name }}</p>
+        {% endif %}
+        {% if tes.job_classification.levels %}
+        <table class="table table-sm">
+            <thead><tr><th>Level</th><th>Description</th><th>Example Roles</th><th>Min Salary</th></tr></thead>
+            <tbody>
+            {% for level in tes.job_classification.levels %}
+            <tr>
+                <td><strong>{{ level.level }}</strong></td>
+                <td>{{ level.description or '-' }}</td>
+                <td>{{ level.example_roles | join(', ') if level.example_roles else '-' }}</td>
+                <td>{% if level.minimum_salary %}{{ level.minimum_salary }} EUR{% else %}-{% endif %}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        {% if tes.job_classification.evaluation_criteria %}
+        <p><strong>Evaluation Criteria:</strong> {{ tes.job_classification.evaluation_criteria | join(', ') }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if tes.protocol_agreements %}
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h6 class="mb-0">Protocol Agreements & Appendices</h6>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm">
+            <thead><tr><th>Name</th><th>Topic</th><th>Summary</th><th>Page</th></tr></thead>
+            <tbody>
+            {% for proto in tes.protocol_agreements %}
+            <tr>
+                <td>{{ proto.name or '-' }}</td>
+                <td>{{ proto.topic or '-' }}</td>
+                <td>{{ proto.summary or '-' }}</td>
+                <td>{{ proto.pdf_page or '-' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if tes.other_terms %}
+<div class="card mb-3">
+    <div class="card-header py-2">
+        <h6 class="mb-0">Other Terms</h6>
+    </div>
+    <div class="card-body">
+        {{ render_dict(tes.other_terms) }}
+    </div>
+</div>
+{% endif %}
+
+<div class="card mb-3">
+    <div class="card-header py-2 bg-secondary text-white">
+        <h6 class="mb-0">Extraction Metadata</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p class="mb-1"><strong>Schema Version:</strong> {{ tes._schema_version or 1 }}</p>
+                <p class="mb-1"><strong>Source Type:</strong> {{ tes._source_type or 'pdf' }}</p>
+                <p class="mb-1"><strong>Source Method:</strong> {{ tes._source_method or '-' }}</p>
+            </div>
+            <div class="col-md-6">
+                {% if tes._extracted_fields %}
+                <p class="mb-1"><strong>Extracted Fields ({{ tes._extracted_fields | length }}):</strong></p>
+                <p class="small mb-1">{{ tes._extracted_fields | join(', ') }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% if tes._extraction_notes %}
+        <hr class="my-2">
+        <p class="mb-0"><strong>Notes:</strong> {{ tes._extraction_notes }}</p>
+        {% endif %}
+        {% if tes._missing_sections %}
+        <p class="mb-0 text-warning"><strong>Missing Sections:</strong> {{ tes._missing_sections | join(', ') }}</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

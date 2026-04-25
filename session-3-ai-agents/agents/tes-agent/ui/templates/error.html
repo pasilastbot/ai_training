@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Error - TES Agent{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="display-4 text-danger">Error</h1>
+    <p class="lead">{{ error or 'An error occurred' }}</p>
+    <a href="/" class="btn btn-primary">Back to Dashboard</a>
+</div>
+{% endblock %}

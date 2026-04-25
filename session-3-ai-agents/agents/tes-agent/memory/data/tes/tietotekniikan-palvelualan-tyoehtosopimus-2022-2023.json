@@ -1,0 +1,223 @@
+{
+  "id": "tietotekniikan-palvelualan-tyoehtosopimus-2022-2023",
+  "name": "Tietotekniikan palvelualan työehtosopimus 2022–2023",
+  "name_en": "Collective Agreement of the IT Service Sector 2022–2023",
+  "union": "Tietoala (Association of IT sector employees) / YTN (Federation of Professional and Managerial Staff)",
+  "employer_org": "Technology Industry Employers of Finland (Teknologiateollisuuden työnantajat)",
+  "industry": "IT service sector",
+  "scope": {
+    "description": "Employees working for IT service sector companies primarily engaged in IT processing services, services performed by employees, software products, and total system deliveries.",
+    "excluded_roles": [
+      "Company management",
+      "Persons who represent the employer in negotiations over terms of employment"
+    ],
+    "pdf_page": 14,
+    "section": "1 §"
+  },
+  "validity_start": "2022-01-03",
+  "validity_end": "2023-11-30",
+  "salary_tables": [
+    {
+      "table_name": "MINIMUM SALARIES, 1 March 2022",
+      "classification_system": "Task category and competence level",
+      "effective_date": "2022-03-01",
+      "currency": "EUR",
+      "pdf_page": 18,
+      "section": "6 §"
+    }
+  ],
+  "salary_increases": {
+    "scheduled_increases": [
+      {
+        "date": "2022-03-01",
+        "percentage": 1.8,
+        "description": "Cost-affected salary settlement (Option A)"
+      }
+    ],
+    "pdf_page": 10,
+    "section": "2 §"
+  },
+  "job_classification": {
+    "system_name": "Task category scheme",
+    "levels": [
+      {
+        "level": "Level 1",
+        "description": "Professional tasks typical of the group"
+      },
+      {
+        "level": "Level 2",
+        "description": "More demanding or versatile than level 1"
+      },
+      {
+        "level": "Level 3",
+        "description": "Professional tasks or supervision duties"
+      },
+      {
+        "level": "Level 3 A",
+        "description": "Significant financial, operational and supervision work"
+      }
+    ],
+    "pdf_page": 17,
+    "section": "6 §"
+  },
+  "working_hours": {
+    "weekly_hours": 37.5,
+    "daily_hours": 7.5,
+    "max_daily_hours": 10,
+    "flexible_hours": {
+      "allowed": true,
+      "max_balance": "-20 / +80 hours"
+    },
+    "pdf_page": 20,
+    "section": "8 §"
+  },
+  "overtime": {
+    "daily_overtime": {
+      "threshold_hours": 8,
+      "first_hours_compensation": "+50%",
+      "additional_hours_compensation": "+100%"
+    },
+    "weekly_overtime": {
+      "threshold_hours": 40,
+      "compensation": "+50% for first 8 hours, +100% thereafter"
+    },
+    "pdf_page": 26,
+    "section": "12 §"
+  },
+  "breaks": {
+    "lunch_break": {
+      "duration": "1/2–1 hours",
+      "paid": false
+    },
+    "coffee_breaks": {
+      "number_per_day": 2,
+      "paid": true
+    },
+    "pdf_page": 20,
+    "section": "8 §"
+  },
+  "shift_work": {
+    "evening_shift": {
+      "allowance_flat": 4.48
+    },
+    "night_shift": {
+      "allowance_percentage": 200
+    },
+    "pdf_page": 23,
+    "section": "10 §"
+  },
+  "vacation": {
+    "vacation_bonus": "50% of the salary for statutory annual holiday",
+    "pdf_page": 37,
+    "section": "21 §"
+  },
+  "sick_leave": {
+    "paid_days_standard": "4 to 8 weeks depending on length of service",
+    "waiting_period": "First day of illness if it is a working day",
+    "pdf_page": 32,
+    "section": "16 §"
+  },
+  "child_sick_leave": {
+    "max_days": 4,
+    "child_age_limit": 10,
+    "pdf_page": 35,
+    "section": "19 §"
+  },
+  "family_leave": {
+    "maternity_leave": {
+      "paid_days": 90,
+      "pay_percentage": "100%"
+    },
+    "paternity_leave": {
+      "paid_days": 6,
+      "pay_percentage": "100%"
+    },
+    "pdf_page": 33,
+    "section": "17 §"
+  },
+  "other_leaves": {
+    "marriage_leave": "Paid day off",
+    "moving_leave": "Paid day off (max once per 12 months)",
+    "50th_60th_birthday": "Paid day off",
+    "pdf_page": 36,
+    "section": "19 §"
+  },
+  "remote_work": {
+    "allowed": true,
+    "agreement_requirements": "Written agreement required",
+    "pdf_page": 79,
+    "section": "Appendix 8"
+  },
+  "travel": {
+    "mileage_allowance": 0,
+    "pdf_page": 29,
+    "section": "15 §"
+  },
+  "notice_periods": {
+    "employee_notice": [
+      {
+        "service_years": "Max 5 years",
+        "notice_period": "2 weeks"
+      },
+      {
+        "service_years": "Over 5 years",
+        "notice_period": "1 month"
+      }
+    ],
+    "employer_notice": [
+      {
+        "service_years": "Max 1 year",
+        "notice_period": "2 weeks"
+      },
+      {
+        "service_years": "1-4 years",
+        "notice_period": "1 month"
+      },
+      {
+        "service_years": "4-8 years",
+        "notice_period": "2 months"
+      },
+      {
+        "service_years": "8-12 years",
+        "notice_period": "4 months"
+      },
+      {
+        "service_years": "Over 12 years",
+        "notice_period": "6 months"
+      }
+    ],
+    "pdf_page": 61,
+    "section": "Appendix 6"
+  },
+  "trial_period": {
+    "max_duration": "6 months",
+    "pdf_page": 83,
+    "section": "Employment Contract Template"
+  },
+  "union_rights": {
+    "shop_steward_rights": "Right to information, exemption from work, and compensation",
+    "pdf_page": 42,
+    "section": "Appendix 2"
+  },
+  "_extracted_fields": [
+    "name",
+    "validity_start",
+    "validity_end",
+    "salary_tables",
+    "working_hours",
+    "overtime",
+    "vacation",
+    "sick_leave",
+    "notice_periods"
+  ],
+  "_extraction_notes": "The document is a collective agreement for the IT service sector. Salary tables are provided as minimums per task category. Notice periods are split between employer and employee requirements.",
+  "_suggested_fields": [
+    "working_time_bank_details",
+    "specific_holiday_bonus_payment_dates"
+  ],
+  "source_url": "https://tietoala.fi/tyoehtosopimus/",
+  "pdf_path": "/Users/pasivuorio/lastbot/ai_training/session-3-ai-agents/agents/tes-agent/memory/data/pdfs/tietotekniikan_palvelualan_työehtosopimus_2025_2027_20260424.pdf",
+  "indexed_at": "2026-04-24T12:19:35.808400",
+  "_schema_version": 1,
+  "_source_method": "search"
+}

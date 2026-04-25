@@ -1,0 +1,544 @@
+{
+  "name": "Kaupan alan työehtosopimus",
+  "name_en": "Retail Trade Collective Agreement",
+  "union": "Palvelualojen ammattiliitto PAM ry",
+  "employer_org": "Kaupan liitto",
+  "industry": "retail",
+  "scope": {
+    "description": "Sopimus koskee vähittäis- ja tukkukaupan sekä palvelualojen työntekijöitä",
+    "included_roles": [
+      "Myyjä",
+      "Kassatyöntekijä",
+      "Varastotyöntekijä",
+      "Esimies",
+      "Myymäläpäällikkö",
+      "Hyllyttäjä"
+    ],
+    "excluded_roles": [
+      "Ylin johto",
+      "Kauppias-yrittäjät"
+    ],
+    "pdf_page": 5,
+    "section": "1 §"
+  },
+  "validity_start": "2024-02-01",
+  "validity_end": "2026-01-31",
+  "source_url": "https://www.finlex.fi/data/tes/sop/kaupan_ala_2024.pdf",
+  "salary_tables": [
+    {
+      "table_name": "Myyjien palkkataulukko",
+      "role_category": "Myyjä",
+      "classification_system": "Palkkaryhmät 1-4",
+      "experience_levels": [
+        {
+          "level": "Alle 1 vuosi",
+          "minimum_salary": 1980,
+          "hourly_rate": 11.85
+        },
+        {
+          "level": "1-2 vuotta",
+          "minimum_salary": 2100,
+          "hourly_rate": 12.57
+        },
+        {
+          "level": "3-5 vuotta",
+          "minimum_salary": 2250,
+          "hourly_rate": 13.47
+        },
+        {
+          "level": "6-10 vuotta",
+          "minimum_salary": 2450,
+          "hourly_rate": 14.67
+        },
+        {
+          "level": "Yli 10 vuotta",
+          "minimum_salary": 2650,
+          "hourly_rate": 15.87
+        }
+      ],
+      "effective_date": "2024-03-01",
+      "pdf_page": 30,
+      "section": "7 §"
+    },
+    {
+      "table_name": "Esimiesten palkkataulukko",
+      "role_category": "Esimies/Vuoropäällikkö",
+      "experience_levels": [
+        {
+          "level": "Alle 1 vuosi",
+          "minimum_salary": 2600,
+          "hourly_rate": 15.57
+        },
+        {
+          "level": "1-3 vuotta",
+          "minimum_salary": 2850,
+          "hourly_rate": 17.07
+        },
+        {
+          "level": "3-5 vuotta",
+          "minimum_salary": 3100,
+          "hourly_rate": 18.56
+        },
+        {
+          "level": "Yli 5 vuotta",
+          "minimum_salary": 3400,
+          "hourly_rate": 20.36
+        }
+      ],
+      "effective_date": "2024-03-01",
+      "pdf_page": 31,
+      "section": "7 §"
+    },
+    {
+      "table_name": "Varastotyöntekijöiden palkkataulukko",
+      "role_category": "Varastotyöntekijä",
+      "experience_levels": [
+        {
+          "level": "Alle 1 vuosi",
+          "minimum_salary": 1950,
+          "hourly_rate": 11.68
+        },
+        {
+          "level": "1-3 vuotta",
+          "minimum_salary": 2100,
+          "hourly_rate": 12.57
+        },
+        {
+          "level": "Yli 3 vuotta",
+          "minimum_salary": 2300,
+          "hourly_rate": 13.77
+        }
+      ],
+      "effective_date": "2024-03-01",
+      "pdf_page": 32,
+      "section": "7 §"
+    }
+  ],
+  "salary_increases": {
+    "scheduled_increases": [
+      {
+        "date": "2024-03-01",
+        "percentage": 2.0,
+        "description": "Yleiskorotus"
+      },
+      {
+        "date": "2025-03-01",
+        "percentage": 1.5,
+        "description": "Yleiskorotus"
+      },
+      {
+        "date": "2024-03-01",
+        "flat_amount": 30,
+        "description": "Kiinteä euromääräinen korotus"
+      }
+    ],
+    "experience_increments": "Kokemuslisä palkkaryhmän mukaan, porrras 1-2v, 3-5v, 6-10v, 10v+",
+    "local_bargaining_share": "0.4% paikallisesti jaettavaksi",
+    "pdf_page": 35,
+    "section": "8 §"
+  },
+  "job_classification": {
+    "system_name": "Kaupan alan palkkaryhmät",
+    "levels": [
+      {
+        "level": "1",
+        "description": "Avustavat myyntitehtävät",
+        "example_roles": [
+          "Hyllyttäjä",
+          "Siistijä"
+        ],
+        "minimum_salary": 1900
+      },
+      {
+        "level": "2",
+        "description": "Myynti- ja asiakaspalvelutehtävät",
+        "example_roles": [
+          "Myyjä",
+          "Kassahenkilö"
+        ],
+        "minimum_salary": 2100
+      },
+      {
+        "level": "3",
+        "description": "Vaativat myyntitehtävät",
+        "example_roles": [
+          "Erikoismyyjä",
+          "Tuotevastaava"
+        ],
+        "minimum_salary": 2400
+      },
+      {
+        "level": "4",
+        "description": "Esimiestehtävät",
+        "example_roles": [
+          "Vuoropäällikkö",
+          "Osastovastaava"
+        ],
+        "minimum_salary": 2800
+      }
+    ],
+    "evaluation_criteria": [
+      "Työn vaativuus",
+      "Asiakaspalvelu",
+      "Vastuu",
+      "Osaaminen"
+    ],
+    "pdf_page": 28,
+    "section": "6 §"
+  },
+  "working_hours": {
+    "weekly_hours": 37.5,
+    "daily_hours": 8,
+    "annual_hours": 0,
+    "max_daily_hours": 9,
+    "max_weekly_hours": 48,
+    "flexible_hours": {
+      "allowed": true,
+      "core_hours": "Sovittavissa paikallisesti",
+      "flex_range": "Myymälän aukioloajan puitteissa",
+      "max_balance": "Tasoitusjakso enintään 26 viikkoa"
+    },
+    "working_time_bank": {
+      "allowed": true,
+      "max_hours": 120,
+      "compensation_rules": "Voidaan sopia paikallisesti"
+    },
+    "pdf_page": 18,
+    "section": "4 §"
+  },
+  "overtime": {
+    "daily_overtime": {
+      "threshold_hours": 8,
+      "first_hours_compensation": "+50% kahdelta tunnilta",
+      "additional_hours_compensation": "+100% seuraavilta"
+    },
+    "weekly_overtime": {
+      "threshold_hours": 37.5,
+      "compensation": "+50% tai vastaava vapaa-aika"
+    },
+    "max_annual_overtime": 250,
+    "overtime_as_time_off": "1:1.5 suhteessa vapaaksi, ellei toisin sovita",
+    "pdf_page": 22,
+    "section": "5 §"
+  },
+  "breaks": {
+    "lunch_break": {
+      "duration": "30 minuuttia (yli 6h työpäivä) tai 15 min (4-6h)",
+      "paid": false,
+      "conditions": "Yli 6 tunnin työpäivänä 30 min ruokatauko"
+    },
+    "coffee_breaks": {
+      "number_per_day": 2,
+      "duration_each": "10 minuuttia",
+      "paid": true
+    },
+    "rest_periods": "11 tuntia vuorokausilepo, 35 tuntia viikkolepo",
+    "pdf_page": 24,
+    "section": "5a §"
+  },
+  "shift_work": {
+    "shift_types": [
+      "Aamuvuoro",
+      "Päivävuoro",
+      "Iltavuoro"
+    ],
+    "evening_shift": {
+      "start_time": "18:00",
+      "end_time": "24:00",
+      "allowance_flat": 2.38
+    },
+    "night_shift": {
+      "start_time": "00:00",
+      "end_time": "06:00",
+      "allowance_flat": 4.76
+    },
+    "minimum_rest_between_shifts": "11 tuntia",
+    "pdf_page": 25,
+    "section": "5b §"
+  },
+  "weekend_and_holiday_work": {
+    "saturday_allowance": "Lauantailisä 3.97 €/h klo 13 jälkeen",
+    "sunday_allowance": "+100% tai erillinen sunnuntailisä",
+    "public_holiday_allowance": "+100% + arkipyhäkorvaus",
+    "midsummer_eve": "Klo 15 jälkeen sunnuntailisä",
+    "christmas_eve": "Klo 12 jälkeen sunnuntailisä",
+    "new_years_eve": "Klo 18 jälkeen sunnuntailisä",
+    "pdf_page": 36,
+    "section": "9 §"
+  },
+  "vacation": {
+    "days_first_year": 20,
+    "days_standard": 25,
+    "days_senior": 30,
+    "senior_threshold_years": 10,
+    "vacation_bonus": "50% loma-ajan palkasta (lomaraha)",
+    "vacation_bonus_conditions": "Maksetaan kesäloman yhteydessä, voidaan vaihtaa vapaaksi",
+    "vacation_pay_calculation": "Keskituntiansio x päivittäinen työaika x lomapäivät",
+    "carry_over_days": 0,
+    "vacation_scheduling": "Työnantaja määrää, kesäloma 2.5.-30.9.",
+    "summer_vacation_period": "2.5.-30.9.",
+    "winter_vacation_period": "1.10.-30.4.",
+    "pdf_page": 42,
+    "section": "11 §"
+  },
+  "sick_leave": {
+    "paid_days_short_employment": "Alle 1 kk: 50% sairastumispäivästä",
+    "paid_days_standard": "1 kk - 3 v: 28 päivää täydellä palkalla",
+    "paid_days_long_employment": "Yli 3 v: 35 päivää + 21 päivää 2/3 palkalla",
+    "pay_percentage": "100% / 66%",
+    "waiting_period": "1 karenssipäivä (ensimmäinen sairauspäivä ilman palkkaa) alle 1kk työsuhteessa",
+    "doctors_certificate_required": "4. sairauspäivästä alkaen",
+    "self_declaration_days": 3,
+    "pdf_page": 50,
+    "section": "13 §"
+  },
+  "child_sick_leave": {
+    "max_days": 4,
+    "child_age_limit": 10,
+    "pay_percentage": "100%",
+    "conditions": "Äkillisesti sairastuneen alle 10-vuotiaan lapsen hoito, toinen vanhempi estynyt",
+    "pdf_page": 52,
+    "section": "14 §"
+  },
+  "family_leave": {
+    "maternity_leave": {
+      "paid_days": 56,
+      "pay_percentage": "100%",
+      "total_duration": "56 arkipäivää täydellä palkalla"
+    },
+    "paternity_leave": {
+      "paid_days": 18,
+      "pay_percentage": "100%"
+    },
+    "parental_leave": {
+      "paid_days": 0,
+      "pay_percentage": "0%",
+      "conditions": "Palkaton, mutta oikeus pitää"
+    },
+    "adoption_leave": {
+      "paid_days": 56,
+      "conditions": "Adoptiovanhemmalla sama oikeus"
+    },
+    "childcare_leave_unpaid": "Oikeus kunnes lapsi 3 vuotta",
+    "partial_childcare_leave": "Lyhennetty työaika lapsen 2. kouluvuoteen",
+    "pdf_page": 54,
+    "section": "15 §"
+  },
+  "other_leaves": {
+    "marriage_leave": "1 päivä palkallista",
+    "bereavement_leave": {
+      "close_family": "1-3 päivää (puoliso, lapsi, vanhempi)",
+      "extended_family": "1 päivä (sisarus, appivanhemmat)"
+    },
+    "moving_leave": "1 päivä",
+    "military_reserve_training": "Palkan ja reserviläispalkan erotus",
+    "medical_appointments": "Työterveyshuolto työajalla",
+    "50th_60th_birthday": "Palkallinen vapaapäivä merkkipäivänä",
+    "pdf_page": 56,
+    "section": "16 §"
+  },
+  "study_leave": {
+    "eligibility": "1 vuoden työsuhde",
+    "max_duration": "2 vuotta",
+    "paid_study_days": 3,
+    "employer_training_obligation": "Ammattitaitoa ylläpitävä koulutus",
+    "pdf_page": 58,
+    "section": "17 §"
+  },
+  "remote_work": {
+    "allowed": false,
+    "agreement_requirements": "Ei sovellu kaupan alan myyntityöhön",
+    "equipment_provision": "-",
+    "cost_compensation": "-",
+    "pdf_page": 0
+  },
+  "travel": {
+    "domestic_per_diem_full": 48,
+    "domestic_per_diem_partial": 22,
+    "mileage_allowance": 0.53,
+    "travel_time_compensation": "Työajan ulkopuolella matkustamisesta ei erillistä korvausta",
+    "meal_allowance": 11.5,
+    "pdf_page": 60,
+    "section": "18 §"
+  },
+  "allowances": {
+    "shift_allowance": "Iltalisä 2.38€/h, yölisä 4.76€/h",
+    "hazard_pay": "Erityisolosuhdelisä sovittavissa",
+    "on_call_allowance": "Varallaolo 50% palkasta",
+    "clothing_allowance": "Työnantaja hankkii työasut tai korvaus",
+    "other_allowances": [
+      {
+        "name": "Kassavastuu",
+        "amount": "Sovittava",
+        "conditions": "Kassatyössä"
+      },
+      {
+        "name": "Avainhaltijalisä",
+        "amount": "20-50€/kk",
+        "conditions": "Myymälän avaimista vastaava"
+      }
+    ],
+    "pdf_page": 38,
+    "section": "10 §"
+  },
+  "bonuses": {
+    "performance_bonus": "Voidaan sopia myyntipalkkiosta",
+    "christmas_bonus": "Yrityskäytäntö",
+    "seniority_bonus": "10v/20v/30v palvelusvuosina muistaminen",
+    "pdf_page": 40,
+    "section": "10a §"
+  },
+  "notice_periods": {
+    "employee_notice": [
+      {
+        "service_years": "0-5",
+        "notice_period": "14 päivää"
+      },
+      {
+        "service_years": "5+",
+        "notice_period": "1 kuukausi"
+      }
+    ],
+    "employer_notice": [
+      {
+        "service_years": "0-1",
+        "notice_period": "14 päivää"
+      },
+      {
+        "service_years": "1-4",
+        "notice_period": "1 kuukausi"
+      },
+      {
+        "service_years": "4-8",
+        "notice_period": "2 kuukautta"
+      },
+      {
+        "service_years": "8-12",
+        "notice_period": "4 kuukautta"
+      },
+      {
+        "service_years": "12+",
+        "notice_period": "6 kuukautta"
+      }
+    ],
+    "notice_during_trial": "14 päivää",
+    "job_search_leave": "Työnhakuvapaa irtisanomisaikana",
+    "pdf_page": 62,
+    "section": "19 §"
+  },
+  "trial_period": {
+    "max_duration": "6 kuukautta",
+    "notice_during_trial": "14 päivää",
+    "fixed_term_trial": "Max puolet sopimuksen kestosta",
+    "pdf_page": 12,
+    "section": "2 §"
+  },
+  "termination": {
+    "individual_dismissal_grounds": "TSL:n mukaiset",
+    "collective_dismissal_procedure": "YT-laki",
+    "re_employment_obligation": "9 kuukautta",
+    "re_employment_period": "4 kuukautta yli 12v palvelleille",
+    "pdf_page": 64,
+    "section": "20 §"
+  },
+  "fixed_term_contracts": {
+    "valid_grounds": [
+      "Sijaisuus",
+      "Ruuhkahuippu",
+      "Kausiluonteisuus",
+      "Projekti"
+    ],
+    "max_renewals": "Toistuvat ilman perustetta = toistaiseksi voimassaoleva",
+    "pdf_page": 14,
+    "section": "3 §"
+  },
+  "part_time_work": {
+    "minimum_hours": 18,
+    "additional_hours_preference": "Lisätyötä tarjottava ensin osa-aikaisille",
+    "conversion_rights": "Oikeus pyytää kokoaikatyötä",
+    "pro_rata_benefits": "Edut työajan suhteessa",
+    "pdf_page": 16,
+    "section": "3a §"
+  },
+  "occupational_health_safety": {
+    "safety_representative": "Työsuojeluvaltuutettu",
+    "health_services": "Lakisääteinen työterveyshuolto",
+    "personal_protective_equipment": "Työnantaja hankkii",
+    "ergonomics": "Kassatyön ergonomia huomioitava",
+    "pdf_page": 70,
+    "section": "22 §"
+  },
+  "insurance_and_pension": {
+    "group_life_insurance": "Ryhmähenkivakuutus",
+    "accident_insurance_supplement": "Lakisääteinen",
+    "pdf_page": 72,
+    "section": "23 §"
+  },
+  "union_rights": {
+    "shop_steward_rights": "Luottamusmiehen oikeudet",
+    "shop_steward_time_off": "Riittävä aika tehtävien hoitamiseen",
+    "shop_steward_protection": "Korostettu irtisanomissuoja",
+    "union_meeting_rights": "Kokousoikeus",
+    "information_rights": "Tiedonsaantioikeus",
+    "cooperation_procedure": "YT-menettely",
+    "pdf_page": 75,
+    "section": "24 §"
+  },
+  "local_bargaining": {
+    "allowed_topics": [
+      "Työaikapankki",
+      "Työvuorosuunnittelu",
+      "Paikallinen palkkausjärjestelmä"
+    ],
+    "procedure": "Luottamusmiehen kanssa kirjallisesti",
+    "default_rules": "TES:n määräykset",
+    "pdf_page": 78,
+    "section": "25 §"
+  },
+  "dispute_resolution": {
+    "negotiation_procedure": "Työpaikka -> liitot",
+    "labor_court": "Työtuomioistuin",
+    "pdf_page": 80,
+    "section": "26 §"
+  },
+  "peace_obligation": {
+    "scope": "Työrauhavelvoite sopimuskauden ajan",
+    "exceptions": "Poliittinen lakko",
+    "pdf_page": 82,
+    "section": "27 §"
+  },
+  "_schema_version": 2,
+  "_extracted_fields": [
+    "scope",
+    "salary_tables",
+    "salary_increases",
+    "job_classification",
+    "working_hours",
+    "overtime",
+    "breaks",
+    "shift_work",
+    "weekend_and_holiday_work",
+    "vacation",
+    "sick_leave",
+    "child_sick_leave",
+    "family_leave",
+    "other_leaves",
+    "study_leave",
+    "travel",
+    "allowances",
+    "bonuses",
+    "notice_periods",
+    "trial_period",
+    "termination",
+    "fixed_term_contracts",
+    "part_time_work",
+    "occupational_health_safety",
+    "insurance_and_pension",
+    "union_rights",
+    "local_bargaining",
+    "dispute_resolution",
+    "peace_obligation"
+  ],
+  "id": "tes_kaupan_alan_työehtosopimus_2024-02-01",
+  "indexed_at": "2026-04-23T17:03:52.494913"
+}

@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block title %}Chat - TES Agent{% endblock %}
+{% block extra_css %}
+<style>
+    .chat-bubble {
+        max-width: 85%;
+        word-wrap: break-word;
+    }
+    .chat-bubble h1, .chat-bubble h2, .chat-bubble h3,
+    .chat-bubble h4, .chat-bubble h5, .chat-bubble h6 {
+        margin-top: 0.5em;
+        margin-bottom: 0.3em;
+    }
+    .chat-bubble h3 { font-size: 1.2em; }
+    .chat-bubble p { margin-bottom: 0.5em; }
+    .chat-bubble p:last-child { margin-bottom: 0; }
+    .chat-bubble ul, .chat-bubble ol {
+        margin: 0.5em 0;
+        padding-left: 1.5em;
+    }
+    .chat-bubble table {
+        width: 100%;
+        margin: 0.5em 0;
+        font-size: 0.9em;
+    }
+    .chat-bubble th, .chat-bubble td {
+        padding: 0.3em 0.5em;
+        border: 1px solid #ddd;
+    }
+    .status-panel {
+        background: #1a1a2e;
+        color: #0f0;
+        font-family: monospace;
+        font-size: 12px;
+        border-radius: 8px;
+        padding: 12px;
+        max-height: 100px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column" style="height: calc(100vh - 100px);">
+    <h2 class="mb-3">Chat with TES Agent</h2>
+    
+    <div class="status-panel mb-3" id="status-panel" style="display: none;">
+        <div id="status-messages"></div>
+    </div>
+    
+    <div class="card flex-grow-1 mb-3">
+        <div class="card-body overflow-auto" id="chat-messages" style="max-height: 55vh;">
+            <div class="text-muted text-center py-5" id="welcome-message">
+                <h5>Tervetuloa TES-agentille!</h5>
+                <p>Ask me about Finnish collective bargaining agreements.</p>
+                <p class="small">
+                    Try: "What TES agreements are indexed?" or<br>
+                    "Kerro teknologiateollisuuden TES:n palkoista"
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <form id="chat-form" class="d-flex gap-2">
+        <input type="text" id="chat-input" class="form-control form-control-lg"
+               placeholder="Ask about TES..." autofocus>
+        <button type="submit" class="btn btn-primary btn-lg px-4" id="send-btn">Send</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+marked.setOptions({ breaks: true, gfm: true });
+
+const chatMessages = document.getElementById('chat-messages');
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+const welcomeMessage = document.getElementById('welcome-message');
+const statusPanel = document.getElementById('status-panel');
+const statusMessages = document.getElementById('status-messages');
+
+// Chat history for context
+let chatHistory = [];
+
+function addStatusMessage(message) {
+    statusPanel.style.display = 'block';
+    const line = document.createElement('div');
+    line.textContent = message;
+    statusMessages.appendChild(line);
+    statusMessages.scrollTop = statusMessages.scrollHeight;
+}
+
+function clearStatus() {
+    statusMessages.innerHTML = '';
+}
+
+function addMessage(content, isUser) {
+    if (welcomeMessage) welcomeMessage.remove();
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `mb-3 ${isUser ? 'text-end' : ''}`;
+    
+    const bubble = document.createElement('div');
+    bubble.className = `chat-bubble d-inline-block p-3 rounded-3 ${isUser ? 'bg-primary text-white' : 'bg-light'}`;
+    bubble.style.textAlign = 'left';
+    
+    if (isUser) {
+        bubble.style.whiteSpace = 'pre-wrap';
+        bubble.textContent = content;
+    } else {
+        bubble.innerHTML = marked.parse(content);
+    }
+    
+    messageDiv.appendChild(bubble);
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function setLoading(loading) {
+    chatInput.disabled = loading;
+    sendBtn.disabled = loading;
+    sendBtn.textContent = loading ? '...' : 'Send';
+}
+
+chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const message = chatInput.value.trim();
+    if (!message) return;
+    
+    addMessage(message, true);
+    chatInput.value = '';
+    setLoading(true);
+    clearStatus();
+    
+    // Add user message to history
+    chatHistory.push({ role: 'user', content: message });
+    
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                message,
+                history: chatHistory.slice(0, -1)  // Send previous history (without current message)
+            })
+        });
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let finalResponse = '';
+        
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            const text = decoder.decode(value);
+            const lines = text.split('\n');
+            
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        const data = JSON.parse(line.slice(6));
+                        if (data.type === 'status') {
+                            addStatusMessage(data.message);
+                        } else if (data.type === 'error') {
+                            addStatusMessage('ERROR: ' + data.message);
+                        } else if (data.type === 'response') {
+                            finalResponse = data.message;
+                        } else if (data.type === 'done') {
+                            addMessage(finalResponse || 'No response', false);
+                            // Add assistant response to history
+                            if (finalResponse) {
+                                chatHistory.push({ role: 'assistant', content: finalResponse });
+                            }
+                            // Keep history manageable (last 10 exchanges)
+                            if (chatHistory.length > 20) {
+                                chatHistory = chatHistory.slice(-20);
+                            }
+                        }
+                    } catch (e) {}
+                }
+            }
+        }
+    } catch (error) {
+        addMessage('Error communicating with agent. Please try again.', false);
+        // Remove failed message from history
+        chatHistory.pop();
+    } finally {
+        setLoading(false);
+        chatInput.focus();
+    }
+});
+</script>
+{% endblock %}

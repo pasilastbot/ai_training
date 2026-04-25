@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Family Profile",
+  "description": "Schema for storing family profiles and member preferences",
+  "type": "object",
+  "required": ["id", "name", "members"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique family identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Family name or label (e.g., 'The Smiths', 'Our Family')"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "role"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["adult", "teen", "child", "toddler", "infant", "senior"]
+          },
+          "age": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 120
+          },
+          "preferences": {
+            "$ref": "#/definitions/memberPreferences"
+          }
+        }
+      }
+    },
+    "shared_preferences": {
+      "$ref": "#/definitions/sharedPreferences"
+    },
+    "constraints": {
+      "$ref": "#/definitions/constraints"
+    },
+    "past_trips": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "Trip IDs from saved trips"
+      }
+    }
+  },
+  "definitions": {
+    "memberPreferences": {
+      "type": "object",
+      "properties": {
+        "activity_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "beach", "mountains", "city", "nature", "adventure",
+              "relaxation", "culture", "history", "food", "nightlife",
+              "sports", "water_sports", "skiing", "hiking", "wildlife",
+              "theme_parks", "shopping", "spa", "photography", "art"
+            ]
+          }
+        },
+        "climate_preference": {
+          "type": "string",
+          "enum": ["hot", "warm", "mild", "cool", "cold", "any"]
+        },
+        "pace": {
+          "type": "string",
+          "enum": ["relaxed", "moderate", "active", "adventure"]
+        },
+        "accommodation_preference": {
+          "type": "string",
+          "enum": ["hotel", "resort", "airbnb", "cabin", "camping", "villa", "any"]
+        },
+        "food_preferences": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "dietary_restrictions": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "must_haves": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Activities or features this person really wants"
+        },
+        "deal_breakers": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Things this person absolutely doesn't want"
+        },
+        "mobility_requirements": {
+          "type": "string"
+        },
+        "special_interests": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "sharedPreferences": {
+      "type": "object",
+      "properties": {
+        "travel_style": {
+          "type": "string",
+          "enum": ["budget", "mid-range", "luxury", "backpacker"]
+        },
+        "trip_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["beach_resort", "road_trip", "city_break", "adventure", "cruise", "camping", "all_inclusive", "self_guided"]
+          }
+        },
+        "preferred_regions": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "avoided_regions": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "language_preferences": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "budget": {
+          "type": "object",
+          "properties": {
+            "min": {"type": "number"},
+            "max": {"type": "number"},
+            "currency": {"type": "string", "default": "EUR"}
+          }
+        },
+        "duration": {
+          "type": "object",
+          "properties": {
+            "min_days": {"type": "integer"},
+            "max_days": {"type": "integer"},
+            "preferred_days": {"type": "integer"}
+          }
+        },
+        "travel_dates": {
+          "type": "object",
+          "properties": {
+            "flexible": {"type": "boolean"},
+            "earliest_start": {"type": "string", "format": "date"},
+            "latest_end": {"type": "string", "format": "date"},
+            "preferred_months": {
+              "type": "array",
+              "items": {"type": "integer", "minimum": 1, "maximum": 12}
+            },
+            "blackout_dates": {
+              "type": "array",
+              "items": {"type": "string", "format": "date"}
+            }
+          }
+        },
+        "max_flight_hours": {"type": "number"},
+        "departure_location": {"type": "string"},
+        "accessibility_requirements": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}

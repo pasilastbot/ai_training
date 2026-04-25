@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}TES Documents - TES Agent{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>TES Documents</h2>
+    <span class="badge bg-primary">{{ tes_docs|length }} documents</span>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <select name="industry" class="form-select">
+                    <option value="">All Industries</option>
+                    {% for ind in industries %}
+                    <option value="{{ ind }}" {% if filters.industry == ind %}selected{% endif %}>{{ ind }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="union" class="form-select">
+                    <option value="">All Unions</option>
+                    {% for u in unions %}
+                    <option value="{{ u }}" {% if filters.union == u %}selected{% endif %}>{{ u }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="form-check mt-2">
+                    <input type="checkbox" class="form-check-input" name="valid_only" value="true"
+                           {% if filters.valid_only %}checked{% endif %}>
+                    <label class="form-check-label">Valid only</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if tes_docs %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Industry</th>
+                <th>Union</th>
+                <th>Validity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tes in tes_docs %}
+            <tr>
+                <td>
+                    <a href="/tes/{{ tes.id }}">{{ tes.name }}</a>
+                    {% if tes.name_en %}
+                    <br><small class="text-muted">{{ tes.name_en }}</small>
+                    {% endif %}
+                </td>
+                <td>{{ tes.industry or '-' }}</td>
+                <td>{{ tes.union_name or '-' }}</td>
+                <td>
+                    {% if tes.validity_start and tes.validity_end %}
+                    {{ tes.validity_start }} - {{ tes.validity_end }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/tes/{{ tes.id }}" class="btn btn-sm btn-outline-primary">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    No TES documents found. <a href="/">Index a new TES</a> to get started.
+</div>
+{% endif %}
+{% endblock %}

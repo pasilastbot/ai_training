@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Compare Destinations - Holiday Planner{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-balance-scale text-blue-600 mr-2"></i> Compare Destinations
+        </h1>
+
+        <form action="/compare/destinations" method="POST" class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Destinations to Compare</label>
+                <div class="space-y-3">
+                    <input type="text" name="destinations" required
+                           placeholder="First destination (e.g., Crete)"
+                           class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" name="destinations" required
+                           placeholder="Second destination (e.g., Rhodes)"
+                           class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" name="destinations"
+                           placeholder="Third destination (optional)"
+                           class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Family (optional)</label>
+                <select name="family_id" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- For personalized comparison --</option>
+                    {% for f in families %}
+                    <option value="{{ f.id }}">{{ f.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-balance-scale mr-2"></i> Compare Destinations
+            </button>
+        </form>
+
+        <div class="mt-6 pt-6 border-t">
+            <p class="text-sm text-gray-500 mb-3">Popular comparisons:</p>
+            <div class="flex flex-wrap gap-2">
+                <form action="/compare/destinations" method="POST" class="inline">
+                    <input type="hidden" name="destinations" value="Crete">
+                    <input type="hidden" name="destinations" value="Rhodes">
+                    <button type="submit" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full">
+                        Crete vs Rhodes
+                    </button>
+                </form>
+                <form action="/compare/destinations" method="POST" class="inline">
+                    <input type="hidden" name="destinations" value="Barcelona">
+                    <input type="hidden" name="destinations" value="Rome">
+                    <button type="submit" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full">
+                        Barcelona vs Rome
+                    </button>
+                </form>
+                <form action="/compare/destinations" method="POST" class="inline">
+                    <input type="hidden" name="destinations" value="Thailand">
+                    <input type="hidden" name="destinations" value="Bali">
+                    <button type="submit" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full">
+                        Thailand vs Bali
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

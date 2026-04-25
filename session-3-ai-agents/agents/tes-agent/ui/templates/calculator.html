@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Salary Calculator - TES Agent{% endblock %}
+{% block content %}
+<h2 class="mb-4">Salary Calculator</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Calculate Minimum Salary</h5>
+            </div>
+            <div class="card-body">
+                <form id="calc-form">
+                    <div class="mb-3">
+                        <label class="form-label">Select TES</label>
+                        <select id="tes-select" class="form-select" required>
+                            <option value="">Select a TES...</option>
+                            {% for tes in tes_docs %}
+                            <option value="{{ tes.id }}">{{ tes.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Job Role / Category</label>
+                        <input type="text" id="role" class="form-control" required
+                               placeholder="e.g., engineer, specialist, worker">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Years of Experience</label>
+                        <input type="number" id="experience" class="form-control" 
+                               value="0" min="0" max="50">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="use-ai">
+                            <label class="form-check-label">Use AI for detailed calculation</label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100" id="calc-btn">
+                        Calculate Salary
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card" id="result-card" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0">Calculation Result</h5>
+            </div>
+            <div class="card-body" id="calc-result">
+            </div>
+        </div>
+        
+        <div class="card mt-4" id="info-card">
+            <div class="card-body">
+                <h5>How it works</h5>
+                <p>The calculator uses salary tables from the selected TES document to find the applicable minimum salary based on:</p>
+                <ul>
+                    <li>Job role or category</li>
+                    <li>Years of experience</li>
+                    <li>Current salary table effective dates</li>
+                </ul>
+                <p class="mb-0 text-muted">
+                    Enable "Use AI" for more detailed analysis including applicable bonuses and allowances.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('calc-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const tesId = document.getElementById('tes-select').value;
+    const role = document.getElementById('role').value;
+    const experience = parseInt(document.getElementById('experience').value) || 0;
+    const useAi = document.getElementById('use-ai').checked;
+    
+    const btn = document.getElementById('calc-btn');
+    const resultCard = document.getElementById('result-card');
+    const result = document.getElementById('calc-result');
+    
+    btn.disabled = true;
+    btn.textContent = 'Calculating...';
+    resultCard.style.display = 'block';
+    result.innerHTML = '<div class="text-center py-4"><div class="spinner-border"></div></div>';
+    
+    try {
+        const response = await fetch('/api/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tes_id: tesId, role, experience, use_ai: useAi })
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            result.innerHTML = `
+                <div class="alert alert-danger">${data.error}</div>
+                ${data.available_roles ? `<p>Available roles: ${data.available_roles.join(', ')}</p>` : ''}
+            `;
+        } else if (data.best_match) {
+            const match = data.best_match;
+            result.innerHTML = `
+                <div class="alert alert-success mb-3">
+                    <h4 class="alert-heading">Minimum Salary Found</h4>
+                </div>
+                <table class="table">
+                    <tr><th>Role Category</th><td>${match.role_category || '-'}</td></tr>
+                    <tr><th>Experience Level</th><td>${match.experience_level || '-'}</td></tr>
+                    <tr><th>Monthly Salary</th><td><strong>${match.minimum_salary ? match.minimum_salary.toLocaleString() + ' EUR' : '-'}</strong></td></tr>
+                    <tr><th>Hourly Rate</th><td>${match.hourly_rate ? match.hourly_rate + ' EUR' : '-'}</td></tr>
+                    <tr><th>Effective Date</th><td>${match.effective_date || '-'}</td></tr>
+                    ${match.pdf_page ? `<tr><th>Source</th><td>PDF Page ${match.pdf_page}</td></tr>` : ''}
+                </table>
+                <p class="text-muted">TES: ${data.tes_name}<br>Validity: ${data.tes_validity}</p>
+            `;
+        } else if (data.base_monthly_salary) {
+            result.innerHTML = `
+                <div class="alert alert-success mb-3">
+                    <h4 class="alert-heading">AI Calculation Result</h4>
+                </div>
+                <table class="table">
+                    <tr><th>Base Monthly Salary</th><td><strong>${data.base_monthly_salary.toLocaleString()} EUR</strong></td></tr>
+                    <tr><th>Role Used</th><td>${data.role_category_used || '-'}</td></tr>
+                    <tr><th>Experience Level</th><td>${data.experience_level_used || '-'}</td></tr>
+                    ${data.hourly_rate ? `<tr><th>Hourly Rate</th><td>${data.hourly_rate} EUR</td></tr>` : ''}
+                </table>
+                ${data.applicable_bonuses && data.applicable_bonuses.length > 0 ? `
+                <h6>Applicable Bonuses</h6>
+                <ul>
+                    ${data.applicable_bonuses.map(b => `<li>${b.name}: ${b.amount}${b.conditions ? ` (${b.conditions})` : ''}</li>`).join('')}
+                </ul>
+                ` : ''}
+                ${data.calculation_notes ? `<p class="text-muted">${data.calculation_notes}</p>` : ''}
+            `;
+        } else {
+            result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+    } catch (error) {
+        result.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Calculate Salary';
+    }
+});
+</script>
+{% endblock %}

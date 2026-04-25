@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}{{ destination }} - Holiday Planner{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h1 class="text-3xl font-bold text-gray-800">
+            <i class="fas fa-map-marker-alt text-red-600 mr-2"></i> {{ destination }}
+        </h1>
+        {% if country %}
+        <p class="text-xl text-gray-500 mt-1">{{ country }}</p>
+        {% endif %}
+    </div>
+
+    {% if details %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Info -->
+        <div class="lg:col-span-2 space-y-6">
+            {% if details.overview %}
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Overview</h2>
+                <p class="text-gray-700">{{ details.overview }}</p>
+            </div>
+            {% endif %}
+
+            {% if details.attractions or details.top_attractions %}
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-star text-yellow-500 mr-2"></i> Top Attractions
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for attr in (details.attractions or details.top_attractions)[:6] %}
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-medium text-gray-800">{{ attr.name if attr.name else attr }}</h4>
+                        {% if attr.description %}
+                        <p class="text-sm text-gray-600 mt-1">{{ attr.description[:100] }}...</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if details.family_activities or details.activities_for_families %}
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-child text-blue-500 mr-2"></i> Family Activities
+                </h2>
+                <div class="space-y-3">
+                    {% for act in (details.family_activities or details.activities_for_families)[:5] %}
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <h4 class="font-medium text-gray-800">{{ act.name if act.name else act }}</h4>
+                        {% if act.suitable_for %}
+                        <p class="text-sm text-blue-600 mt-1">Good for: {{ act.suitable_for | join(', ') }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            {% if details.weather or details.best_time %}
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-sun text-yellow-500 mr-2"></i> Weather
+                </h2>
+                {% if details.best_months or details.best_time %}
+                <p class="text-gray-700 mb-2">
+                    <strong>Best time:</strong> 
+                    {% if details.best_months %}
+                    {{ details.best_months | join(', ') }}
+                    {% else %}
+                    {{ details.best_time }}
+                    {% endif %}
+                </p>
+                {% endif %}
+                {% if details.weather %}
+                <p class="text-gray-600 text-sm">{{ details.weather }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if details.budget or details.budget_estimate %}
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-euro-sign text-green-500 mr-2"></i> Budget
+                </h2>
+                {% set budget = details.budget or details.budget_estimate %}
+                {% if budget.daily_per_person %}
+                <p class="text-2xl font-bold text-green-600">€{{ budget.daily_per_person }}/day</p>
+                <p class="text-gray-500 text-sm">per person</p>
+                {% endif %}
+                {% if budget.budget_level %}
+                <p class="mt-2 text-gray-600">Level: {{ budget.budget_level }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if details.logistics %}
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i> Logistics
+                </h2>
+                <div class="space-y-2 text-sm text-gray-600">
+                    {% if details.logistics.flight_time_hours %}
+                    <p><i class="fas fa-plane mr-2"></i> Flight: ~{{ details.logistics.flight_time_hours }}h</p>
+                    {% endif %}
+                    {% if details.logistics.visa_needed is defined %}
+                    <p><i class="fas fa-passport mr-2"></i> Visa: {{ "Required" if details.logistics.visa_needed else "Not required" }}</p>
+                    {% endif %}
+                    {% if details.logistics.language_barrier %}
+                    <p><i class="fas fa-language mr-2"></i> Language barrier: {{ details.logistics.language_barrier }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Actions</h2>
+                <div class="space-y-2">
+                    <a href="/budget?destination={{ destination }}" 
+                       class="block w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-center">
+                        <i class="fas fa-calculator mr-2"></i> Estimate Budget
+                    </a>
+                    <a href="/chat" 
+                       class="block w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition text-center">
+                        <i class="fas fa-comments mr-2"></i> Ask AI About {{ destination }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-xl shadow p-12 text-center">
+        <div class="text-gray-400 text-6xl mb-4">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">Loading destination info...</h3>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
