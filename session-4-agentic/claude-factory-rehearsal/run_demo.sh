@@ -7,14 +7,14 @@ cd "$SCRIPT_DIR"
 echo "=== Factory Rehearsal Demo (Claude + Codex) ==="
 echo "Folder: $SCRIPT_DIR"
 
-if command -v uv >/dev/null 2>&1; then
+if command -v uv >/dev/null 2>&1 && uv run python -c "print('ok')" >/dev/null 2>&1; then
   PYTHON_CMD=(uv run python)
   echo "[info] Using Python runner: uv run python"
 elif command -v python3 >/dev/null 2>&1; then
   PYTHON_CMD=(python3)
   echo "[info] Using Python runner: python3"
 else
-  echo "[error] Neither uv nor python3 found"
+  echo "[error] No usable Python runner found (uv or python3)"
   exit 1
 fi
 
