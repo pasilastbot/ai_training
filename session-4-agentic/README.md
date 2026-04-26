@@ -10,9 +10,15 @@ Move from individual agent usage to repeatable software factory workflows. Build
 
 - Python 3.10+
 - `uv` package manager (recommended)
-- API keys for backends you want to use:
-  - `ANTHROPIC_API_KEY` for Claude
-  - `OPENAI_API_KEY` for Codex/OpenCode
+- At least one CLI tool with active subscription (no API keys needed):
+  - `claude` — Claude Code CLI (`claude --version`)
+  - `codex` — OpenAI Codex CLI (`codex --version`)
+  - `opencode` — OpenCode CLI (`opencode --version`)
+
+Install the Python SDK:
+```bash
+pip install claude-agent-sdk
+```
 
 ## Quick Start
 

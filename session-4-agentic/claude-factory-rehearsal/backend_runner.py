@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
+
+logger = logging.getLogger(__name__)
 
 Backend = Literal['claude', 'codex', 'opencode']
 
@@ -30,6 +33,12 @@ class BackendRunResult:
 
 
 async def _run_claude(options: BackendRunOptions) -> BackendRunResult:
+    logger.info(
+        'Running claude backend (cwd=%s, model=%s, resume=%s)',
+        options.cwd,
+        options.model,
+        options.resume_session_id,
+    )
     from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, SystemMessage, query
 
     last_session_id: str | None = options.resume_session_id
@@ -80,9 +89,19 @@ async def _run_claude(options: BackendRunOptions) -> BackendRunResult:
 
 
 async def _run_codex(options: BackendRunOptions) -> BackendRunResult:
+    logger.info(
+        'Running codex backend (cwd=%s, model=%s, resume=%s)',
+        options.cwd,
+        options.model,
+        options.resume_session_id,
+    )
     cmd = ['codex', 'exec', '--json']
     if options.model:
         cmd.extend(['--model', options.model])
+    if options.permission_mode == 'acceptEdits':
+        cmd.append('--full-auto')
+    elif options.permission_mode in ('default', 'plan'):
+        cmd.extend(['-s', 'read-only'])
     if options.resume_session_id:
         cmd.extend(['resume', options.resume_session_id, options.prompt])
     else:
@@ -95,7 +114,25 @@ async def _run_codex(options: BackendRunOptions) -> BackendRunResult:
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
-    stdout_bytes, stderr_bytes = await process.communicate()
+    try:
+        stdout_bytes, stderr_bytes = await asyncio.wait_for(
+            process.communicate(), timeout=120
+        )
+    except asyncio.TimeoutError:
+        try:
+            process.kill()
+        except ProcessLookupError:
+            pass
+        try:
+            await process.wait()
+        except Exception:
+            pass
+        return BackendRunResult(
+            ok=False,
+            text='',
+            stop_reason='codex_error: timeout after 120s',
+            session_id=None,
+        )
     stdout_text = stdout_bytes.decode('utf-8', errors='replace').strip()
     stderr_text = stderr_bytes.decode('utf-8', errors='replace').strip()
 
@@ -143,6 +180,12 @@ async def _run_codex(options: BackendRunOptions) -> BackendRunResult:
 
 
 async def _run_opencode(options: BackendRunOptions) -> BackendRunResult:
+    logger.info(
+        'Running opencode backend (cwd=%s, model=%s, resume=%s)',
+        options.cwd,
+        options.model,
+        options.resume_session_id,
+    )
     cmd = ['opencode', 'run', '--format', 'json']
     if options.model:
         cmd.extend(['--model', options.model])
@@ -157,7 +200,25 @@ async def _run_opencode(options: BackendRunOptions) -> BackendRunResult:
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
-    stdout_bytes, stderr_bytes = await process.communicate()
+    try:
+        stdout_bytes, stderr_bytes = await asyncio.wait_for(
+            process.communicate(), timeout=120
+        )
+    except asyncio.TimeoutError:
+        try:
+            process.kill()
+        except ProcessLookupError:
+            pass
+        try:
+            await process.wait()
+        except Exception:
+            pass
+        return BackendRunResult(
+            ok=False,
+            text='',
+            stop_reason='opencode_error: timeout after 120s',
+            session_id=None,
+        )
     stdout_text = stdout_bytes.decode('utf-8', errors='replace').strip()
     stderr_text = stderr_bytes.decode('utf-8', errors='replace').strip()
 

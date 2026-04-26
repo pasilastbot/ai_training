@@ -46,13 +46,13 @@ def load_spec(path: Path) -> dict[str, Any]:
 
 
 def resolve_python_cmd() -> str:
-    uv_path = subprocess.run(
-        ['bash', '-lc', 'command -v uv'],
+    uv_probe = subprocess.run(
+        ['bash', '-lc', "command -v uv >/dev/null 2>&1 && uv run python -c \"print('ok')\""],
         capture_output=True,
         text=True,
         check=False,
     )
-    if uv_path.returncode == 0 and uv_path.stdout.strip():
+    if uv_probe.returncode == 0:
         return 'uv run python'
     return 'python3'
 
@@ -146,8 +146,8 @@ def is_review_approved(text: str) -> bool:
     return 'FINAL_STATUS: APPROVED' in normalized
 
 
-def run_loop(spec: dict[str, Any], backend: Backend, max_iterations: int) -> int:
-    cwd = get_default_cwd()
+def run_loop(spec: dict[str, Any], backend: Backend, max_iterations: int, spec_dir: Path) -> int:
+    cwd = spec_dir
     python_cmd = resolve_python_cmd()
     allowed_tools = list(
         spec.get('allowed_tools', ['Read', 'Glob', 'Grep', 'Edit', 'Bash'])
@@ -245,6 +245,7 @@ def main() -> None:
         spec=spec,
         backend=args.backend,
         max_iterations=max_iterations,
+        spec_dir=spec_path.parent,
     )
     raise SystemExit(exit_code)
 

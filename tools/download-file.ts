@@ -91,7 +91,7 @@ async function downloadFile() {
     response.data.pipe(writer);
 
     // Handle completion
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       writer.on('finish', resolve);
       writer.on('error', reject);
     });

@@ -1,0 +1,22 @@
+{
+  "name": "add-subprocess-timeout",
+  "goal": "Add a 120-second timeout to subprocess calls in _run_codex and _run_opencode functions in backend_runner.py. Use asyncio.wait_for to wrap process.communicate() calls. On timeout, kill the process and return a BackendRunResult with ok=False and stop_reason containing 'timeout'.",
+  "max_iterations": 3,
+  "agent_max_turns": 20,
+  "permission_mode": "acceptEdits",
+  "allowed_tools": ["Read", "Glob", "Grep", "Edit", "Bash"],
+  "implement_instructions": "Read backend_runner.py, find the process.communicate() calls in _run_codex and _run_opencode, wrap them with asyncio.wait_for(timeout=120), and handle asyncio.TimeoutError by killing the process and returning an error result.",
+  "review_instructions": "Verify the timeout is implemented in both functions. Check that syntax is valid. Confirm the timeout handling returns proper error results. Return FINAL_STATUS: APPROVED if complete, FINAL_STATUS: CHANGES_REQUIRED if not.",
+  "checks": [
+    {
+      "name": "syntax-check",
+      "command": "{python} -m py_compile backend_runner.py",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "timeout-in-codex",
+      "command": "grep -q 'wait_for' backend_runner.py && grep -q 'TimeoutError' backend_runner.py && echo 'OK'",
+      "timeout_seconds": 10
+    }
+  ]
+}

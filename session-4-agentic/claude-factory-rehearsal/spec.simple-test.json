@@ -1,0 +1,17 @@
+{
+  "name": "simple-test",
+  "goal": "Just verify the syntax of Python files is valid. Do nothing else.",
+  "max_iterations": 1,
+  "agent_max_turns": 5,
+  "permission_mode": "default",
+  "allowed_tools": ["Read"],
+  "implement_instructions": "Just acknowledge the goal. No changes needed.",
+  "review_instructions": "The goal is met if syntax check passes. Return FINAL_STATUS: APPROVED",
+  "checks": [
+    {
+      "name": "syntax",
+      "command": "{python} -m py_compile backend_runner.py",
+      "timeout_seconds": 30
+    }
+  ]
+}

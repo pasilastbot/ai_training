@@ -207,4 +207,5 @@ main().catch(error => {
   process.exit(1);
 });
 
-export { playAudio, PlayOptions };
+export { playAudio };
+export type { PlayOptions };

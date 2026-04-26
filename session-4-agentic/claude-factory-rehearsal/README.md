@@ -84,24 +84,26 @@ uv run python 04_spec_loop_factory.py --backend codex --spec spec.example.json
 
 ## Setup for training session
 
-1. Use project Python (recommended):
+**No API keys required** — uses CLI subscriptions.
+
+1. Verify Python:
 
 ```bash
-uv run python -V
+uv run python -V  # or python3 -V
 ```
 
-2. Verify CLIs:
+2. Verify CLIs (at least one required):
 
 ```bash
-codex --version
-opencode --version
+claude --version   # Claude Code
+codex --version    # OpenAI Codex
+opencode --version # OpenCode
 ```
 
-3. If needed, set API keys (CLI auth sessions may already be enough):
+3. Install Python SDK:
 
 ```bash
-export ANTHROPIC_API_KEY=your_key_here
-export OPENAI_API_KEY=your_key_here
+pip install claude-agent-sdk
 ```
 
 4. Run all checks + sample runs:

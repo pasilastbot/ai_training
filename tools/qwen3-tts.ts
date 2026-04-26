@@ -306,4 +306,5 @@ main().catch(error => {
   process.exit(1);
 });
 
-export { generateSpeech, TTSOptions, TTSMode };
+export { generateSpeech };
+export type { TTSOptions, TTSMode };

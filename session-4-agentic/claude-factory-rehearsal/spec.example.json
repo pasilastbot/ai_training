@@ -10,7 +10,7 @@
   "checks": [
     {
       "name": "syntax",
-      "command": "{python} -m py_compile examples/claude-factory-rehearsal/backend_runner.py examples/claude-factory-rehearsal/01_minimal_factory.py examples/claude-factory-rehearsal/02_factory_catalog.py examples/claude-factory-rehearsal/03_resumable_factory.py examples/claude-factory-rehearsal/04_spec_loop_factory.py",
+      "command": "{python} -m py_compile backend_runner.py 01_minimal_factory.py 02_factory_catalog.py 03_resumable_factory.py 04_spec_loop_factory.py",
       "timeout_seconds": 120
     }
   ]

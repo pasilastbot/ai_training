@@ -105,6 +105,9 @@ async function generateNanoBananaImage(options: NanoBananaOptions): Promise<void
         console.log("Generated description:", part.text);
       } else if (part.inlineData) {
         const imageData = part.inlineData.data;
+        if (!imageData) {
+          throw new Error("Image data is missing in inlineData");
+        }
         const buffer = Buffer.from(imageData, "base64");
         
         // Determine output path
@@ -131,11 +134,11 @@ async function generateNanoBananaImage(options: NanoBananaOptions): Promise<void
       throw new Error("No image data received from Gemini API");
     }
 
-    const actionText = isEditMode ? "editing" : "generation";
+    const actionText = options.mode === 'edit' || options.inputImage ? "editing" : "generation";
     console.log(`✅ Nano-banana image ${actionText} completed!`);
 
   } catch (error) {
-    const actionText = isEditMode ? "editing" : "generating";
+    const actionText = options.mode === 'edit' || options.inputImage ? "editing" : "generating";
     console.error(`❌ Error ${actionText} nano-banana image:`, error);
     process.exit(1);
   }
