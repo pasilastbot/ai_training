@@ -1,0 +1,82 @@
+{
+  "name": "implement-mini-language",
+  "goal": "Create mini_lang.py implementing a simple imperative programming language interpreter. The language supports:\n\n1. Variables: `x = 5` assigns, `x` retrieves value\n2. Arithmetic: +, -, *, /, parentheses, with correct precedence\n3. Comparisons: ==, !=, <, >, <=, >= returning 1 (true) or 0 (false)\n4. Print: `print expr` outputs the value followed by newline\n5. Conditionals: `if expr { statements } else { statements }` - else is optional\n6. While loops: `while expr { statements }`\n7. Statements separated by newlines or semicolons\n8. Comments: `# comment` ignores rest of line\n\nProvide function run(code: str) -> str that executes code and returns all printed output.\nRaise SyntaxError for parse errors, RuntimeError for runtime errors (undefined var, div by zero).",
+  "max_iterations": 6,
+  "agent_max_turns": 40,
+  "permission_mode": "acceptEdits",
+  "allowed_tools": ["Read", "Glob", "Grep", "Edit", "Bash"],
+  "implement_instructions": "Build a proper interpreter: tokenizer -> parser -> AST -> evaluator. Key challenges:\n- Tokenizer must handle multi-char operators (==, !=, <=, >=)\n- Parser needs separate precedence levels for comparison vs arithmetic\n- Block parsing for if/while with proper brace matching\n- Environment for variable storage\n- Careful handling of 0 as falsy in conditions\n\nCommon bugs: forgetting else is optional, wrong operator precedence, not handling empty blocks, newline handling in blocks.",
+  "review_instructions": "All tests must pass. Verify variable scoping, control flow, and error handling work correctly. Return FINAL_STATUS: APPROVED only if all checks pass.",
+  "checks": [
+    {
+      "name": "file-exists",
+      "command": "test -f mini_lang.py && echo 'OK'",
+      "timeout_seconds": 10
+    },
+    {
+      "name": "syntax-check",
+      "command": "{python} -m py_compile mini_lang.py",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "variables-and-arithmetic",
+      "command": "{python} -c \"\nfrom mini_lang import run\ncode = '''x = 5\ny = 3\nz = x + y * 2\nprint z'''\nout = run(code)\nassert out.strip() == '11', f'Expected 11, got {out!r}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "comparisons",
+      "command": "{python} -c \"\nfrom mini_lang import run\ncode = '''a = 5 > 3\nb = 2 == 2\nc = 4 != 4\nprint a\nprint b\nprint c'''\nout = run(code)\nlines = out.strip().split('\\\\n')\nassert lines == ['1', '1', '0'], f'Expected [1,1,0], got {lines}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "if-else",
+      "command": "{python} -c \"\nfrom mini_lang import run\ncode = '''x = 10\nif x > 5 {\n  print 1\n} else {\n  print 0\n}\nif x < 5 {\n  print 999\n} else {\n  print 2\n}'''\nout = run(code)\nlines = out.strip().split('\\\\n')\nassert lines == ['1', '2'], f'Expected [1,2], got {lines}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "if-without-else",
+      "command": "{python} -c \"\nfrom mini_lang import run\ncode = '''x = 1\nif x {\n  print 100\n}\nprint 200'''\nout = run(code)\nlines = out.strip().split('\\\\n')\nassert lines == ['100', '200'], f'Expected [100,200], got {lines}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "while-loop",
+      "command": "{python} -c \"\nfrom mini_lang import run\ncode = '''i = 0\nsum = 0\nwhile i < 5 {\n  sum = sum + i\n  i = i + 1\n}\nprint sum'''\nout = run(code)\nassert out.strip() == '10', f'Expected 10 (0+1+2+3+4), got {out!r}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "nested-control-flow",
+      "command": "{python} -c \"\nfrom mini_lang import run\ncode = '''i = 0\nwhile i < 3 {\n  if i == 1 {\n    print 999\n  } else {\n    print i\n  }\n  i = i + 1\n}'''\nout = run(code)\nlines = out.strip().split('\\\\n')\nassert lines == ['0', '999', '2'], f'Expected [0,999,2], got {lines}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "comments",
+      "command": "{python} -c \"\nfrom mini_lang import run\ncode = '''# this is a comment\nx = 5  # inline comment\nprint x  # should print 5'''\nout = run(code)\nassert out.strip() == '5', f'Expected 5, got {out!r}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "semicolons",
+      "command": "{python} -c \"\nfrom mini_lang import run\ncode = 'x = 1; y = 2; print x + y'\nout = run(code)\nassert out.strip() == '3', f'Expected 3, got {out!r}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "error-undefined-var",
+      "command": "{python} -c \"\nfrom mini_lang import run\ntry:\n    run('print undefined_var')\n    raise AssertionError('Should have raised RuntimeError')\nexcept RuntimeError as e:\n    assert 'undefined' in str(e).lower() or 'not defined' in str(e).lower(), f'Error should mention undefined: {e}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "error-div-zero",
+      "command": "{python} -c \"\nfrom mini_lang import run\ntry:\n    run('x = 1 / 0')\n    raise AssertionError('Should have raised RuntimeError')\nexcept RuntimeError as e:\n    assert 'zero' in str(e).lower() or 'division' in str(e).lower(), f'Error should mention division: {e}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "error-syntax",
+      "command": "{python} -c \"\nfrom mini_lang import run\ntry:\n    run('if x { print 1')\n    raise AssertionError('Should have raised SyntaxError')\nexcept SyntaxError:\n    pass\nprint('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "complex-program",
+      "command": "{python} -c \"\nfrom mini_lang import run\ncode = '''# Compute factorial of 5\nn = 5\nresult = 1\nwhile n > 0 {\n  result = result * n\n  n = n - 1\n}\nprint result'''\nout = run(code)\nassert out.strip() == '120', f'Expected 120 (5!), got {out!r}'\nprint('OK')\"",
+      "timeout_seconds": 30
+    }
+  ]
+}

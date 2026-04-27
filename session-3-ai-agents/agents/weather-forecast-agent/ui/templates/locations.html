@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Locations - Weather Agent{% endblock %}
+{% block content %}
+<h2>📍 Saved Locations</h2>
+
+<div class="row mb-4">
+    <div class="col-md-9">
+        <h4>Add New Location</h4>
+        <form method="POST" action="/locations/add" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Name</label>
+                <input type="text" name="name" class="form-control" placeholder="e.g., Home, Work" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">City/Location</label>
+                <input type="text" name="location" class="form-control" placeholder="e.g., Helsinki, Finland" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Latitude (optional)</label>
+                <input type="number" step="0.0001" name="lat" class="form-control" placeholder="60.1695">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Longitude (optional)</label>
+                <input type="number" step="0.0001" name="lon" class="form-control" placeholder="24.9354">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Add Location</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    {% if locations %}
+    <div class="col-12">
+        <h4>Your Locations</h4>
+        <div class="list-group">
+            {% for loc in locations %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ loc.name }}</strong>
+                    <p class="text-muted mb-0">{{ loc.city }}</p>
+                    {% if loc.get('coordinates') %}
+                    <small class="text-muted">{{ loc.coordinates.lat }}, {{ loc.coordinates.lon }}</small>
+                    {% endif %}
+                </div>
+                <div>
+                    <a href="/weather/{{ loc.city }}" class="btn btn-sm btn-outline-primary me-2">View Weather</a>
+                    <form method="POST" action="/locations/{{ loc.name }}/delete" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this location?')">Remove</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h5>No locations saved</h5>
+            <p>Add your first location above to start tracking weather for your favorite places.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

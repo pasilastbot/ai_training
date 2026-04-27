@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Weather Forecast Agent{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar { min-height: 100vh; background: #f8f9fa; }
+        .weather-card { transition: box-shadow 0.2s; }
+        .weather-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .alert-banner { padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+        .alert-high { background: #fee; border-left: 4px solid #dc3545; }
+        .alert-medium { background: #fff3cd; border-left: 4px solid #ffc107; }
+        .alert-low { background: #d1e7dd; border-left: 4px solid #198754; }
+        .chat-bubble { max-width: 85%; word-wrap: break-word; }
+        .status-panel { background: #1a1a2e; color: #0f0; font-family: monospace; font-size: 12px; border-radius: 8px; padding: 12px; max-height: 150px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 sidebar py-3">
+                <h5 class="mb-3">🌤 Weather Agent</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chat">Chat</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/search">Search</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/locations">Locations</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/forecast">Forecast</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/activities">Activities</a></li>
+                </ul>
+            </nav>
+            <main class="col-md-10 py-4">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

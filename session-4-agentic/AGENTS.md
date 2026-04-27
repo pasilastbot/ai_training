@@ -43,8 +43,10 @@ session-4-agentic/
     ├── 02_factory_catalog.py         # Rehearsal 2: Role-based policies
     ├── 03_resumable_factory.py       # Rehearsal 2: Session continuity
     ├── 04_spec_loop_factory.py       # Rehearsal 3: Spec-driven loop
+    ├── 05_agent_factory.py           # Rehearsal 4: Agent creation factory
     ├── backend_runner.py             # Multi-backend adapter
     ├── spec.example.json             # Example spec for loop factory
+    ├── spec.agent-example.json       # Example spec for agent factory
     ├── requirements.txt              # Dependencies
     ├── run_demo.sh                   # Quick test script
     └── README.md                     # Rehearsal instructions
@@ -246,6 +248,138 @@ uv run python 03_resumable_factory.py {start|resume} --backend {backend} "task"
 uv run python 04_spec_loop_factory.py --backend {backend} --spec spec.json [--max-iterations N]
 ```
 
+### Agent Factory
+```bash
+# Generate spec and implement agent from idea
+uv run python 05_agent_factory.py start --backend {backend} "agent idea"
+
+# Resume implementation session
+uv run python 05_agent_factory.py resume --backend {backend} "continue"
+
+# Generate spec only (no implementation)
+uv run python 05_agent_factory.py spec --backend {backend} "agent idea"
+
+# Implement from existing spec file
+uv run python 05_agent_factory.py implement --backend {backend} --spec spec.json
+```
+
+---
+
+## Rehearsal 4: Agent Factory
+
+**Goal:** Automate creation of complete AI agents under session-3-ai-agents.
+
+The Agent Factory combines ALL previous concepts:
+- **Roles** from 02_factory_catalog.py (spec_generator, implementer, validator, reviewer, fixer)
+- **Resume** from 03_resumable_factory.py (session continuity)
+- **Loops** from 04_spec_loop_factory.py (implement → validate → review)
+
+### Usage
+
+```bash
+# Start fresh with an idea
+uv run python 05_agent_factory.py start --backend claude "weather forecast agent"
+
+# Resume a previous session
+uv run python 05_agent_factory.py resume --backend claude "continue implementing"
+
+# Generate spec only (no implementation)
+uv run python 05_agent_factory.py spec --backend claude "recipe finder agent"
+
+# Implement from existing spec
+uv run python 05_agent_factory.py implement --backend claude --spec agent-spec.json
+```
+
+### Workflow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    AGENT FACTORY WORKFLOW                    │
+├─────────────────────────────────────────────────────────────┤
+│  1. SPEC GENERATION (spec_generator role)                   │
+│     ├── Takes a simple idea ("weather agent")               │
+│     ├── Reads AGENTS.md for structure requirements          │
+│     └── Outputs detailed JSON specification                 │
+│                                                             │
+│  2. IMPLEMENT (implementer/fixer role)                      │
+│     ├── Creates agent folder structure                      │
+│     ├── Implements all required components:                 │
+│     │   - Main agent CLI                                    │
+│     │   - UI (Flask app)                                    │
+│     │   - API (FastAPI)                                     │
+│     │   - Tools (CLI scripts)                               │
+│     │   - Skills (markdown)                                 │
+│     │   - Subagents                                         │
+│     │   - Memory (schemas + storage)                        │
+│     └── Follows existing agent patterns                     │
+│                                                             │
+│  3. VALIDATE (validator role)                               │
+│     ├── Checks Python syntax for all files                  │
+│     ├── Verifies folder structure                           │
+│     ├── Confirms skills exist                               │
+│     ├── Checks for Unicode surrogate escapes                │
+│     ├── Checks Python 3.9+ compatibility                    │
+│     └── If any fail → back to IMPLEMENT                     │
+│                                                             │
+│  4. E2E TEST (automated)                                    │
+│     ├── Starts API server, checks /health endpoint          │
+│     ├── Verifies API endpoints respond                      │
+│     ├── Starts UI server, verifies HTML served              │
+│     ├── Tests CLI --help works                              │
+│     └── If any fail → back to IMPLEMENT                     │
+│                                                             │
+│  5. REVIEW (reviewer role)                                  │
+│     ├── Compares implementation against spec                │
+│     ├── Checks code quality and patterns                    │
+│     ├── Reviews E2E test results                            │
+│     ├── Returns FINAL_STATUS: APPROVED or CHANGES_REQUIRED  │
+│     └── If changes needed → back to IMPLEMENT               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Agent Spec Format
+
+See `spec.agent-example.json` for a complete example:
+
+```json
+{
+  "name": "weather-forecast-agent",
+  "description": "What the agent does",
+  "capabilities": ["list of capabilities"],
+  "tools": [
+    {"name": "tool_name", "description": "...", "parameters": [...]}
+  ],
+  "skills": [
+    {"name": "skill-name", "description": "...", "tools": [...]}
+  ],
+  "subagents": [
+    {"name": "subagent_name", "purpose": "..."}
+  ],
+  "memory_schemas": [
+    {"name": "schema_name", "fields": [...]}
+  ],
+  "api_endpoints": [
+    {"method": "GET", "path": "/endpoint", "description": "..."}
+  ],
+  "ui_views": [
+    {"name": "view_name", "description": "..."}
+  ],
+  "environment_variables": [
+    {"name": "VAR_NAME", "required": true, "description": "..."}
+  ]
+}
+```
+
+### Roles Used
+
+| Role | Purpose | Tools | Mode |
+|------|---------|-------|------|
+| `spec_generator` | Generate agent specification | Read, Glob, Grep | Read-only |
+| `implementer` | Create agent code | Read, Glob, Grep, Edit, Bash | Accept edits |
+| `validator` | Run validation checks | Read, Glob, Grep, Bash | Read-only |
+| `reviewer` | Review implementation quality | Read, Glob, Grep | Read-only |
+| `fixer` | Fix issues from validation/review | Read, Glob, Grep, Edit, Bash | Accept edits |
+
 ---
 
 ## Key Takeaways
@@ -255,3 +389,4 @@ uv run python 04_spec_loop_factory.py --backend {backend} --spec spec.json [--ma
 3. **Spec-driven loops automate delivery:** Implement → Check → Review until done
 4. **Backend agnostic:** Same factory code works with Claude, Codex, OpenCode
 5. **No API keys needed:** Works with CLI subscriptions
+6. **Agent Factory:** Combines all concepts to automate agent creation end-to-end

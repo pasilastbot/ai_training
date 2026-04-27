@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Weather Agent{% endblock %}
+{% block content %}
+<h2>🌤 Weather Dashboard</h2>
+<p class="lead">{{ today }}, {{ today_date }}</p>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Saved Locations</h5>
+                <p class="display-6">{{ stats.get('total_locations', 0) }}</p>
+                <a href="/locations" class="btn btn-sm btn-outline-primary">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Cached Data</h5>
+                <p class="display-6">{{ stats.get('cached_weather_entries', 0) }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Quick Actions</h5>
+                <a href="/search" class="btn btn-primary w-100 mb-2">Search Weather</a>
+                <a href="/chat" class="btn btn-outline-primary w-100">Chat with Agent</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Your Locations</h4>
+        {% if locations %}
+        <ul class="list-group">
+            {% for loc in locations %}
+            <li class="list-group-item">
+                <strong>{{ loc.name }}</strong> - {{ loc.city }}
+                <a href="/weather/{{ loc.city }}" class="btn btn-sm btn-outline-primary float-end">View Weather</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No locations saved yet. <a href="/locations">Add your first location</a>.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

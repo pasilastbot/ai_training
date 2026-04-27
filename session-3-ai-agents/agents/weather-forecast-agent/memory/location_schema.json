@@ -1,0 +1,40 @@
+{
+  "name": "location_schema",
+  "description": "Schema for saved locations",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "description": "Unique identifier for the location"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "description": "User-friendly name (e.g., 'Home', 'Work')"
+    },
+    {
+      "name": "city",
+      "type": "string",
+      "description": "City name"
+    },
+    {
+      "name": "coordinates",
+      "type": "object",
+      "properties": {
+        "lat": {"type": "number"},
+        "lon": {"type": "number"}
+      },
+      "description": "Geographic coordinates"
+    },
+    {
+      "name": "timezone",
+      "type": "string",
+      "description": "Timezone identifier (e.g., 'Europe/Helsinki')"
+    },
+    {
+      "name": "created_at",
+      "type": "string",
+      "description": "ISO datetime when location was saved"
+    }
+  ]
+}

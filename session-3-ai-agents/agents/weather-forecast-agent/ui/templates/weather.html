@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}{{ location_name }} - Weather{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active">{{ location_name }}</li>
+    </ol>
+</nav>
+
+<h2>Weather for {{ location_name }}</h2>
+
+{% if alerts and alerts|length > 0 %}
+<div class="row mb-3">
+    {% for alert in alerts %}
+    <div class="col-12">
+        <div class="alert-banner alert-{{ alert.urgency or 'medium' }}">
+            <strong>⚠️ {{ alert.severity }}: {{ alert.type }}</strong>
+            <p class="mb-0 mt-1">{{ alert.description }}</p>
+            {% if alert.valid_until %}<small class="text-muted">Valid until: {{ alert.valid_until }}</small>{% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if weather and not weather.error %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h3>{{ temperature }} {{ weather.get('condition', 'Unknown') }}</h3>
+        <p class="text-muted">{{ location_name }}</p>
+        
+        <div class="row">
+            <div class="col-md-3">
+                <strong>Temperature</strong><br>
+                {{ weather.get('temperature', 'N/A') }} {{ '°C' if units == 'metric' else '°F' }}
+            </div>
+            <div class="col-md-3">
+                <strong>Feels Like</strong><br>
+                {{ weather.get('feels_like', 'N/A') }} {{ '°C' if units == 'metric' else '°F' }}
+            </div>
+            <div class="col-md-3">
+                <strong>Humidity</strong><br>
+                {{ weather.get('humidity', 'N/A') }}%
+            </div>
+            <div class="col-md-3">
+                <strong>Wind</strong><br>
+                {{ weather.get('wind', 'N/A') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% elif weather.error %}
+<div class="alert alert-danger">
+    Could not fetch weather: {{ weather.error }}
+</div>
+{% else %}
+<div class="alert alert-info">
+    Loading weather data...
+</div>
+{% endif %}
+
+{% if forecast and forecast|length > 0 %}
+<h4 class="mt-4">Forecast</h4>
+<div class="row">
+    {% for day in forecast %}
+    <div class="col-md-{{ '12//forecast|length' if forecast|length < 4 else '3' }} mb-3">
+        <div class="card weather-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ day.get('day', 'Day') }}</h5>
+                <p class="text-muted">{{ day.get('condition', '') }}</p>
+                <p>
+                    <span class="badge bg-primary">{{ day.get('high', 'N/A') }}°</span>
+                    <span class="badge bg-secondary">{{ day.get('low', 'N/A') }}°</span>
+                </p>
+                {% if day.get('precipitation') %}
+                <small class="text-muted">Rain: {{ day.precipitation }}%</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% set temperature = weather.get('temperature', 'N/A') if weather else 'N/A' %}
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <h5>Quick Actions</h5>
+        <div class="list-group">
+            <a href="/activities?location={{ location }}&units={{ units }}" class="list-group-item list-group-item-action">🏃 Activity Recommendations</a>
+            <a href="/forecast?location={{ location }}&units={{ units }}" class="list-group-item list-group-item-action">📅 Full Forecast</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

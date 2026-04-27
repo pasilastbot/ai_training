@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Forecast - Weather Agent{% endblock %}
+{% block content %}
+<h2>Weather Forecast</h2>
+
+<form method="GET" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Location</label>
+        <input type="text" name="location" class="form-control" placeholder="e.g., Helsinki, Tokyo" value="{{ location or '' }}" required>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Days</label>
+        <select name="days" class="form-select">
+            <option value="3" {{ 'selected' if days == 3 }}>3 days</option>
+            <option value="5" {{ 'selected' if days == 5 }}>5 days</option>
+            <option value="7" {{ 'selected' if days == 7 }}>7 days</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Units</label>
+        <select name="units" class="form-select">
+            <option value="metric" {{ 'selected' if units == 'metric' }}>Celsius</option>
+            <option value="imperial" {{ 'selected' if units == 'imperial' }}>Fahrenheit</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Get Forecast</button>
+    </div>
+</form>
+
+{% if forecast %}
+<h3>Forecast for {{ location_name }}</h3>
+<div class="row">
+    {% for day in forecast %}
+    <div class="col-md-4 mb-3">
+        <div class="card weather-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ day.get('day', 'Day') }}</h5>
+                <p class="lead mb-2">{{ day.get('condition', '') }}</p>
+                <div class="d-flex justify-content-between">
+                    <span class="text-danger">H: {{ day.get('high', 'N/A') }}{{ '°C' if units == 'metric' else '°F' }}</span>
+                    <span class="text-primary">L: {{ day.get('low', 'N/A') }}{{ '°C' if units == 'metric' else '°F' }}</span>
+                </div>
+                {% if day.get('precipitation') %}
+                <small class="text-muted mt-2 d-block">Precipitation: {{ day.precipitation }}%</small>
+                {% endif %}
+                {% if day.get('humidity') %}
+                <small class="text-muted d-block">Humidity: {{ day.humidity }}%</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% elif location %}
+<div class="alert alert-warning">
+    Could not fetch forecast for {{ location }}. Please try again or check the location name.
+</div>
+{% endif %}
+{% endblock %}

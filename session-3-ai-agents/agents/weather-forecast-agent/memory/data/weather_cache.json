@@ -1,0 +1,17 @@
+{
+  "oulu": {
+    "location": "Oulu",
+    "data": {
+      "temperature": 4,
+      "condition": "Partly sunny",
+      "humidity": 52,
+      "wind": "11 km/h NW",
+      "feels_like": 0,
+      "visibility": "10 km",
+      "pressure": "1005 hPa",
+      "location_name": "Oulu, Finland"
+    },
+    "fetched_at": "2026-04-27T08:41:18.944443",
+    "expires_at": "2026-04-27T09:11:18.944443"
+  }
+}

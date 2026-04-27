@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Chat - Weather Agent{% endblock %}
+{% block content %}
+<div class="d-flex flex-column" style="height: calc(100vh - 100px);">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">💬 Chat with Weather Agent</h2>
+    </div>
+    
+    <div class="status-panel mb-3" id="status-panel" style="display: none;">
+        <div id="status-messages"></div>
+    </div>
+    
+    <div class="card flex-grow-1 mb-3">
+        <div class="card-body overflow-auto" id="chat-messages" style="max-height: 50vh;">
+            <div class="text-muted text-center py-5" id="welcome-message">
+                <h5>Welcome to the Weather Agent!</h5>
+                <p>Ask me about weather anywhere in the world.</p>
+                <p class="small">Try: "What's the weather in Helsinki?" or "Is it going to rain tomorrow?"</p>
+            </div>
+        </div>
+    </div>
+    
+    <form id="chat-form" class="d-flex gap-2">
+        <input type="text" id="chat-input" class="form-control form-control-lg" 
+               placeholder="Ask about weather..." autofocus>
+        <button type="submit" class="btn btn-primary btn-lg px-4" id="send-btn">Send</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const chatMessages = document.getElementById('chat-messages');
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+const welcomeMessage = document.getElementById('welcome-message');
+const statusPanel = document.getElementById('status-panel');
+const statusMessages = document.getElementById('status-messages');
+
+function addStatusMessage(message) {
+    statusPanel.style.display = 'block';
+    const line = document.createElement('div');
+    line.textContent = message;
+    statusMessages.appendChild(line);
+    statusMessages.scrollTop = statusMessages.scrollHeight;
+}
+
+function clearStatus() {
+    statusMessages.innerHTML = '';
+}
+
+function addMessage(content, isUser) {
+    if (welcomeMessage) welcomeMessage.remove();
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `mb-3 ${isUser ? 'text-end' : ''}`;
+    
+    const bubble = document.createElement('div');
+    bubble.className = `chat-bubble d-inline-block p-3 rounded-3 ${isUser ? 'bg-primary text-white' : 'bg-light'}`;
+    bubble.style.textAlign = 'left';
+    bubble.style.whiteSpace = 'pre-wrap';
+    bubble.textContent = content;
+    
+    messageDiv.appendChild(bubble);
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function setLoading(loading) {
+    chatInput.disabled = loading;
+    sendBtn.disabled = loading;
+    sendBtn.textContent = loading ? '...' : 'Send';
+}
+
+chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const message = chatInput.value.trim();
+    if (!message) return;
+    
+    addMessage(message, true);
+    chatInput.value = '';
+    setLoading(true);
+    clearStatus();
+    
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let finalResponse = '';
+        
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            const text = decoder.decode(value);
+            const lines = text.split('\n');
+            
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        const data = JSON.parse(line.slice(6));
+                        if (data.type === 'status' || data.type === 'error') {
+                            addStatusMessage(data.message);
+                        } else if (data.type === 'response') {
+                            finalResponse = data.message;
+                        } else if (data.type === 'done') {
+                            addMessage(finalResponse || 'No response', false);
+                        }
+                    } catch (e) {}
+                }
+            }
+        }
+    } catch (error) {
+        addMessage('Error communicating with agent. Please try again.', false);
+    } finally {
+        setLoading(false);
+        chatInput.focus();
+    }
+});
+</script>
+{% endblock %}

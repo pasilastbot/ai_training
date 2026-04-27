@@ -1,0 +1,32 @@
+{
+  "name": "string-utils-demo",
+  "goal": "Create a Python module called string_utils.py with three simple string utility functions:\n1. reverse_string(s) - returns the reversed string\n2. count_vowels(s) - returns count of vowels (a,e,i,o,u case-insensitive)\n3. is_palindrome(s) - returns True if string is a palindrome (ignoring case and spaces)",
+  "max_iterations": 3,
+  "agent_max_turns": 12,
+  "permission_mode": "acceptEdits",
+  "allowed_tools": ["Read", "Glob", "Grep", "Edit", "Bash"],
+  "implement_instructions": "Create the string_utils.py file with the three required functions. Make sure each function handles edge cases like empty strings. Keep the implementation simple and Pythonic.",
+  "review_instructions": "Verify that all three functions exist and pass the test cases. Return FINAL_STATUS: APPROVED if all checks pass, otherwise FINAL_STATUS: CHANGES_REQUIRED.",
+  "checks": [
+    {
+      "name": "syntax",
+      "command": "{python} -m py_compile string_utils.py",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "test-reverse",
+      "command": "{python} -c \"from string_utils import reverse_string; assert reverse_string('hello') == 'olleh'; assert reverse_string('') == ''; print('reverse_string OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "test-vowels",
+      "command": "{python} -c \"from string_utils import count_vowels; assert count_vowels('hello') == 2; assert count_vowels('AEIOU') == 5; assert count_vowels('xyz') == 0; print('count_vowels OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "test-palindrome",
+      "command": "{python} -c \"from string_utils import is_palindrome; assert is_palindrome('racecar') == True; assert is_palindrome('A man a plan a canal Panama') == True; assert is_palindrome('hello') == False; print('is_palindrome OK')\"",
+      "timeout_seconds": 30
+    }
+  ]
+}

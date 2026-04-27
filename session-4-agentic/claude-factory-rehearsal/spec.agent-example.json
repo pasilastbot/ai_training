@@ -1,0 +1,112 @@
+{
+  "name": "weather-forecast-agent",
+  "description": "An AI agent that provides weather forecasts, alerts, and location-based weather recommendations",
+  "capabilities": [
+    "Get current weather for any location",
+    "Provide multi-day forecasts",
+    "Send severe weather alerts",
+    "Recommend activities based on weather",
+    "Track favorite locations"
+  ],
+  "tools": [
+    {
+      "name": "get_weather",
+      "description": "Get current weather conditions for a location",
+      "parameters": [
+        {"name": "location", "type": "string", "required": true, "description": "City name or coordinates"},
+        {"name": "units", "type": "string", "required": false, "description": "metric or imperial"}
+      ]
+    },
+    {
+      "name": "get_forecast",
+      "description": "Get multi-day weather forecast",
+      "parameters": [
+        {"name": "location", "type": "string", "required": true, "description": "City name or coordinates"},
+        {"name": "days", "type": "integer", "required": false, "description": "Number of days (1-7)"}
+      ]
+    },
+    {
+      "name": "store_location",
+      "description": "Save a favorite location for quick access",
+      "parameters": [
+        {"name": "name", "type": "string", "required": true, "description": "Location nickname"},
+        {"name": "location", "type": "string", "required": true, "description": "City name or coordinates"}
+      ]
+    },
+    {
+      "name": "retrieve_locations",
+      "description": "Get saved favorite locations",
+      "parameters": []
+    }
+  ],
+  "skills": [
+    {
+      "name": "weather-lookup",
+      "description": "Fetching weather data using Google Search and weather APIs",
+      "tools": ["get_weather", "get_forecast"]
+    },
+    {
+      "name": "activity-recommendation",
+      "description": "Recommending outdoor activities based on weather conditions",
+      "tools": ["get_weather", "get_forecast"]
+    },
+    {
+      "name": "location-management",
+      "description": "Managing saved locations for quick weather checks",
+      "tools": ["store_location", "retrieve_locations"]
+    }
+  ],
+  "subagents": [
+    {
+      "name": "weather_search",
+      "purpose": "Search for weather data using Google Search when direct API fails"
+    },
+    {
+      "name": "alert_checker",
+      "purpose": "Check for severe weather alerts in a region"
+    }
+  ],
+  "memory_schemas": [
+    {
+      "name": "location_schema",
+      "description": "Schema for saved locations",
+      "fields": [
+        {"name": "id", "type": "string"},
+        {"name": "name", "type": "string"},
+        {"name": "city", "type": "string"},
+        {"name": "coordinates", "type": "object", "properties": ["lat", "lon"]},
+        {"name": "timezone", "type": "string"},
+        {"name": "created_at", "type": "datetime"}
+      ]
+    },
+    {
+      "name": "weather_cache_schema",
+      "description": "Cached weather data to avoid redundant API calls",
+      "fields": [
+        {"name": "location", "type": "string"},
+        {"name": "data", "type": "object"},
+        {"name": "fetched_at", "type": "datetime"},
+        {"name": "expires_at", "type": "datetime"}
+      ]
+    }
+  ],
+  "api_endpoints": [
+    {"method": "GET", "path": "/health", "description": "Health check endpoint"},
+    {"method": "GET", "path": "/weather/{location}", "description": "Get current weather"},
+    {"method": "GET", "path": "/forecast/{location}", "description": "Get weather forecast"},
+    {"method": "GET", "path": "/locations", "description": "List saved locations"},
+    {"method": "POST", "path": "/locations", "description": "Add a saved location"},
+    {"method": "DELETE", "path": "/locations/{id}", "description": "Remove a saved location"}
+  ],
+  "ui_views": [
+    {"name": "index", "description": "Dashboard showing weather for favorite locations"},
+    {"name": "search", "description": "Search for weather by location"},
+    {"name": "forecast", "description": "Detailed multi-day forecast view"},
+    {"name": "locations", "description": "Manage saved locations"},
+    {"name": "chat", "description": "Chat interface for natural language queries"}
+  ],
+  "environment_variables": [
+    {"name": "GEMINI_API_KEY", "required": true, "description": "Gemini API key for AI features"},
+    {"name": "OPENWEATHER_API_KEY", "required": false, "description": "OpenWeatherMap API key (optional, uses Google Search otherwise)"}
+  ]
+}

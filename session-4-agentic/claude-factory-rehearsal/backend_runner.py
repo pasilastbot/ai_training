@@ -320,6 +320,10 @@ async def _run_opencode(options: BackendRunOptions) -> BackendRunResult:
 
 
 async def run_backend(options: BackendRunOptions) -> BackendRunResult:
+    prompt_preview = options.prompt[:500] + '...' if len(options.prompt) > 500 else options.prompt
+    print(f'\n=== PROMPT TO {options.backend.upper()} ===')
+    print(prompt_preview)
+    print('=== END PROMPT ===\n')
     if options.backend == 'claude':
         return await _run_claude(options)
     if options.backend == 'codex':

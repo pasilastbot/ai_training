@@ -1,0 +1,37 @@
+{
+  "name": "implement-rate-limiter",
+  "goal": "Create a new file rate_limiter.py implementing a RateLimiter class. The class should limit function calls to a maximum number within a sliding time window. Requirements:\n\n1. Constructor takes max_calls (int) and window_seconds (float)\n2. Method is_allowed() returns True if under limit, False if over\n3. Method reset() clears the call history\n4. The limiter should use a sliding window (old calls outside window are not counted)\n5. Must handle edge cases: exactly at limit should return True, one over should return False",
+  "max_iterations": 5,
+  "agent_max_turns": 25,
+  "permission_mode": "acceptEdits",
+  "allowed_tools": ["Read", "Glob", "Grep", "Edit", "Bash"],
+  "implement_instructions": "Create rate_limiter.py with a RateLimiter class. Use time.time() for timestamps. Store call timestamps in a list. In is_allowed(), first prune old timestamps outside the window, then check if adding a new call would exceed max_calls. If allowed, record the timestamp and return True. Be careful: at exactly max_calls it should still return True (that's the Nth allowed call), but max_calls+1 should return False.",
+  "review_instructions": "Verify all tests pass. Check edge cases are handled correctly. Return FINAL_STATUS: APPROVED if all checks pass, FINAL_STATUS: CHANGES_REQUIRED if any fail.",
+  "checks": [
+    {
+      "name": "file-exists",
+      "command": "test -f rate_limiter.py && echo 'OK'",
+      "timeout_seconds": 10
+    },
+    {
+      "name": "syntax-check",
+      "command": "{python} -m py_compile rate_limiter.py",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "basic-rate-limit",
+      "command": "{python} -c \"from rate_limiter import RateLimiter; r = RateLimiter(3, 1.0); results = [r.is_allowed() for _ in range(5)]; assert results == [True, True, True, False, False], f'Expected [T,T,T,F,F] got {results}'; print('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "window-reset",
+      "command": "{python} -c \"import time; from rate_limiter import RateLimiter; r = RateLimiter(2, 0.1); r.is_allowed(); r.is_allowed(); assert r.is_allowed() == False, 'Should be blocked'; time.sleep(0.15); assert r.is_allowed() == True, 'Should allow after window'; print('OK')\"",
+      "timeout_seconds": 30
+    },
+    {
+      "name": "manual-reset",
+      "command": "{python} -c \"from rate_limiter import RateLimiter; r = RateLimiter(1, 10.0); r.is_allowed(); assert r.is_allowed() == False; r.reset(); assert r.is_allowed() == True, 'Should allow after reset'; print('OK')\"",
+      "timeout_seconds": 30
+    }
+  ]
+}

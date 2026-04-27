@@ -1,0 +1,26 @@
+{
+  "name": "weather_cache_schema",
+  "description": "Cached weather data to avoid redundant API calls",
+  "fields": [
+    {
+      "name": "location",
+      "type": "string",
+      "description": "Location query string"
+    },
+    {
+      "name": "data",
+      "type": "object",
+      "description": "Weather response data"
+    },
+    {
+      "name": "fetched_at",
+      "type": "string",
+      "description": "ISO datetime when data was fetched"
+    },
+    {
+      "name": "expires_at",
+      "type": "string",
+      "description": "ISO datetime when cache expires"
+    }
+  ]
+}
