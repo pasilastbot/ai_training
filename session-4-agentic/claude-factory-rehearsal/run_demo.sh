@@ -57,6 +57,23 @@ if [[ "$?" -eq 0 ]]; then
 fi
 set -e
 
+if command -v claude >/dev/null 2>&1; then
+  set +e
+  claude_check=$(claude --version 2>&1)
+  claude_check_status=$?
+  set -e
+  if [[ "$claude_check_status" -eq 0 ]]; then
+    echo "[ok] claude CLI is available"
+    echo "$claude_check" | head -1
+  else
+    echo "[warn] claude CLI check failed (possibly at API limit or auth issue)"
+    claude_sdk_ok=0
+  fi
+else
+  echo "[warn] claude CLI not found (Claude backend will be skipped)"
+  claude_sdk_ok=0
+fi
+
 if command -v codex >/dev/null 2>&1; then
   echo "[ok] codex binary found"
   codex --version || true
