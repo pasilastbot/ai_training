@@ -38,7 +38,7 @@ FACTORIES: dict[str, FactorySpec] = {
 }
 
 
-def run_factory(spec: FactorySpec, task: str, backend: str) -> str:
+def run_factory(spec: FactorySpec, task: str, backend: str, timeout: int) -> str:
     prompt = f'{spec.role}\n\nTask:\n{task}'
     result = run_sync(
         BackendRunOptions(
@@ -48,6 +48,7 @@ def run_factory(spec: FactorySpec, task: str, backend: str) -> str:
             allowed_tools=spec.allowed_tools,
             permission_mode=spec.permission_mode,
             max_turns=spec.max_turns,
+            timeout_seconds=timeout,
         )
     )
     if result.ok:
@@ -60,6 +61,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('factory')
     parser.add_argument('task', nargs='+')
     parser.add_argument('--backend', choices=['claude', 'codex', 'opencode'], default='claude')
+    parser.add_argument('--timeout', type=int, default=180, help='Timeout in seconds (default: 180)')
     return parser.parse_args()
 
 
@@ -71,7 +73,7 @@ def main() -> None:
         available = ', '.join(sorted(FACTORIES))
         raise SystemExit(f'Unknown factory "{factory_name}". Available factories: {available}')
 
-    result = run_factory(FACTORIES[factory_name], task, backend=args.backend)
+    result = run_factory(FACTORIES[factory_name], task, backend=args.backend, timeout=args.timeout)
     print(f'\n=== FACTORY: {factory_name} ===\n')
     print(result)
 

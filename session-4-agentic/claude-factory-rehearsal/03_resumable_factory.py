@@ -20,7 +20,7 @@ def save_session_id(backend: str, session_id: str) -> None:
     session_file_for(backend).write_text(session_id, encoding='utf-8')
 
 
-def run(task: str, resume: bool, backend: str) -> None:
+def run(task: str, resume: bool, backend: str, timeout: int) -> None:
     resume_id = load_session_id(backend) if resume else None
 
     result = run_sync(
@@ -32,6 +32,7 @@ def run(task: str, resume: bool, backend: str) -> None:
             permission_mode='acceptEdits',
             max_turns=20,
             resume_session_id=resume_id,
+            timeout_seconds=timeout,
         )
     )
 
@@ -51,6 +52,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('mode', choices=['start', 'resume'])
     parser.add_argument('task', nargs='+')
     parser.add_argument('--backend', choices=['claude', 'codex', 'opencode'], default='claude')
+    parser.add_argument('--timeout', type=int, default=180, help='Timeout in seconds (default: 180)')
     return parser.parse_args()
 
 
@@ -60,7 +62,7 @@ def main() -> None:
     if mode not in {'start', 'resume'}:
         raise SystemExit('First argument must be "start" or "resume".')
     task = ' '.join(args.task).strip()
-    run(task, resume=mode == 'resume', backend=args.backend)
+    run(task, resume=mode == 'resume', backend=args.backend, timeout=args.timeout)
 
 
 if __name__ == '__main__':

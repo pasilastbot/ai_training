@@ -14,9 +14,10 @@ class FactorySpec:
 
 
 class Factory:
-    def __init__(self, spec: FactorySpec, backend: str) -> None:
+    def __init__(self, spec: FactorySpec, backend: str, timeout: int = 180) -> None:
         self.spec = spec
         self.backend = backend
+        self.timeout = timeout
 
     def run(self, task: str) -> str:
         prompt = self.spec.prompt_template.format(task=task)
@@ -28,6 +29,7 @@ class Factory:
                 allowed_tools=self.spec.allowed_tools,
                 max_turns=self.spec.max_turns,
                 permission_mode=self.spec.permission_mode,
+                timeout_seconds=self.timeout,
             )
         )
         if result.ok:
@@ -39,6 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument('task', nargs='*')
     parser.add_argument('--backend', choices=['claude', 'codex', 'opencode'], default='claude')
+    parser.add_argument('--timeout', type=int, default=180, help='Timeout in seconds (default: 180)')
     return parser.parse_args()
 
 
@@ -54,6 +57,7 @@ def main() -> None:
             max_turns=15,
         ),
         backend=args.backend,
+        timeout=args.timeout,
     )
 
     result = factory.run(task)

@@ -22,6 +22,7 @@ class BackendRunOptions:
     max_turns: int
     resume_session_id: str | None = None
     model: str | None = None
+    timeout_seconds: int = 180
 
 
 @dataclass
@@ -43,39 +44,55 @@ async def _run_claude(options: BackendRunOptions) -> BackendRunResult:
 
     last_session_id: str | None = options.resume_session_id
     final_result: BackendRunResult | None = None
-    async for message in query(
-        prompt=options.prompt,
-        options=ClaudeAgentOptions(
-            allowed_tools=options.allowed_tools,
-            permission_mode=options.permission_mode,
-            max_turns=options.max_turns,
-            setting_sources=['project'],
-            resume=options.resume_session_id,
-            model=options.model,
-        ),
-    ):
-        if isinstance(message, SystemMessage) and getattr(message, 'subtype', None) == 'init':
-            maybe_id = getattr(message, 'session_id', None)
-            if maybe_id:
-                last_session_id = str(maybe_id)
+    try:
+        async for message in query(
+            prompt=options.prompt,
+            options=ClaudeAgentOptions(
+                allowed_tools=options.allowed_tools,
+                permission_mode=options.permission_mode,
+                max_turns=options.max_turns,
+                setting_sources=['project'],
+                resume=options.resume_session_id,
+                model=options.model,
+            ),
+        ):
+            if isinstance(message, SystemMessage) and getattr(message, 'subtype', None) == 'init':
+                maybe_id = getattr(message, 'session_id', None)
+                if maybe_id:
+                    last_session_id = str(maybe_id)
 
-        if isinstance(message, ResultMessage):
-            if message.session_id:
-                last_session_id = str(message.session_id)
-            if message.subtype == 'success':
-                final_result = BackendRunResult(
-                    ok=True,
-                    text=message.result or '',
-                    stop_reason=message.subtype,
-                    session_id=last_session_id,
-                )
-            else:
-                final_result = BackendRunResult(
-                    ok=False,
-                    text='',
-                    stop_reason=message.subtype,
-                    session_id=last_session_id,
-                )
+            if isinstance(message, ResultMessage):
+                if message.session_id:
+                    last_session_id = str(message.session_id)
+                if message.subtype == 'success':
+                    final_result = BackendRunResult(
+                        ok=True,
+                        text=message.result or '',
+                        stop_reason=message.subtype,
+                        session_id=last_session_id,
+                    )
+                else:
+                    final_result = BackendRunResult(
+                        ok=False,
+                        text='',
+                        stop_reason=message.subtype,
+                        session_id=last_session_id,
+                    )
+    except Exception as e:
+        logger.error('Claude backend error: %s', e)
+        if 'limit' in str(e).lower() or 'subscription' in str(e).lower():
+            return BackendRunResult(
+                ok=False,
+                text='',
+                stop_reason='claude_api_limit',
+                session_id=last_session_id,
+            )
+        return BackendRunResult(
+            ok=False,
+            text='',
+            stop_reason=f'claude_error: {e}',
+            session_id=last_session_id,
+        )
 
     if final_result is not None:
         return final_result
@@ -107,6 +124,8 @@ async def _run_codex(options: BackendRunOptions) -> BackendRunResult:
     else:
         cmd.append(options.prompt)
 
+    logger.debug('Codex command prepared: %s', cmd)
+
     process = await asyncio.create_subprocess_exec(
         *cmd,
         cwd=str(options.cwd),
@@ -116,9 +135,10 @@ async def _run_codex(options: BackendRunOptions) -> BackendRunResult:
     )
     try:
         stdout_bytes, stderr_bytes = await asyncio.wait_for(
-            process.communicate(), timeout=120
+            process.communicate(), timeout=options.timeout_seconds
         )
     except asyncio.TimeoutError:
+        logger.error('Codex backend timed out after %ds (cwd=%s)', options.timeout_seconds, options.cwd)
         try:
             process.kill()
         except ProcessLookupError:
@@ -130,7 +150,7 @@ async def _run_codex(options: BackendRunOptions) -> BackendRunResult:
         return BackendRunResult(
             ok=False,
             text='',
-            stop_reason='codex_error: timeout after 120s',
+            stop_reason=f'codex_error: timeout after {options.timeout_seconds}s',
             session_id=None,
         )
     stdout_text = stdout_bytes.decode('utf-8', errors='replace').strip()
@@ -138,6 +158,11 @@ async def _run_codex(options: BackendRunOptions) -> BackendRunResult:
 
     if process.returncode != 0:
         details = stderr_text or stdout_text or f'codex exit code {process.returncode}'
+        logger.error(
+            'Codex backend failed (code=%s, details=%s)',
+            process.returncode,
+            details,
+        )
         return BackendRunResult(
             ok=False,
             text='',
@@ -169,7 +194,16 @@ async def _run_codex(options: BackendRunOptions) -> BackendRunResult:
                     result_text = text
 
     if not result_text:
+        logger.warning(
+            'Codex backend returned no parsed agent message; using raw stdout'
+        )
         result_text = stdout_text
+
+    logger.info(
+        'Codex backend completed (session_id=%s, text_len=%d)',
+        session_id,
+        len(result_text),
+    )
 
     return BackendRunResult(
         ok=True,
@@ -193,6 +227,8 @@ async def _run_opencode(options: BackendRunOptions) -> BackendRunResult:
         cmd.extend(['--session', options.resume_session_id])
     cmd.append(options.prompt)
 
+    logger.debug('Opencode command prepared: %s', cmd)
+
     process = await asyncio.create_subprocess_exec(
         *cmd,
         cwd=str(options.cwd),
@@ -202,9 +238,10 @@ async def _run_opencode(options: BackendRunOptions) -> BackendRunResult:
     )
     try:
         stdout_bytes, stderr_bytes = await asyncio.wait_for(
-            process.communicate(), timeout=120
+            process.communicate(), timeout=options.timeout_seconds
         )
     except asyncio.TimeoutError:
+        logger.error('Opencode backend timed out after %ds (cwd=%s)', options.timeout_seconds, options.cwd)
         try:
             process.kill()
         except ProcessLookupError:
@@ -216,7 +253,7 @@ async def _run_opencode(options: BackendRunOptions) -> BackendRunResult:
         return BackendRunResult(
             ok=False,
             text='',
-            stop_reason='opencode_error: timeout after 120s',
+            stop_reason=f'opencode_error: timeout after {options.timeout_seconds}s',
             session_id=None,
         )
     stdout_text = stdout_bytes.decode('utf-8', errors='replace').strip()
@@ -224,6 +261,11 @@ async def _run_opencode(options: BackendRunOptions) -> BackendRunResult:
 
     if process.returncode != 0:
         details = stderr_text or stdout_text or f'opencode exit code {process.returncode}'
+        logger.error(
+            'Opencode backend failed (code=%s, details=%s)',
+            process.returncode,
+            details,
+        )
         return BackendRunResult(
             ok=False,
             text='',
@@ -258,7 +300,16 @@ async def _run_opencode(options: BackendRunOptions) -> BackendRunResult:
                 result_text = part_text
 
     if not result_text:
+        logger.warning(
+            'Opencode backend returned no parsed message; using raw stdout'
+        )
         result_text = stdout_text
+
+    logger.info(
+        'Opencode backend completed (session_id=%s, text_len=%d)',
+        session_id,
+        len(result_text),
+    )
 
     return BackendRunResult(
         ok=True,
