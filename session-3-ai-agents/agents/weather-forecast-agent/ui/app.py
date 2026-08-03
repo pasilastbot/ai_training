@@ -6,9 +6,9 @@ Flask-based web interface for the weather forecast agent.
 
 Usage:
   python ui/app.py
-  # Or: FLASK_APP=ui/app.py flask run --port 5003
+  # Or: FLASK_APP=ui/app.py flask run --port 5005
 
-Open http://localhost:5003 in your browser.
+Open http://localhost:5005 in your browser.
 """
 
 import json
@@ -905,4 +905,4 @@ for name, content in templates.items():
 # ==================== Run ====================
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5003, debug=True)
+    app.run(host="0.0.0.0", port=5005, debug=True)

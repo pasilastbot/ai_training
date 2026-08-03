@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Apartments - Energy Advisor{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Customer Apartments</h1>
+        <p class="text-gray-600">Manage customer apartment profiles for personalized energy advice</p>
+    </div>
+    <a href="/apartments/new" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition">
+        + Register Apartment
+    </a>
+</div>
+
+<!-- Search -->
+<div class="bg-white rounded-xl shadow-md p-4 mb-6">
+    <form action="/apartments" method="get" class="flex space-x-4">
+        <input type="text" name="q" value="{{ query or '' }}" 
+            class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500"
+            placeholder="Search by customer name, city, or heating type...">
+        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+            Search
+        </button>
+    </form>
+</div>
+
+<!-- Apartments Table -->
+<div class="bg-white rounded-xl shadow-md overflow-hidden">
+    {% if apartments %}
+    <table class="w-full">
+        <thead class="bg-gray-50">
+            <tr class="text-left text-gray-500 text-sm">
+                <th class="px-6 py-4">Customer</th>
+                <th class="px-6 py-4">Location</th>
+                <th class="px-6 py-4">Building Type</th>
+                <th class="px-6 py-4">Heating</th>
+                <th class="px-6 py-4">Size</th>
+                <th class="px-6 py-4">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for apt in apartments %}
+            <tr class="border-t hover:bg-gray-50 transition">
+                <td class="px-6 py-4 font-medium text-gray-800">{{ apt.customer_name or 'Unknown' }}</td>
+                <td class="px-6 py-4 text-gray-600">{{ apt.city or 'N/A' }}</td>
+                <td class="px-6 py-4 text-gray-600 capitalize">{{ (apt.building_type or 'N/A').replace('_', ' ') }}</td>
+                <td class="px-6 py-4">
+                    <span class="px-2 py-1 text-xs rounded-full 
+                        {% if apt.heating_type == 'district_heating' %}bg-green-100 text-green-800
+                        {% elif apt.heating_type == 'heat_pump' %}bg-blue-100 text-blue-800
+                        {% elif apt.heating_type == 'electric' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ (apt.heating_type or 'N/A').replace('_', ' ').title() }}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-gray-600">{{ apt.size_sqm or 'N/A' }} m²</td>
+                <td class="px-6 py-4">
+                    <a href="/apartments/{{ apt.id }}" class="text-green-600 hover:text-green-700 mr-4">View</a>
+                    <a href="/chat?apartment_id={{ apt.id }}" class="text-blue-600 hover:text-blue-700">Chat</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="p-12 text-center">
+        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-800 mb-2">No apartments found</h3>
+        <p class="text-gray-500 mb-4">{% if query %}No results for "{{ query }}"{% else %}Start by registering a customer apartment{% endif %}</p>
+        <a href="/apartments/new" class="inline-block bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+            Register First Apartment
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

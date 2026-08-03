@@ -1,0 +1,186 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Customer Apartment",
+  "description": "Schema for storing customer apartment details for energy optimization recommendations",
+  "type": "object",
+  "required": ["id", "customer_id"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique apartment identifier"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Customer identifier"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Customer name"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "street": { "type": "string" },
+        "city": { "type": "string" },
+        "postal_code": { "type": "string" },
+        "country": { "type": "string", "default": "Finland" }
+      }
+    },
+    "building_info": {
+      "type": "object",
+      "properties": {
+        "building_type": {
+          "type": "string",
+          "enum": ["apartment", "house", "townhouse", "row_house", "commercial", "office"],
+          "description": "Type of building"
+        },
+        "construction_year": {
+          "type": "integer",
+          "description": "Year building was constructed"
+        },
+        "total_floors": {
+          "type": "integer",
+          "description": "Total number of floors in building"
+        },
+        "floor_number": {
+          "type": "integer",
+          "description": "Floor where apartment is located"
+        },
+        "total_units": {
+          "type": "integer",
+          "description": "Total number of units in building"
+        }
+      }
+    },
+    "apartment_details": {
+      "type": "object",
+      "properties": {
+        "size_sqm": {
+          "type": "number",
+          "description": "Apartment size in square meters"
+        },
+        "rooms": {
+          "type": "integer",
+          "description": "Number of rooms"
+        },
+        "ceiling_height_m": {
+          "type": "number",
+          "description": "Ceiling height in meters"
+        },
+        "window_type": {
+          "type": "string",
+          "enum": ["single", "double", "triple", "energy_efficient"],
+          "description": "Type of windows"
+        },
+        "window_area_sqm": {
+          "type": "number",
+          "description": "Total window area in square meters"
+        },
+        "insulation_level": {
+          "type": "string",
+          "enum": ["poor", "basic", "good", "excellent"],
+          "description": "Quality of insulation"
+        }
+      }
+    },
+    "heating_system": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["district_heating", "electric", "heat_pump", "oil", "gas", "wood", "geothermal", "mixed"],
+          "description": "Primary heating type"
+        },
+        "radiator_type": {
+          "type": "string",
+          "enum": ["water", "electric", "floor_heating", "mixed"],
+          "description": "Type of radiators"
+        },
+        "thermostat_type": {
+          "type": "string",
+          "enum": ["manual", "programmable", "smart", "none"],
+          "description": "Type of thermostat"
+        },
+        "has_smart_controls": {
+          "type": "boolean",
+          "description": "Whether smart heating controls are installed"
+        },
+        "return_temperature_c": {
+          "type": "number",
+          "description": "Typical return water temperature in Celsius"
+        }
+      }
+    },
+    "energy_consumption": {
+      "type": "object",
+      "properties": {
+        "annual_heating_kwh": {
+          "type": "number",
+          "description": "Annual heating energy consumption in kWh"
+        },
+        "annual_electricity_kwh": {
+          "type": "number",
+          "description": "Annual electricity consumption in kWh"
+        },
+        "annual_cost_eur": {
+          "type": "number",
+          "description": "Annual energy cost in EUR"
+        },
+        "energy_class": {
+          "type": "string",
+          "enum": ["A", "B", "C", "D", "E", "F", "G"],
+          "description": "Energy efficiency class"
+        }
+      }
+    },
+    "occupancy": {
+      "type": "object",
+      "properties": {
+        "residents_count": {
+          "type": "integer",
+          "description": "Number of residents"
+        },
+        "occupancy_type": {
+          "type": "string",
+          "enum": ["owner", "rental", "housing_company"],
+          "description": "Type of occupancy"
+        },
+        "home_hours": {
+          "type": "string",
+          "enum": ["mostly_home", "work_hours_away", "irregular", "remote_work"],
+          "description": "Typical home occupancy pattern"
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "properties": {
+        "preferred_temp_c": {
+          "type": "number",
+          "description": "Preferred indoor temperature in Celsius"
+        },
+        "comfort_priority": {
+          "type": "string",
+          "enum": ["comfort", "balanced", "savings"],
+          "description": "Priority between comfort and savings"
+        },
+        "eco_conscious": {
+          "type": "boolean",
+          "description": "Whether customer prioritizes environmental impact"
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the apartment or customer"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

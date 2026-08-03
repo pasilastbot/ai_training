@@ -1,0 +1,13 @@
+{
+  "name": "user_profile_schema",
+  "description": "Stores user-level recipe preferences and dietary constraints.",
+  "fields": [
+    {"name": "user_id", "type": "string", "required": true, "description": "Unique user identifier."},
+    {"name": "dietary_restrictions", "type": "array[string]", "required": false, "description": "Diet/allergy constraints."},
+    {"name": "disliked_ingredients", "type": "array[string]", "required": false, "description": "Ingredients user avoids."},
+    {"name": "favorite_cuisines", "type": "array[string]", "required": false, "description": "Preferred cuisines."},
+    {"name": "max_cook_time_minutes", "type": "integer", "required": false, "description": "Default time budget."},
+    {"name": "created_at", "type": "string", "required": true, "description": "ISO timestamp."},
+    {"name": "updated_at", "type": "string", "required": true, "description": "ISO timestamp."}
+  ]
+}

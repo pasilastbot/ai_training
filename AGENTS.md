@@ -933,6 +933,7 @@ conditions), followed by command, options, requirements, and examples.
 | [qwen3-tts](.agents/skills/qwen3-tts/SKILL.md) | `npm run qwen3-tts` | Text-to-speech with voice/clone/design modes |
 | [play-audio](.agents/skills/play-audio/SKILL.md) | `npm run play-audio` | Play audio files via system player |
 | [sprite-animator](.agents/skills/sprite-animator/SKILL.md) | `npm run sprite-animator` | Generate sprite animation frames for games |
+| [video-avatar](.agents/skills/video-avatar/SKILL.md) | `npm run video-avatar` | Generate talking-head videos from portrait + script/audio |
 | [github-cli](.agents/skills/github-cli/SKILL.md) | `npm run github` | GitHub PRs, issues, releases, repos, workflows |
 | [data-indexing](.agents/skills/data-indexing/SKILL.md) | `npm run data-indexing` | Index documents into ChromaDB for semantic search |
 | [semantic-search](.agents/skills/semantic-search/SKILL.md) | `npm run semantic-search` | Vector search over ChromaDB-indexed documents |

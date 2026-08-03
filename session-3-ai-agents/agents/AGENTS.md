@@ -224,6 +224,8 @@ Register new agents by creating their folder structure. The framework automatica
 | `lunch-selection-agent` | Restaurant discovery, menu extraction, and personalized lunch recommendations | Active |
 | `tes-agent` | Finnish collective bargaining agreement (TES) indexing, comparison, and salary calculation | Active |
 | `holiday-planner` | Family holiday planning - understands whole family wishes, recommends and compares destinations | Active |
+| `energy-advisor` | AI energy advisor with Leanheat Building expertise, video avatar responses, and customer apartment tracking | Active |
+| `recipe-finder-agent` | Ingredient-aware recipe discovery, ranking, substitutions, and pantry personalization across CLI, API, and UI | Active |
 
 ---
 

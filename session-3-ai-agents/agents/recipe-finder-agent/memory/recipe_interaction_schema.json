@@ -1,0 +1,11 @@
+{
+  "name": "recipe_interaction_schema",
+  "description": "Stores interactions to improve ranking and personalization.",
+  "fields": [
+    {"name": "user_id", "type": "string", "required": true, "description": "Owner user identifier."},
+    {"name": "recipe_id", "type": "string", "required": true, "description": "Recipe identifier."},
+    {"name": "action", "type": "string", "required": true, "description": "One of: viewed, saved, cooked, liked, disliked."},
+    {"name": "rating", "type": "integer", "required": false, "description": "Optional 1-5 rating."},
+    {"name": "timestamp", "type": "string", "required": true, "description": "ISO timestamp."}
+  ]
+}

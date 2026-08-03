@@ -22,7 +22,7 @@ Usage:
   uv run python 05_agent_factory.py resume --backend claude "continue implementing"
 
   # Generate spec only (no implementation)
-  uv run python 05_agent_factory.py spec --backend claude "recipe finder agent"
+  uv run python 05_agent_factory.py spec --backend opencode "recipe finder agent"
 
   # Implement from existing spec file
   uv run python 05_agent_factory.py implement --backend claude --spec agent-spec.json

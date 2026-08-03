@@ -5,7 +5,7 @@ Weather Forecast Agent API
 FastAPI REST API for weather information and recommendations.
 
 Usage:
-  uvicorn api.main:app --reload --port 8003
+  uvicorn api.main:app --reload --port 8005
 
 Endpoints:
   GET  /health                     - Health check
@@ -343,4 +343,4 @@ Keep your response concise and helpful. If they need weather data, summarize wha
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8003)
+    uvicorn.run(app, host="0.0.0.0", port=8005)

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Results</h2>
+  <p class="meta">User: {{ user_id }} | Ingredients: {{ ingredients|join(', ') }}</p>
+</div>
+
+{% for recipe in recipes %}
+<div class="card">
+  <h3><a href="/recipe/{{ recipe.id }}?user_id={{ user_id }}">{{ recipe.title }}</a></h3>
+  <p class="meta">Score: {{ recipe.score }} | Time: {{ recipe.cook_time_minutes }} min | Difficulty: {{ recipe.difficulty }}</p>
+  <div>
+    {% for tag in recipe.dietary_tags %}
+      <span class="badge">{{ tag }}</span>
+    {% endfor %}
+  </div>
+  <p><strong>Matched:</strong> {{ recipe.matched_ingredients|join(', ') }}</p>
+  <p><strong>Missing:</strong> {{ recipe.missing_ingredients|join(', ') }}</p>
+</div>
+{% else %}
+<div class="card">
+  <p>No recipes found. Try broader filters.</p>
+</div>
+{% endfor %}
+{% endblock %}

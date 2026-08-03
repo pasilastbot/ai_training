@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Find recipes from what you have</h2>
+  <form method="post">
+    <label>User ID</label>
+    <input name="user_id" value="default" />
+
+    <label>Ingredients (comma-separated)</label>
+    <textarea name="ingredients" rows="3" placeholder="tomato, onion, garlic, chickpeas"></textarea>
+
+    <label>Dietary filters</label>
+    <input name="dietary_filters" placeholder="vegan, gluten-free" />
+
+    <label>Cuisine</label>
+    <input name="cuisine" placeholder="Italian" />
+
+    <label>Max cook time (minutes)</label>
+    <input name="max_cook_time_minutes" type="number" min="1" placeholder="30" />
+
+    <button type="submit">Search recipes</button>
+  </form>
+</div>
+{% endblock %}

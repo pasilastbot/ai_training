@@ -1,0 +1,13 @@
+{
+  "name": "search_session_schema",
+  "description": "Stores recent query context for conversational continuity.",
+  "fields": [
+    {"name": "session_id", "type": "string", "required": true, "description": "Conversation/session identifier."},
+    {"name": "user_id", "type": "string", "required": true, "description": "Owner user identifier."},
+    {"name": "query_text", "type": "string", "required": true, "description": "Original user request."},
+    {"name": "parsed_ingredients", "type": "array[string]", "required": false, "description": "Normalized ingredients from query."},
+    {"name": "filters", "type": "object", "required": false, "description": "Applied search filters."},
+    {"name": "result_recipe_ids", "type": "array[string]", "required": false, "description": "Returned recipe ids."},
+    {"name": "created_at", "type": "string", "required": true, "description": "ISO timestamp."}
+  ]
+}

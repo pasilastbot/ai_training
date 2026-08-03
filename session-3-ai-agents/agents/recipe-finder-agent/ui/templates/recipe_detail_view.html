@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+{% if recipe %}
+<div class="card">
+  <h2>{{ recipe.title }}</h2>
+  <p class="meta">Cuisine: {{ recipe.cuisine }} | Cook time: {{ recipe.cook_time_minutes }} min | Servings: {{ recipe.servings }}</p>
+  <h3>Ingredients</h3>
+  <ul>
+    {% for ingredient in recipe.ingredients %}
+      <li>{{ ingredient }}</li>
+    {% endfor %}
+  </ul>
+  <h3>Instructions</h3>
+  <ol>
+    {% for step in recipe.instructions %}
+      <li>{{ step }}</li>
+    {% endfor %}
+  </ol>
+  <p><a href="{{ recipe.source_url }}" target="_blank">Source</a></p>
+</div>
+
+<div class="card">
+  <h3>Substitutions</h3>
+  {% for item in substitutions %}
+    <p><strong>{{ item.missing_ingredient }}</strong></p>
+    <ul>
+    {% for opt in item.substitutions %}
+      <li>{{ opt.substitute }} ({{ opt.ratio }}) - confidence {{ opt.confidence }}</li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>No substitutions needed.</p>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card"><p>Recipe not found.</p></div>
+{% endif %}
+{% endblock %}

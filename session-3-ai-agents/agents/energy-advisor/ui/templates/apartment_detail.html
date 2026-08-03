@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}{{ apartment.customer_name or 'Apartment' }} - Energy Advisor{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="/apartments" class="text-green-600 hover:text-green-700">← Back to Apartments</a>
+    <h1 class="text-3xl font-bold text-gray-800 mt-2 mb-2">{{ apartment.customer_name or 'Unknown Customer' }}</h1>
+    <p class="text-gray-600">Apartment ID: {{ apartment.id }}</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Main Info -->
+    <div class="lg:col-span-2 space-y-6">
+        <!-- Summary Card -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Apartment Summary</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-500">Location</p>
+                    <p class="font-medium text-gray-800">{{ summary.location or 'N/A' }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Building Type</p>
+                    <p class="font-medium text-gray-800 capitalize">{{ (summary.building_type or 'N/A').replace('_', ' ') }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Size</p>
+                    <p class="font-medium text-gray-800">{{ summary.size_sqm or 'N/A' }} m²</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Heating Type</p>
+                    <p class="font-medium text-gray-800 capitalize">{{ (summary.heating_type or 'N/A').replace('_', ' ') }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Smart Controls</p>
+                    <p class="font-medium {% if summary.has_smart_controls %}text-green-600{% else %}text-gray-800{% endif %}">
+                        {{ 'Yes' if summary.has_smart_controls else 'No' }}
+                    </p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Energy Class</p>
+                    <p class="font-medium text-gray-800">{{ summary.energy_class or 'Not rated' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Energy Consumption -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Energy Consumption</h2>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="p-4 bg-yellow-50 rounded-lg">
+                    <p class="text-sm text-yellow-700">Annual Heating</p>
+                    <p class="text-2xl font-bold text-yellow-800">
+                        {{ summary.annual_heating_kwh or 'N/A' }}
+                        {% if summary.annual_heating_kwh %} kWh{% endif %}
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 rounded-lg">
+                    <p class="text-sm text-green-700">Annual Cost</p>
+                    <p class="text-2xl font-bold text-green-800">
+                        {{ summary.annual_cost_eur or 'N/A' }}
+                        {% if summary.annual_cost_eur %} €{% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <form action="/apartments/{{ apartment.id }}/update" method="post" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Annual Heating (kWh)</label>
+                        <input type="number" name="annual_heating_kwh" step="1"
+                            value="{{ apartment.energy_consumption.annual_heating_kwh or '' }}"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Annual Cost (€)</label>
+                        <input type="number" name="annual_cost_eur" step="0.01"
+                            value="{{ apartment.energy_consumption.annual_cost_eur or '' }}"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    Update Consumption Data
+                </button>
+            </form>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Energy Recommendations</h2>
+            {% if recommendations %}
+            <div class="space-y-4">
+                {% for rec in recommendations %}
+                <div class="border rounded-lg p-4 {% if rec.priority == 'high' %}border-red-200 bg-red-50{% elif rec.priority == 'medium' %}border-yellow-200 bg-yellow-50{% else %}border-gray-200{% endif %}">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="font-medium text-gray-800">{{ rec.title }}</h3>
+                            <p class="text-sm text-gray-600 mt-1">{{ rec.description or '' }}</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs rounded-full 
+                            {% if rec.priority == 'high' %}bg-red-200 text-red-800
+                            {% elif rec.priority == 'medium' %}bg-yellow-200 text-yellow-800
+                            {% else %}bg-gray-200 text-gray-800{% endif %}">
+                            {{ rec.priority }}
+                        </span>
+                    </div>
+                    {% if rec.estimated_savings_percent or rec.estimated_savings_eur %}
+                    <div class="mt-2 flex space-x-4 text-sm">
+                        {% if rec.estimated_savings_percent %}
+                        <span class="text-green-600">↓ {{ rec.estimated_savings_percent }}% energy</span>
+                        {% endif %}
+                        {% if rec.estimated_savings_eur %}
+                        <span class="text-green-600">Save {{ rec.estimated_savings_eur }}€/year</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-4">No recommendations yet. Chat with the advisor to get personalized tips!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-6">
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Quick Actions</h2>
+            <div class="space-y-3">
+                <a href="/chat?apartment_id={{ apartment.id }}" 
+                    class="block w-full bg-green-500 text-white text-center py-3 rounded-lg hover:bg-green-600 transition">
+                    Chat About This Apartment
+                </a>
+                <a href="/knowledge?q=energy savings {{ summary.heating_type }}"
+                    class="block w-full bg-blue-500 text-white text-center py-3 rounded-lg hover:bg-blue-600 transition">
+                    Find Energy Tips
+                </a>
+            </div>
+        </div>
+
+        <!-- Occupancy -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Occupancy</h2>
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Residents</span>
+                    <span class="font-medium">{{ summary.residents or 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Preferred Temp</span>
+                    <span class="font-medium">{{ summary.preferred_temp or 'N/A' }}{% if summary.preferred_temp %}°C{% endif %}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Priority</span>
+                    <span class="font-medium capitalize">{{ summary.comfort_priority or 'Balanced' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Notes</h2>
+            <form action="/apartments/{{ apartment.id }}/update" method="post">
+                <textarea name="notes" rows="4"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 mb-2"
+                    placeholder="Add notes about this apartment...">{{ apartment.notes or '' }}</textarea>
+                <button type="submit" class="text-green-600 hover:text-green-700 text-sm">Save Notes</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

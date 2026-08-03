@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Pantry Manager</h2>
+  <form method="post">
+    <input type="hidden" name="user_id" value="{{ user_id }}" />
+    <label>Ingredient</label>
+    <input name="ingredient_name" placeholder="tomato" />
+    <label>Quantity</label>
+    <input name="quantity" type="number" step="0.01" />
+    <label>Unit</label>
+    <input name="unit" placeholder="cup" />
+    <button type="submit" name="action" value="add">Add / Update</button>
+    <button type="submit" name="action" value="remove">Remove</button>
+    <button type="submit" name="action" value="clear">Clear Pantry</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Current Pantry ({{ items|length }})</h3>
+  <ul>
+    {% for item in items %}
+      <li>{{ item.ingredient_name }} {% if item.quantity %} - {{ item.quantity }} {{ item.unit or '' }}{% endif %}</li>
+    {% else %}
+      <li>No pantry items yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

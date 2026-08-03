@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Knowledge - Energy Advisor{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Leanheat Knowledge Base</h1>
+        <p class="text-gray-600">Search for information about energy optimization and Leanheat Building technology</p>
+    </div>
+
+    <!-- Search -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <form action="/knowledge" method="get" class="flex space-x-4">
+            <input type="text" name="q" value="{{ query or '' }}" 
+                class="flex-1 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500"
+                placeholder="Search knowledge base...">
+            <button type="submit" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 transition">
+                Search
+            </button>
+        </form>
+        
+        <!-- Quick Searches -->
+        <div class="mt-4 flex flex-wrap gap-2">
+            <a href="/knowledge?q=energy savings percentage" class="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm transition">
+                Energy savings
+            </a>
+            <a href="/knowledge?q=demand response" class="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm transition">
+                Demand response
+            </a>
+            <a href="/knowledge?q=district heating optimization" class="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm transition">
+                District heating
+            </a>
+            <a href="/knowledge?q=AI heating technology" class="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm transition">
+                AI technology
+            </a>
+            <a href="/knowledge?q=CO2 reduction" class="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm transition">
+                CO2 reduction
+            </a>
+        </div>
+    </div>
+
+    <!-- Results -->
+    {% if results %}
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-gray-800">Results for "{{ query }}"</h2>
+            <span class="text-sm px-3 py-1 rounded-full 
+                {% if results.confidence == 'high' %}bg-green-100 text-green-800
+                {% elif results.confidence == 'medium' %}bg-yellow-100 text-yellow-800
+                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                {{ results.confidence or 'unknown' }} confidence
+            </span>
+        </div>
+        
+        <!-- Answer -->
+        <div class="prose max-w-none mb-6">
+            <p class="text-gray-800 leading-relaxed">{{ results.answer }}</p>
+        </div>
+        
+        <!-- Key Points -->
+        {% if results.key_points %}
+        <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2">Key Points</h3>
+            <ul class="space-y-2">
+                {% for point in results.key_points %}
+                <li class="flex items-start space-x-2">
+                    <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span class="text-gray-600">{{ point }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <!-- Sources -->
+        {% if results.sources_used %}
+        <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2">Sources</h3>
+            <div class="flex flex-wrap gap-2">
+                {% for source in results.sources_used %}
+                <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600">{{ source }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Follow-up Questions -->
+        {% if results.follow_up_questions %}
+        <div class="border-t pt-4">
+            <h3 class="font-medium text-gray-700 mb-2">Related Questions</h3>
+            <div class="flex flex-wrap gap-2">
+                {% for question in results.follow_up_questions %}
+                <a href="/knowledge?q={{ question|urlencode }}" 
+                    class="text-green-600 hover:text-green-700 hover:underline text-sm">
+                    {{ question }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% elif query %}
+    <div class="bg-white rounded-xl shadow-md p-12 text-center">
+        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-800 mb-2">No results found</h3>
+        <p class="text-gray-500">Try a different search term or check the knowledge base has been indexed</p>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Leanheat Building Topics</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <a href="/knowledge?q=What is Leanheat Building" class="p-4 border rounded-lg hover:border-green-500 hover:bg-green-50 transition">
+                <h3 class="font-medium text-gray-800">What is Leanheat?</h3>
+                <p class="text-sm text-gray-500 mt-1">AI-powered building optimization</p>
+            </a>
+            <a href="/knowledge?q=energy savings with Leanheat" class="p-4 border rounded-lg hover:border-green-500 hover:bg-green-50 transition">
+                <h3 class="font-medium text-gray-800">Energy Savings</h3>
+                <p class="text-sm text-gray-500 mt-1">Typical savings percentages</p>
+            </a>
+            <a href="/knowledge?q=demand response benefits" class="p-4 border rounded-lg hover:border-green-500 hover:bg-green-50 transition">
+                <h3 class="font-medium text-gray-800">Demand Response</h3>
+                <p class="text-sm text-gray-500 mt-1">Grid flexibility & peak shaving</p>
+            </a>
+            <a href="/knowledge?q=district heating integration" class="p-4 border rounded-lg hover:border-green-500 hover:bg-green-50 transition">
+                <h3 class="font-medium text-gray-800">District Heating</h3>
+                <p class="text-sm text-gray-500 mt-1">Kaukolämpö optimization</p>
+            </a>
+            <a href="/knowledge?q=CO2 reduction buildings" class="p-4 border rounded-lg hover:border-green-500 hover:bg-green-50 transition">
+                <h3 class="font-medium text-gray-800">CO2 Reduction</h3>
+                <p class="text-sm text-gray-500 mt-1">Environmental impact</p>
+            </a>
+            <a href="/knowledge?q=IoT sensors heating" class="p-4 border rounded-lg hover:border-green-500 hover:bg-green-50 transition">
+                <h3 class="font-medium text-gray-800">IoT Technology</h3>
+                <p class="text-sm text-gray-500 mt-1">Sensors & connectivity</p>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

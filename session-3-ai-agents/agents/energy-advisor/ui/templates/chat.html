@@ -1,0 +1,366 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - Energy Advisor{% endblock %}
+
+{% block extra_css %}
+<style>
+    .log-entry { font-family: 'Monaco', 'Menlo', monospace; font-size: 12px; }
+    .log-function { color: #8b5cf6; }
+    .log-start { color: #10b981; }
+    .log-done { color: #3b82f6; }
+    .log-error { color: #ef4444; }
+    .log-info { color: #6b7280; }
+    .prose h1 { font-size: 1.5em; font-weight: bold; margin-top: 0.5em; }
+    .prose h2 { font-size: 1.25em; font-weight: bold; margin-top: 0.5em; }
+    .prose h3 { font-size: 1.1em; font-weight: bold; margin-top: 0.5em; }
+    .prose ul { list-style-type: disc; padding-left: 1.5em; margin: 0.5em 0; }
+    .prose ol { list-style-type: decimal; padding-left: 1.5em; margin: 0.5em 0; }
+    .prose li { margin: 0.25em 0; }
+    .prose p { margin: 0.5em 0; }
+    .prose code { background: #f3f4f6; padding: 0.1em 0.3em; border-radius: 0.25em; font-size: 0.9em; }
+    .prose pre { background: #1f2937; color: #e5e7eb; padding: 1em; border-radius: 0.5em; overflow-x: auto; margin: 0.5em 0; }
+    .prose pre code { background: transparent; padding: 0; }
+    .prose strong { font-weight: 600; }
+    .prose em { font-style: italic; }
+    .prose a { color: #10b981; text-decoration: underline; }
+    .prose blockquote { border-left: 3px solid #d1d5db; padding-left: 1em; color: #6b7280; margin: 0.5em 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Energy Advisor Chat</h1>
+        <p class="text-gray-600">Ask questions about energy savings, heating optimization, or Leanheat technology</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Chat Area -->
+        <div class="lg:col-span-2">
+            <!-- Apartment Context Selector -->
+            <div class="bg-white rounded-xl shadow-md p-4 mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Apartment Context (optional)</label>
+                <select id="apartmentSelect" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <option value="">No specific apartment</option>
+                    {% for apt in apartments %}
+                    <option value="{{ apt.id }}" {% if apt.id == selected_apartment %}selected{% endif %}>
+                        {{ apt.customer_name or apt.id }} - {{ apt.city or 'Unknown' }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Chat Container -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <!-- Chat Messages -->
+                <div id="chatMessages" class="h-[500px] overflow-y-auto p-6 space-y-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">EA</div>
+                        <div class="bg-gray-100 rounded-lg p-4 max-w-xl prose">
+                            <p>Hello! I'm your Energy Advisor. I can help you with:</p>
+                            <ul>
+                                <li>Energy saving tips for your building</li>
+                                <li>Information about Leanheat Building technology</li>
+                                <li>District heating optimization</li>
+                                <li>Demand response benefits</li>
+                            </ul>
+                            <p>How can I help you today?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="border-t p-4">
+                    <div class="flex items-center space-x-4">
+                        <input type="text" id="messageInput" 
+                            class="flex-1 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="Ask about energy savings..."
+                            onkeypress="if(event.key === 'Enter') sendMessage()">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="videoToggle" class="form-checkbox h-5 w-5 text-green-600">
+                            <span class="text-sm text-gray-600">Video</span>
+                        </label>
+                        <button onclick="sendMessage()" id="sendBtn"
+                            class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition">
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Questions -->
+            <div class="mt-4 bg-white rounded-xl shadow-md p-4">
+                <h3 class="font-medium text-gray-700 mb-3">Quick Questions</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="askQuestion('How can I reduce my heating costs?')" class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm transition">
+                        How can I reduce heating costs?
+                    </button>
+                    <button onclick="askQuestion('What is Leanheat Building?')" class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm transition">
+                        What is Leanheat Building?
+                    </button>
+                    <button onclick="askQuestion('How does demand response work?')" class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm transition">
+                        How does demand response work?
+                    </button>
+                    <button onclick="askQuestion('What are typical energy savings with AI optimization?')" class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm transition">
+                        Typical energy savings?
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Logs Panel -->
+        <div class="lg:col-span-1">
+            <div class="bg-gray-900 rounded-xl shadow-md overflow-hidden sticky top-4">
+                <div class="bg-gray-800 px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <span class="text-gray-400 text-sm font-medium">Agent Logs</span>
+                    <button onclick="clearLogs()" class="text-gray-500 hover:text-gray-300 text-xs">Clear</button>
+                </div>
+                <div id="agentLogs" class="h-[550px] overflow-y-auto p-4 space-y-1 text-sm">
+                    <div class="log-entry log-info">🤖 Agent ready. Waiting for query...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Marked.js for Markdown parsing -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    // Configure marked
+    marked.setOptions({
+        breaks: true,
+        gfm: true
+    });
+
+    let chatHistory = [];
+
+    function addLog(message, type = 'info') {
+        const logsDiv = document.getElementById('agentLogs');
+        const logDiv = document.createElement('div');
+        logDiv.className = 'log-entry';
+        
+        const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+        let icon = '📝';
+        let colorClass = 'log-info';
+        
+        if (type === 'function' || message.includes('[START]')) {
+            icon = '⚡';
+            colorClass = 'log-function';
+        } else if (message.includes('[DONE]')) {
+            icon = '✅';
+            colorClass = 'log-done';
+        } else if (type === 'error' || message.includes('ERROR')) {
+            icon = '❌';
+            colorClass = 'log-error';
+        } else if (message.includes('Query:')) {
+            icon = '💬';
+            colorClass = 'log-start';
+        } else if (message.includes('Iteration')) {
+            icon = '🔄';
+        } else if (message.includes('Text:')) {
+            icon = '📄';
+        } else if (message.includes('Function calls:')) {
+            icon = '🔧';
+            colorClass = 'log-function';
+        } else if (message.includes('DONE:')) {
+            icon = '🎉';
+            colorClass = 'log-done';
+        } else if (message.includes('Language:')) {
+            icon = '🌍';
+        } else if (message.includes('Searching') || message.includes('search')) {
+            icon = '🔍';
+        }
+        
+        logDiv.innerHTML = `<span class="text-gray-500">${timestamp}</span> <span class="${colorClass}">${icon} ${escapeHtml(message)}</span>`;
+        logsDiv.appendChild(logDiv);
+        logsDiv.scrollTop = logsDiv.scrollHeight;
+    }
+
+    function clearLogs() {
+        const logsDiv = document.getElementById('agentLogs');
+        logsDiv.innerHTML = '<div class="log-entry log-info">🤖 Logs cleared. Waiting for query...</div>';
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function markdownToHtml(text) {
+        try {
+            return marked.parse(text);
+        } catch (e) {
+            return text.replace(/\n/g, '<br>');
+        }
+    }
+
+    function addMessage(content, isUser, videoUrl = null) {
+        const messagesDiv = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex items-start space-x-3' + (isUser ? ' flex-row-reverse space-x-reverse' : '');
+        
+        const avatar = isUser 
+            ? '<div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">You</div>'
+            : '<div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">EA</div>';
+        
+        let videoHtml = '';
+        if (videoUrl) {
+            videoHtml = `
+                <div class="mt-3">
+                    <video controls class="rounded-lg max-w-full" style="max-height: 300px;">
+                        <source src="${videoUrl}" type="video/mp4">
+                    </video>
+                </div>
+            `;
+        }
+        
+        const contentHtml = isUser ? escapeHtml(content) : markdownToHtml(content);
+        
+        messageDiv.innerHTML = `
+            ${avatar}
+            <div class="${isUser ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800 prose'} rounded-lg p-4 max-w-xl">
+                ${contentHtml}
+                ${videoHtml}
+            </div>
+        `;
+        
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function addLoading() {
+        const messagesDiv = document.getElementById('chatMessages');
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'loadingMessage';
+        loadingDiv.className = 'flex items-start space-x-3';
+        loadingDiv.innerHTML = `
+            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">EA</div>
+            <div class="bg-gray-100 rounded-lg p-4">
+                <div class="flex space-x-1">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                </div>
+            </div>
+        `;
+        messagesDiv.appendChild(loadingDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function removeLoading() {
+        const loading = document.getElementById('loadingMessage');
+        if (loading) loading.remove();
+    }
+
+    function setInputEnabled(enabled) {
+        document.getElementById('messageInput').disabled = !enabled;
+        document.getElementById('sendBtn').disabled = !enabled;
+        document.getElementById('sendBtn').className = enabled 
+            ? 'bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition'
+            : 'bg-gray-400 text-white px-6 py-3 rounded-lg cursor-not-allowed';
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const message = input.value.trim();
+        if (!message) return;
+
+        const apartmentId = document.getElementById('apartmentSelect').value;
+        const generateVideo = document.getElementById('videoToggle').checked;
+
+        addMessage(message, true);
+        input.value = '';
+        addLoading();
+        setInputEnabled(false);
+
+        chatHistory.push({ role: 'user', content: message });
+
+        // Add initial log
+        addLog(`Processing query: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`, 'start');
+
+        try {
+            // Use streaming endpoint for real-time logs
+            const response = await fetch('/chat/stream', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: message,
+                    apartment_id: apartmentId || null,
+                    history: chatHistory,
+                    generate_video: generateVideo
+                })
+            });
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let finalResponse = null;
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+                        
+                        try {
+                            const parsed = JSON.parse(data);
+                            if (parsed.type === 'log') {
+                                addLog(parsed.message);
+                            } else if (parsed.type === 'response') {
+                                finalResponse = parsed;
+                            } else if (parsed.type === 'error') {
+                                addLog(parsed.message, 'error');
+                                finalResponse = { content: 'Sorry, an error occurred: ' + parsed.message };
+                            }
+                        } catch (e) {
+                            // Ignore parse errors
+                        }
+                    }
+                }
+            }
+
+            removeLoading();
+            setInputEnabled(true);
+
+            if (finalResponse) {
+                let videoUrl = null;
+                if (finalResponse.video && finalResponse.video.video_path) {
+                    const filename = finalResponse.video.video_path.split('/').pop();
+                    videoUrl = '/videos/' + filename;
+                    addLog('Video generated: ' + filename, 'done');
+                }
+                addMessage(finalResponse.content, false, videoUrl);
+                chatHistory.push({ role: 'assistant', content: finalResponse.content });
+                addLog('Response delivered', 'done');
+            }
+
+        } catch (error) {
+            removeLoading();
+            setInputEnabled(true);
+            addLog('Network error: ' + error.message, 'error');
+            addMessage('Sorry, a network error occurred.', false);
+        }
+    }
+
+    function askQuestion(question) {
+        document.getElementById('messageInput').value = question;
+        sendMessage();
+    }
+</script>
+{% endblock %}

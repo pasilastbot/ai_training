@@ -1,0 +1,532 @@
+{
+  "name": "recipe-finder-agent",
+  "description": "AI agent that finds and ranks recipes based on ingredients users already have, while respecting dietary needs, cuisine preferences, cooking time, and available equipment.",
+  "capabilities": [
+    "Ingredient-based recipe discovery",
+    "Ingredient normalization and synonym resolution",
+    "Missing-ingredient and substitution suggestions",
+    "Recipe ranking by match quality, time, difficulty, and preferences",
+    "Dietary and allergen-aware filtering",
+    "Pantry memory and preference personalization",
+    "Conversational CLI usage and single-query execution",
+    "REST API and Flask web UI access",
+    "Delegation to specialized subagents for parsing, ranking, and substitutions",
+    "Grounded web lookups via Gemini built-in tools (google_search, url_context)"
+  ],
+  "tools": [
+    {
+      "name": "parse_ingredients",
+      "description": "Parses free-text ingredient input into normalized ingredient objects with quantity, unit, canonical name, and confidence.",
+      "parameters": [
+        {
+          "name": "input_text",
+          "type": "string",
+          "required": true,
+          "description": "Raw user ingredient text."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "description": "Locale for unit/ingredient normalization (default: en-US)."
+        }
+      ]
+    },
+    {
+      "name": "search_recipes",
+      "description": "Finds candidate recipes from provider APIs and/or grounded web results using available ingredients and filters.",
+      "parameters": [
+        {
+          "name": "ingredients",
+          "type": "array[string]",
+          "required": true,
+          "description": "Canonical ingredient names."
+        },
+        {
+          "name": "dietary_filters",
+          "type": "array[string]",
+          "required": false,
+          "description": "Examples: vegetarian, vegan, gluten-free, nut-free."
+        },
+        {
+          "name": "max_cook_time_minutes",
+          "type": "integer",
+          "required": false,
+          "description": "Maximum allowed total cooking time."
+        },
+        {
+          "name": "cuisine",
+          "type": "string",
+          "required": false,
+          "description": "Preferred cuisine."
+        },
+        {
+          "name": "servings",
+          "type": "integer",
+          "required": false,
+          "description": "Target serving size."
+        }
+      ]
+    },
+    {
+      "name": "rank_recipes",
+      "description": "Scores and sorts candidate recipes based on ingredient match, missing-item count, user preferences, time, and difficulty.",
+      "parameters": [
+        {
+          "name": "recipes",
+          "type": "array[object]",
+          "required": true,
+          "description": "Candidate recipe objects."
+        },
+        {
+          "name": "available_ingredients",
+          "type": "array[string]",
+          "required": true,
+          "description": "Ingredients user currently has."
+        },
+        {
+          "name": "user_preferences",
+          "type": "object",
+          "required": false,
+          "description": "Stored likes/dislikes, cuisines, diet."
+        }
+      ]
+    },
+    {
+      "name": "suggest_substitutions",
+      "description": "Suggests ingredient substitutions for missing or restricted ingredients with confidence and impact notes.",
+      "parameters": [
+        {
+          "name": "missing_ingredients",
+          "type": "array[string]",
+          "required": true,
+          "description": "Ingredients not available to user."
+        },
+        {
+          "name": "dietary_restrictions",
+          "type": "array[string]",
+          "required": false,
+          "description": "Restrictions substitutions must obey."
+        },
+        {
+          "name": "available_ingredients",
+          "type": "array[string]",
+          "required": false,
+          "description": "Ingredients user can use as substitutes."
+        }
+      ]
+    },
+    {
+      "name": "get_recipe_details",
+      "description": "Fetches full recipe instructions, nutrition (if available), steps, and source URL.",
+      "parameters": [
+        {
+          "name": "recipe_id",
+          "type": "string",
+          "required": true,
+          "description": "Identifier from search results."
+        },
+        {
+          "name": "include_nutrition",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether to include nutrition estimates."
+        }
+      ]
+    },
+    {
+      "name": "pantry_manager",
+      "description": "Reads and updates pantry inventory in persistent memory.",
+      "parameters": [
+        {
+          "name": "operation",
+          "type": "string",
+          "required": true,
+          "description": "One of: add, remove, list, clear."
+        },
+        {
+          "name": "items",
+          "type": "array[object]",
+          "required": false,
+          "description": "Ingredient entries for add/remove operations."
+        },
+        {
+          "name": "user_id",
+          "type": "string",
+          "required": true,
+          "description": "User identifier."
+        }
+      ]
+    },
+    {
+      "name": "preference_manager",
+      "description": "Stores and retrieves user preferences such as diet, disliked ingredients, favorite cuisines, and default cook-time budget.",
+      "parameters": [
+        {
+          "name": "operation",
+          "type": "string",
+          "required": true,
+          "description": "One of: set, get, update, delete."
+        },
+        {
+          "name": "user_id",
+          "type": "string",
+          "required": true,
+          "description": "User identifier."
+        },
+        {
+          "name": "preferences",
+          "type": "object",
+          "required": false,
+          "description": "Preference payload for set/update."
+        }
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "ingredient-intake",
+      "description": "Use when user provides pantry or free-text ingredient lists that need cleanup and normalization before searching.",
+      "tools": [
+        "parse_ingredients",
+        "pantry_manager"
+      ]
+    },
+    {
+      "name": "recipe-discovery",
+      "description": "Use when user asks for recipes from available ingredients with optional constraints.",
+      "tools": [
+        "search_recipes",
+        "rank_recipes",
+        "get_recipe_details"
+      ]
+    },
+    {
+      "name": "substitution-planning",
+      "description": "Use when candidate recipes require missing ingredients or dietary-safe alternatives.",
+      "tools": [
+        "suggest_substitutions",
+        "rank_recipes"
+      ]
+    },
+    {
+      "name": "personalized-recommendations",
+      "description": "Use when user requests recommendations aligned with saved preferences and past interactions.",
+      "tools": [
+        "preference_manager",
+        "search_recipes",
+        "rank_recipes"
+      ]
+    }
+  ],
+  "subagents": [
+    {
+      "name": "ingredient_parser",
+      "purpose": "Handles ingredient extraction, normalization, quantity parsing, and synonym resolution from raw text."
+    },
+    {
+      "name": "recipe_retriever",
+      "purpose": "Queries recipe sources and grounded web results, returning structured candidate recipes."
+    },
+    {
+      "name": "recipe_ranker",
+      "purpose": "Applies scoring logic to rank recipes by ingredient match, effort, and preference fit."
+    },
+    {
+      "name": "substitution_advisor",
+      "purpose": "Provides context-aware substitutions for unavailable or restricted ingredients."
+    }
+  ],
+  "memory_schemas": [
+    {
+      "name": "user_profile_schema",
+      "description": "Stores user-level recipe preferences and dietary constraints.",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "string",
+          "required": true,
+          "description": "Unique user identifier."
+        },
+        {
+          "name": "dietary_restrictions",
+          "type": "array[string]",
+          "required": false,
+          "description": "Diet/allergy constraints."
+        },
+        {
+          "name": "disliked_ingredients",
+          "type": "array[string]",
+          "required": false,
+          "description": "Ingredients user avoids."
+        },
+        {
+          "name": "favorite_cuisines",
+          "type": "array[string]",
+          "required": false,
+          "description": "Preferred cuisines."
+        },
+        {
+          "name": "max_cook_time_minutes",
+          "type": "integer",
+          "required": false,
+          "description": "Default time budget."
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "required": true,
+          "description": "ISO timestamp."
+        },
+        {
+          "name": "updated_at",
+          "type": "string",
+          "required": true,
+          "description": "ISO timestamp."
+        }
+      ]
+    },
+    {
+      "name": "pantry_item_schema",
+      "description": "Stores pantry inventory for ingredient-aware recommendations.",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "string",
+          "required": true,
+          "description": "Owner user identifier."
+        },
+        {
+          "name": "ingredient_name",
+          "type": "string",
+          "required": true,
+          "description": "Canonical ingredient name."
+        },
+        {
+          "name": "quantity",
+          "type": "number",
+          "required": false,
+          "description": "Amount available."
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "required": false,
+          "description": "Measurement unit."
+        },
+        {
+          "name": "expires_on",
+          "type": "string",
+          "required": false,
+          "description": "Optional expiration date (YYYY-MM-DD)."
+        },
+        {
+          "name": "updated_at",
+          "type": "string",
+          "required": true,
+          "description": "ISO timestamp."
+        }
+      ]
+    },
+    {
+      "name": "recipe_interaction_schema",
+      "description": "Stores interactions to improve ranking and personalization.",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "string",
+          "required": true,
+          "description": "Owner user identifier."
+        },
+        {
+          "name": "recipe_id",
+          "type": "string",
+          "required": true,
+          "description": "Recipe identifier."
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "required": true,
+          "description": "One of: viewed, saved, cooked, liked, disliked."
+        },
+        {
+          "name": "rating",
+          "type": "integer",
+          "required": false,
+          "description": "Optional 1-5 rating."
+        },
+        {
+          "name": "timestamp",
+          "type": "string",
+          "required": true,
+          "description": "ISO timestamp."
+        }
+      ]
+    },
+    {
+      "name": "search_session_schema",
+      "description": "Stores recent query context for conversational continuity.",
+      "fields": [
+        {
+          "name": "session_id",
+          "type": "string",
+          "required": true,
+          "description": "Conversation/session identifier."
+        },
+        {
+          "name": "user_id",
+          "type": "string",
+          "required": true,
+          "description": "Owner user identifier."
+        },
+        {
+          "name": "query_text",
+          "type": "string",
+          "required": true,
+          "description": "Original user request."
+        },
+        {
+          "name": "parsed_ingredients",
+          "type": "array[string]",
+          "required": false,
+          "description": "Normalized ingredients from query."
+        },
+        {
+          "name": "filters",
+          "type": "object",
+          "required": false,
+          "description": "Applied search filters."
+        },
+        {
+          "name": "result_recipe_ids",
+          "type": "array[string]",
+          "required": false,
+          "description": "Returned recipe ids."
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "required": true,
+          "description": "ISO timestamp."
+        }
+      ]
+    }
+  ],
+  "api_endpoints": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Health check endpoint for service monitoring."
+    },
+    {
+      "method": "POST",
+      "path": "/recipes/find",
+      "description": "Find recipes from provided ingredients and optional filters."
+    },
+    {
+      "method": "POST",
+      "path": "/recipes/rank",
+      "description": "Rank candidate recipes for a specific user context."
+    },
+    {
+      "method": "GET",
+      "path": "/recipes/{recipe_id}",
+      "description": "Fetch detailed recipe instructions and metadata."
+    },
+    {
+      "method": "POST",
+      "path": "/recipes/{recipe_id}/substitutions",
+      "description": "Get substitutions for missing or restricted ingredients for a recipe."
+    },
+    {
+      "method": "GET",
+      "path": "/users/{user_id}/pantry",
+      "description": "Get user pantry inventory."
+    },
+    {
+      "method": "POST",
+      "path": "/users/{user_id}/pantry",
+      "description": "Add or update pantry items."
+    },
+    {
+      "method": "DELETE",
+      "path": "/users/{user_id}/pantry/{ingredient}",
+      "description": "Remove ingredient from pantry."
+    },
+    {
+      "method": "GET",
+      "path": "/users/{user_id}/preferences",
+      "description": "Get stored user preferences."
+    },
+    {
+      "method": "PUT",
+      "path": "/users/{user_id}/preferences",
+      "description": "Create or update user preferences."
+    },
+    {
+      "method": "POST",
+      "path": "/users/{user_id}/interactions",
+      "description": "Record recipe interaction events for personalization."
+    }
+  ],
+  "ui_views": [
+    {
+      "name": "home_search_view",
+      "description": "Primary recipe search page with ingredient input, quick pantry import, and filter controls."
+    },
+    {
+      "name": "results_view",
+      "description": "Ranked recipe result list showing match score, missing ingredients, cook time, and dietary badges."
+    },
+    {
+      "name": "recipe_detail_view",
+      "description": "Detailed recipe page with instructions, ingredient checklist, substitutions, and save/like actions."
+    },
+    {
+      "name": "pantry_manager_view",
+      "description": "Pantry management dashboard for adding, removing, and tracking ingredients."
+    },
+    {
+      "name": "preferences_view",
+      "description": "User preference settings for diets, allergens, cuisines, and cooking-time defaults."
+    }
+  ],
+  "environment_variables": [
+    {
+      "name": "GEMINI_API_KEY",
+      "required": true,
+      "description": "Gemini API access for generation and grounded tool usage."
+    },
+    {
+      "name": "GOOGLE_AI_STUDIO_KEY",
+      "required": false,
+      "description": "Alternative Gemini key if GEMINI_API_KEY is not set."
+    },
+    {
+      "name": "DATABASE_URL",
+      "required": false,
+      "description": "Optional relational database connection string for persistent storage."
+    },
+    {
+      "name": "CHROMA_HOST",
+      "required": false,
+      "description": "ChromaDB host for semantic memory/indexing (default: localhost)."
+    },
+    {
+      "name": "CHROMA_PORT",
+      "required": false,
+      "description": "ChromaDB port for semantic memory/indexing (default: 8000)."
+    },
+    {
+      "name": "RECIPE_PROVIDER_API_KEY",
+      "required": false,
+      "description": "API key for optional third-party structured recipe provider."
+    },
+    {
+      "name": "DEFAULT_LOCALE",
+      "required": false,
+      "description": "Default locale for ingredient normalization and unit conversion (e.g., en-US)."
+    }
+  ]
+}

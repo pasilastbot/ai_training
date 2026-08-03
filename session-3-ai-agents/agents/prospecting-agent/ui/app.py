@@ -48,7 +48,7 @@ def run_subagent(name: str, args: list, input_data: str = None) -> dict:
     if not subagent_path.exists():
         return {"error": f"Subagent not found: {name}"}
     
-    cmd = ["python", str(subagent_path)] + args
+    cmd = [sys.executable, str(subagent_path)] + args
     
     try:
         if input_data:
@@ -88,7 +88,7 @@ def run_tool(name: str, args: list, input_data: str = None) -> dict:
     if not tool_path.exists():
         return {"error": f"Tool not found: {name}"}
     
-    cmd = ["python", str(tool_path)] + args
+    cmd = [sys.executable, str(tool_path)] + args
     
     try:
         if input_data:
@@ -300,7 +300,7 @@ def api_chat():
     
     try:
         result = subprocess.run(
-            ["python", str(agent_path), message],
+            [sys.executable, str(agent_path), message],
             capture_output=True,
             text=True,
             timeout=180,
@@ -406,7 +406,7 @@ def api_chat_stream():
         
         # Start the agent process with full conversation context
         process = subprocess.Popen(
-            ["python", "-u", str(agent_path), full_message],  # -u for unbuffered output
+            [sys.executable, "-u", str(agent_path), full_message],  # -u for unbuffered output
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,

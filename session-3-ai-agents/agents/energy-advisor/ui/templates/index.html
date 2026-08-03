@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Energy Advisor{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Energy Advisor Dashboard</h1>
+    <p class="text-gray-600">AI-powered building energy optimization with Leanheat Building technology</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-md p-6 card-hover transition-all">
+        <div class="flex items-center">
+            <div class="p-3 bg-green-100 rounded-lg">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm text-gray-500">Apartments</p>
+                <p class="text-2xl font-bold text-gray-800">{{ stats.total_apartments or 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-6 card-hover transition-all">
+        <div class="flex items-center">
+            <div class="p-3 bg-blue-100 rounded-lg">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm text-gray-500">Recommendations</p>
+                <p class="text-2xl font-bold text-gray-800">{{ stats.total_recommendations or 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-6 card-hover transition-all">
+        <div class="flex items-center">
+            <div class="p-3 bg-purple-100 rounded-lg">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm text-gray-500">Video Responses</p>
+                <p class="text-2xl font-bold text-gray-800">{{ stats.total_video_responses or 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-6 card-hover transition-all">
+        <div class="flex items-center">
+            <div class="p-3 bg-yellow-100 rounded-lg">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm text-gray-500">Avg Size</p>
+                <p class="text-2xl font-bold text-gray-800">{{ stats.average_apartment_size_sqm or 'N/A' }} m²</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+        <div class="space-y-3">
+            <a href="/apartments/new" class="block w-full bg-green-500 text-white text-center py-3 rounded-lg hover:bg-green-600 transition">
+                + Register New Apartment
+            </a>
+            <a href="/chat" class="block w-full bg-blue-500 text-white text-center py-3 rounded-lg hover:bg-blue-600 transition">
+                Chat with Energy Advisor
+            </a>
+            <a href="/knowledge?q=energy savings" class="block w-full bg-purple-500 text-white text-center py-3 rounded-lg hover:bg-purple-600 transition">
+                Search Knowledge Base
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Heating Types Distribution</h2>
+        <div class="space-y-3">
+            {% for type, count in (stats.by_heating_type or {}).items() %}
+            <div class="flex items-center justify-between">
+                <span class="text-gray-600 capitalize">{{ type.replace('_', ' ') }}</span>
+                <span class="font-bold text-gray-800">{{ count }}</span>
+            </div>
+            {% else %}
+            <p class="text-gray-500">No apartments registered yet</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Apartments -->
+<div class="bg-white rounded-xl shadow-md p-6 mb-8">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-gray-800">Recent Apartments</h2>
+        <a href="/apartments" class="text-green-600 hover:text-green-700">View All →</a>
+    </div>
+    
+    {% if apartments %}
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="text-left text-gray-500 text-sm border-b">
+                    <th class="pb-3">Customer</th>
+                    <th class="pb-3">City</th>
+                    <th class="pb-3">Type</th>
+                    <th class="pb-3">Heating</th>
+                    <th class="pb-3">Size</th>
+                    <th class="pb-3"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for apt in apartments %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="py-3 font-medium">{{ apt.customer_name or 'Unknown' }}</td>
+                    <td class="py-3 text-gray-600">{{ apt.city or 'N/A' }}</td>
+                    <td class="py-3 text-gray-600 capitalize">{{ (apt.building_type or 'N/A').replace('_', ' ') }}</td>
+                    <td class="py-3 text-gray-600 capitalize">{{ (apt.heating_type or 'N/A').replace('_', ' ') }}</td>
+                    <td class="py-3 text-gray-600">{{ apt.size_sqm or 'N/A' }} m²</td>
+                    <td class="py-3">
+                        <a href="/apartments/{{ apt.id }}" class="text-green-600 hover:text-green-700">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-500 text-center py-8">No apartments registered yet. <a href="/apartments/new" class="text-green-600">Register one now</a></p>
+    {% endif %}
+</div>
+
+<!-- Leanheat Info -->
+<div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-md p-6 text-white">
+    <h2 class="text-xl font-bold mb-3">About Leanheat Building Technology</h2>
+    <p class="mb-4 opacity-90">
+        Leanheat Building is an AI-powered heating optimization system that typically delivers 10-20% energy savings 
+        while improving indoor comfort. It integrates with district heating systems and supports demand response 
+        for grid flexibility.
+    </p>
+    <a href="/knowledge?q=What is Leanheat Building" class="inline-block bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-green-50 transition">
+        Learn More →
+    </a>
+</div>
+{% endblock %}

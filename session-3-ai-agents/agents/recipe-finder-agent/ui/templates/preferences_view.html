@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Preferences</h2>
+  <form method="post">
+    <input type="hidden" name="user_id" value="{{ user_id }}" />
+    <label>Dietary restrictions (comma-separated)</label>
+    <input name="dietary_restrictions" value="{{ (profile.dietary_restrictions or [])|join(', ') }}" />
+    <label>Disliked ingredients</label>
+    <input name="disliked_ingredients" value="{{ (profile.disliked_ingredients or [])|join(', ') }}" />
+    <label>Favorite cuisines</label>
+    <input name="favorite_cuisines" value="{{ (profile.favorite_cuisines or [])|join(', ') }}" />
+    <label>Max cook time minutes</label>
+    <input name="max_cook_time_minutes" type="number" value="{{ profile.max_cook_time_minutes or '' }}" />
+    <button type="submit">Save Preferences</button>
+  </form>
+</div>
+{% endblock %}

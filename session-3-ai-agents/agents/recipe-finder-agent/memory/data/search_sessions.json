@@ -1,0 +1,152 @@
+{
+  "1aef6d52-9bfd-4c26-a758-457a212a50a2": {
+    "session_id": "1aef6d52-9bfd-4c26-a758-457a212a50a2",
+    "user_id": "default",
+    "query_text": "find recipes",
+    "parsed_ingredients": [
+      "tomato",
+      "onion",
+      "garlic"
+    ],
+    "filters": {
+      "dietary_filters": null,
+      "max_cook_time_minutes": null,
+      "cuisine": null,
+      "servings": null
+    },
+    "result_recipe_ids": [
+      "r003",
+      "r001",
+      "r005",
+      "r002",
+      "r006",
+      "r004"
+    ],
+    "created_at": "2026-05-21T11:49:12Z"
+  },
+  "4dcb7f42-175b-4435-879b-cadbaf62930b": {
+    "session_id": "4dcb7f42-175b-4435-879b-cadbaf62930b",
+    "user_id": "default",
+    "query_text": "Find something quick",
+    "parsed_ingredients": [
+      "tomato",
+      "onion",
+      "garlic",
+      "chickpeas"
+    ],
+    "filters": {
+      "dietary_filters": [],
+      "max_cook_time_minutes": null,
+      "cuisine": null,
+      "servings": null
+    },
+    "result_recipe_ids": [
+      "r001",
+      "r003",
+      "r005",
+      "r002",
+      "r006",
+      "r004"
+    ],
+    "created_at": "2026-05-21T11:49:33Z"
+  },
+  "ad9c3183-5d67-4ae8-a04e-69543668746f": {
+    "session_id": "ad9c3183-5d67-4ae8-a04e-69543668746f",
+    "user_id": "default",
+    "query_text": "find recipes",
+    "parsed_ingredients": [
+      "tomato",
+      "onion"
+    ],
+    "filters": {
+      "dietary_filters": null,
+      "max_cook_time_minutes": null,
+      "cuisine": null,
+      "servings": null
+    },
+    "result_recipe_ids": [
+      "r005",
+      "r001",
+      "r003",
+      "r002",
+      "r006",
+      "r004"
+    ],
+    "created_at": "2026-05-21T11:49:33Z"
+  },
+  "f6781177-fc6f-4d73-ab11-6b6a4d40d495": {
+    "session_id": "f6781177-fc6f-4d73-ab11-6b6a4d40d495",
+    "user_id": "default",
+    "query_text": "Find something quick",
+    "parsed_ingredients": [
+      "tomato",
+      "onion",
+      "garlic",
+      "chickpeas"
+    ],
+    "filters": {
+      "dietary_filters": [],
+      "max_cook_time_minutes": null,
+      "cuisine": null,
+      "servings": null
+    },
+    "result_recipe_ids": [
+      "r001",
+      "r003",
+      "r005",
+      "r002",
+      "r006",
+      "r004"
+    ],
+    "created_at": "2026-05-21T11:50:04Z"
+  },
+  "f0cfa5fe-064a-4338-ac11-e71541dbeb7c": {
+    "session_id": "f0cfa5fe-064a-4338-ac11-e71541dbeb7c",
+    "user_id": "default",
+    "query_text": "Find recipes",
+    "parsed_ingredients": [
+      "tomato",
+      "onion",
+      "chickpeas"
+    ],
+    "filters": {
+      "dietary_filters": [],
+      "max_cook_time_minutes": null,
+      "cuisine": null,
+      "servings": null
+    },
+    "result_recipe_ids": [
+      "r001",
+      "r005",
+      "r003",
+      "r002",
+      "r006",
+      "r004"
+    ],
+    "created_at": "2026-05-21T11:52:02Z"
+  },
+  "d61fc8d7-ab1c-4b74-bb11-48629ca158da": {
+    "session_id": "d61fc8d7-ab1c-4b74-bb11-48629ca158da",
+    "user_id": "default",
+    "query_text": "find recipes",
+    "parsed_ingredients": [
+      "tomato",
+      "onion"
+    ],
+    "filters": {
+      "dietary_filters": null,
+      "max_cook_time_minutes": null,
+      "cuisine": null,
+      "servings": null
+    },
+    "result_recipe_ids": [
+      "r005",
+      "r001",
+      "r003",
+      "r002",
+      "r006",
+      "r004"
+    ],
+    "created_at": "2026-05-21T11:52:20Z"
+  }
+}

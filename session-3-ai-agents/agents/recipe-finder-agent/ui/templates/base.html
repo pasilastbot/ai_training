@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recipe Finder Agent</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --panel: #fffdf7;
+      --ink: #1e2c2f;
+      --muted: #5d6d71;
+      --accent: #b14b1f;
+      --accent-soft: #f1d6c9;
+      --line: #dfd6c8;
+    }
+    body {
+      margin: 0;
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, #f9e2bf, var(--bg));
+    }
+    header {
+      background: linear-gradient(120deg, #12323f, #255061);
+      color: white;
+      padding: 1rem 1.2rem;
+    }
+    nav a {
+      color: #f8f5ee;
+      margin-right: 1rem;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    main {
+      max-width: 980px;
+      margin: 1rem auto;
+      padding: 0 1rem 2rem 1rem;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+    input, textarea, select {
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0.2rem 0 0.8rem;
+      padding: 0.6rem;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: white;
+    }
+    button {
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      padding: 0.55rem 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 0.4rem;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: #5e2008;
+      border-radius: 12px;
+      padding: 0.2rem 0.5rem;
+      margin: 0.1rem;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Recipe Finder Agent</h1>
+    <nav>
+      <a href="/">Search</a>
+      <a href="/pantry">Pantry</a>
+      <a href="/preferences">Preferences</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

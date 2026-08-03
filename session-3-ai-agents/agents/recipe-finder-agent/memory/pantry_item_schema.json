@@ -1,0 +1,12 @@
+{
+  "name": "pantry_item_schema",
+  "description": "Stores pantry inventory for ingredient-aware recommendations.",
+  "fields": [
+    {"name": "user_id", "type": "string", "required": true, "description": "Owner user identifier."},
+    {"name": "ingredient_name", "type": "string", "required": true, "description": "Canonical ingredient name."},
+    {"name": "quantity", "type": "number", "required": false, "description": "Amount available."},
+    {"name": "unit", "type": "string", "required": false, "description": "Measurement unit."},
+    {"name": "expires_on", "type": "string", "required": false, "description": "Optional expiration date (YYYY-MM-DD)."},
+    {"name": "updated_at", "type": "string", "required": true, "description": "ISO timestamp."}
+  ]
+}

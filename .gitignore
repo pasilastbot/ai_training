@@ -2,6 +2,7 @@ chroma/
 chroma.log
 .env.*
 node_modules
+.venv
 .venv311
 __pycache__/
 *.pyc

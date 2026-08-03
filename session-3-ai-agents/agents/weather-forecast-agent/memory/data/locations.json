@@ -7,5 +7,14 @@
     "timezone": null,
     "updated_at": "2026-04-27T08:44:41.320573",
     "created_at": "2026-04-27T08:44:41.320573"
+  },
+  "loc_20260521110849_1": {
+    "id": "loc_20260521110849_1",
+    "name": "Espoo",
+    "city": "Espoo",
+    "coordinates": null,
+    "timezone": null,
+    "updated_at": "2026-05-21T11:08:49.170845",
+    "created_at": "2026-05-21T11:08:49.170845"
   }
 }
